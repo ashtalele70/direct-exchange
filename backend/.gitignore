@@ -1,0 +1,72 @@
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**
+!**/src/test/**
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### VS Code ###
+.vscode/
+
+# Don't track these files
+*~
+*.sw[mnpcod]
+.tmp
+*.tmp
+*.tmp.*
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+UserInterfaceState.xcuserstate
+*.DS_Store
+*.exe
+*.7z
+*.zip
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.env
+*.log
+*.tern-project
+log.txt
+npm-debug.log*
+/.metadata/
+/.settings
+
+
+# directories
+.settings/
+.target/
+.idea/
+.worksheet/
+bin/
+dist/
+logs/
+node_modules/
+out/
+tmp/
+
+# files
+*/.DS_Store
+\#*
+.cache
+.history
+.idea_modules
+RUNNING_PID
