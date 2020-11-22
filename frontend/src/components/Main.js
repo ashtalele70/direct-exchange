@@ -3,12 +3,18 @@ import { Route } from "react-router-dom";
 import "../App.css";
 
 import Navbar from "./Navbar/Navbar";
+import SignUp from "./SignUp/SignUp";
+import Login from "./Login/Login";
+import SignOut from "./SignOut/SignOut";
 
 class Home extends Component {
     render() {
         return (
             <div>
                 <Route path="/" component={Navbar} />
+                <Route path="/signup" component={   SignUp} />
+                <Route path="/login" component={Login} />
+                <Route path="/signout" render={SignOut} />
             </div>
         );
     }
