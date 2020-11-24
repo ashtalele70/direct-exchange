@@ -5,16 +5,16 @@ import "../App.css";
 import Navbar from "./Navbar/Navbar";
 import SignUp from "./SignUp/SignUp";
 import Login from "./Login/Login";
-import SignOut from "./SignOut/SignOut";
+import Logout from "./Logout/Logout";
 
 class Home extends Component {
     render() {
         return (
             <div>
                 <Route path="/" component={Navbar} />
-                <Route path="/signup" component={   SignUp} />
+                <Route path="/signup" component={SignUp} />
                 <Route path="/login" component={Login} />
-                <Route path="/signout" render={SignOut} />
+                <Route path="/logout" component={Logout} />
             </div>
         );
     }

@@ -21,7 +21,7 @@ class Navigation extends Component {
                     <Nav>
                         <Nav.Link href="/login">Login</Nav.Link>
                         <Nav.Link href="/signup">Sign Up</Nav.Link>
-                        <Nav.Link href="/signout">Sign Out</Nav.Link>
+                        <Nav.Link href="/logout">Log Out</Nav.Link>
                     </Nav>
             </Navbar>
         );

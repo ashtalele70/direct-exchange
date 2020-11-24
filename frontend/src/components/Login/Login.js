@@ -12,7 +12,6 @@ class LoginForm extends Component {
             username: "",
             password: "",
             error: null,
-            signout: null,
             show_logout: true,
         };
     }
@@ -36,11 +35,10 @@ class LoginForm extends Component {
             data.username === "" ||
             data.password === "";
 
-        let signout_message;
-        if(this.props && this.props.signout ) {
-            this.props.firebase.doSignOut();
+        let logout_message;
+        if(this.props && this.props.location.logout) {
             if(this.state.show_logout)
-            signout_message = (<Alert  variant='success' onLoad={setTimeout(() =>  this.setState( {show_logout: false}) , 3000)} onClose={() => this.setState( {show_logout: false})} dismissible>
+                logout_message = (<Alert  variant='success' onLoad={setTimeout(() =>  this.setState( {show_logout: false}) , 3000)} onClose={() => this.setState( {show_logout: false})} dismissible>
                 You have logged off!!!
             </Alert>);
         }
@@ -49,7 +47,7 @@ class LoginForm extends Component {
             <div>
             <Card className="m-5 justify-content-center">
                 <Card.Body>
-                    {signout_message}
+                    {logout_message}
                 <Form onSubmit={this.submitHandler}>
                     <Form.Group controlId="username">
                         <Form.Label>Username</Form.Label>
