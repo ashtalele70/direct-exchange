@@ -4,7 +4,7 @@ import java.sql.Date;
 
 import edu.sjsu.directexchange.model.Offer;
 
-public interface OfferServices {
+public interface OfferService {
 
 		public void postOffer(Offer offer);
 }

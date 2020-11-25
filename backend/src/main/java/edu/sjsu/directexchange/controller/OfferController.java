@@ -12,20 +12,20 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.sjsu.directexchange.model.Offer;
-import edu.sjsu.directexchange.service.OfferServices;
+import edu.sjsu.directexchange.service.OfferService;
 
 @CrossOrigin("*")
 @RestController
 public class OfferController {
 	
 	@Autowired
-	private OfferServices offerServices;
+	private OfferService offerService;
 	
 	@PostMapping("/postoffer")
 	@ResponseStatus(HttpStatus.OK)
 	public void postOffer(@RequestBody Offer offer ) {
 		System.out.println("ok?");
-		offerServices.postOffer(offer);
+		offerService.postOffer(offer);
 		
 	}
 	

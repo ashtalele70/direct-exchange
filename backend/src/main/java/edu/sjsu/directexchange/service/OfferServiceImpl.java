@@ -11,7 +11,7 @@ import edu.sjsu.directexchange.dao.OfferDao;
 import edu.sjsu.directexchange.model.Offer;
 
 @Service
-public class OfferServicesImpl implements OfferServices {
+public class OfferServiceImpl implements OfferService {
 	
 	@Autowired
 	private OfferDao offerDao;
