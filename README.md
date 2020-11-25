@@ -9,7 +9,7 @@ oauth_type[1:Google,2:Facebook, 3:Normal]
 
 is_counter  [1:True, 0:False]
 
-offer_status; [
+offer_status; [1: Open, 2: Fulfilled, 3: Expired]
 
 allow_counter_offer:[1:True, 0:False]
 
