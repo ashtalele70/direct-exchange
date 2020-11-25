@@ -1,8 +1,10 @@
 package edu.sjsu.directexchange.dao;
 
 import java.sql.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,6 +29,16 @@ public class OfferDaoImpl implements OfferDao{
 	public void postOffer(Offer offer) {
 		
 		entityManager.merge(offer);
+	}
+
+
+
+
+	@Override
+	public List<Offer> getAllOffers() {
+		Query query = entityManager.createQuery("from Offer where offer_status = 0");
+		List<Offer> offers = query.getResultList();
+		return offers;
 	}
 
 }

@@ -1,6 +1,7 @@
 package edu.sjsu.directexchange.service;
 
 import java.sql.Date;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -24,4 +25,11 @@ public class OfferServiceImpl implements OfferService {
 		
 		offerDao.postOffer(offer);
 		
+	}
+
+
+
+	@Override
+	public List<Offer> getAllOffers() {
+		return offerDao.getAllOffers();
 	}}
