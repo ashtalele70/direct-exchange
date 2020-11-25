@@ -30,7 +30,6 @@ class SignUpForm extends Component {
         this.props.firebase
             .doCreateUserWithEmailAndPassword(data.username, data.password)
             .then(authUser => {
-                console.log(authUser);
                 this.props.history.push('/');
             })
             .catch(error => {

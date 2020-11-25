@@ -26,7 +26,5 @@ class LogoutForm extends Component {
         }
 }
 
-// export default Logout;
-
 const Logout = withFirebase(LogoutForm);
 export default Logout;

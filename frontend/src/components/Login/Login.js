@@ -54,7 +54,7 @@ class LoginForm extends Component {
                         <Form.Control
                             required
                             type="email"
-                            placeholder="Enter username"
+                            placeholder="Enter email/username"
                             onChange={(event) =>
                                 this.setState({ username: event.target.value })
                             }
