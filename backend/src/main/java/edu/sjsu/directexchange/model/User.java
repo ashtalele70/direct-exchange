@@ -15,10 +15,7 @@ public class User {
   private String username;
 
   @Column
-  private String password;
-
-  @Column
-  private int oauthType;
+  private int oauth_type;
 
   @Column
   private boolean isVerified;
@@ -42,20 +39,12 @@ public class User {
     this.username = username;
   }
 
-  public String getPassword() {
-    return password;
+  public int getOauth_type() {
+    return oauth_type;
   }
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public int getOauthType() {
-    return oauthType;
-  }
-
-  public void setOauthType(int oauthType) {
-    this.oauthType = oauthType;
+  public void setOauth_type(int oauth_type) {
+    this.oauth_type = oauth_type;
   }
 
   public boolean isVerified() {
