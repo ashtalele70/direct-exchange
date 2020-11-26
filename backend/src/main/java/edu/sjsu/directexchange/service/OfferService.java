@@ -9,5 +9,5 @@ public interface OfferService {
 
 		public void postOffer(Offer offer);
 
-		public List<Offer> getAllOffers();
+		public List<Offer> getAllOffers(Integer id);
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.sjsu.directexchange.model.Offer;
 import edu.sjsu.directexchange.service.OfferService;
 
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 public class OfferController {
 	
@@ -32,8 +32,8 @@ public class OfferController {
 	}
 	
 	@GetMapping("/getAllOffers")
-	public List<Offer> getAllOffers() {
-		return offerService.getAllOffers();
+	public List<Offer> getAllOffers(@RequestParam(name = "id", required = false) Integer id) {
+		return offerService.getAllOffers(id);
 	}
 	
 }
