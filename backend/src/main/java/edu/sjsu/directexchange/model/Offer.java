@@ -17,8 +17,6 @@ public class Offer {
 	@Column
 	private int id;
 	
-	
-	
 	@Column
 	private int user_id;
 	

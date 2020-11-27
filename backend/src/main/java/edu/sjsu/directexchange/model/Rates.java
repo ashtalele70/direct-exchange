@@ -18,11 +18,18 @@ public class Rates {
 	@Column
 	private int id;
 	
-	@Column(name="source_currency")
-	private String source;
+	@Column
+	private String source_currency;
 	
-	@Column(name="destination_currency")
-	private String destination;
+	@Column
+	private String 	source_country;
+	
+	@Column
+	private String destination_currency;
+	
+	@Column
+	private String destination_country;
+	
 	
 	@Column(name="exchange_value")
 	private float rate;
@@ -35,20 +42,20 @@ public class Rates {
 		this.id = id;
 	}
 
-	public String getSource() {
-		return source;
+	public String getSource_currency() {
+		return source_currency;
 	}
 
-	public void setSource(String source) {
-		this.source = source;
+	public void setSource_currency(String source_currency) {
+		this.source_currency = source_currency;
 	}
 
-	public String getDestination() {
-		return destination;
+	public String getDestination_currency() {
+		return destination_currency;
 	}
 
-	public void setDestination(String destination) {
-		this.destination = destination;
+	public void setDestination_currency(String destination_currency) {
+		this.destination_currency = destination_currency;
 	}
 
 	public float getRate() {
@@ -57,7 +64,24 @@ public class Rates {
 
 	public void setRate(float rate) {
 		this.rate = rate;
+	}
+
+	public String getSource_country() {
+		return source_country;
+	}
+
+	public void setSource_country(String source_country) {
+		this.source_country = source_country;
+	}
+
+	public String getDestination_country() {
+		return destination_country;
+	}
+
+	public void setDestination_country(String destination_country) {
+		this.destination_country = destination_country;
 	} 
+	
 	
 	
 	
