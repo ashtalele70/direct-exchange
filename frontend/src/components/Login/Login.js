@@ -34,6 +34,45 @@ class LoginForm extends Component {
                 this.setState({ error });
             });
     };
+
+    onSubmitGoogle = (event) => {
+        event.preventDefault();
+        this.props.firebase
+            .doSignInWithGoogle()
+            .then((socialAuthUser) => {
+                if(socialAuthUser.user.emailVerified) this.props.history.push('/');
+
+                else {
+                    this.props.firebase.doSignOut();
+                    this.props.history.push('/verifyemail');
+                }
+            })
+            .catch(error => {
+                this.setState({ error });
+            });
+    }
+
+    onSubmitFacebook = (event) => {
+        event.preventDefault();
+        this.props.firebase
+            .doSignInWithFacebook()
+            .then((socialAuthUser) => {
+                if(socialAuthUser.user.emailVerified) this.props.history.push('/');
+
+                else {
+                    this.props.firebase.doSignOut();
+                    this.props.history.push('/verifyemail');
+                }
+            })
+            .then((socialAuthUser) => {
+                if(socialAuthUser.user.emailVerified) this.props.history.push('/');
+            })
+            .catch(error => {
+                this.setState({ error });
+            });
+    }
+
+
     render() {
         const data = this.state;
         const isInvalid =
@@ -85,8 +124,19 @@ class LoginForm extends Component {
                     <p>
                         Don't have an account? <Link to={'/signup'}>Sign Up</Link>
                     </p>
-                    {this.state.error && <p>{this.state.error.message}</p>}
+
                 </Form>
+
+                    <p></p>
+
+                <Form onSubmit={this.onSubmitGoogle}>
+                    <Button type="submit" variant="danger" >Log In with Google</Button>
+                </Form>
+                <p></p>
+                <Form onSubmit={this.onSubmitFacebook}>
+                    <Button type="submit">Log In with Facebook</Button>
+                </Form>
+                    {this.state.error && <p>{this.state.error.message}</p>}
                 </Card.Body>
             </Card>
             </div>
