@@ -1,6 +1,7 @@
 package edu.sjsu.directexchange.model;
 
 import java.sql.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "offer")
@@ -47,13 +49,14 @@ public class Offer {
 	@Column
 	private int allow_split_offer;
 	
-
-
 	@Column
 	private String offer_status;
 	
 	@Column
 	private	int is_counter;
+	
+	@Transient
+	private List<Reputation> ratings;
 
 	public int getId() {
 		return id;
@@ -151,13 +154,20 @@ public class Offer {
 		this.is_counter = is_counter;
 	}
 	
-	
 	public int getAllow_split_offer() {
 		return allow_split_offer;
 	}
 
 	public void setAllow_split_offer(int allow_split_offer) {
 		this.allow_split_offer = allow_split_offer;
+	}
+
+	public List<Reputation> getRatings() {
+		return ratings;
+	}
+
+	public void setRatings(List<Reputation> ratings) {
+		this.ratings = ratings;
 	}
 	
 	

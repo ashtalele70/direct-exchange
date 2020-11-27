@@ -2,6 +2,9 @@
 import { useEffect, useState } from 'react';
 import { getAllOffers } from './offerDashboardService';
 import { Card, CardDeck, Container, Row, Col } from 'react-bootstrap';
+import ReactStars from "react-rating-stars-component";
+import { faStar, faStarHalf } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export function OfferDashboardComponent() {
     const [offers, setOffers] = useState([]);
@@ -15,6 +18,10 @@ export function OfferDashboardComponent() {
         fetchData();
     }, []);
 
+    const onRatingChangeHandler = (newRating) => {
+        console.log(newRating);
+      };
+
     if (offers) {
         offerList = Object.keys(offers).map(key =>
 
@@ -22,6 +29,21 @@ export function OfferDashboardComponent() {
                 <Card bg="light" border="secondary" className="mt-2">
                     <Card.Body>
                         <Card.Title className="text-center">OFFER {Number(key) + 1}</Card.Title>
+                        <Card.Text className = "float-right">
+                            <span className="font-weight-bold">Rating: <ReactStars
+                                count={5}
+                                value={offers[key].ratings.length > 0 ? offers[key].ratings[0].avgRating : 0}
+                                onChange={onRatingChangeHandler}
+                                size={24}
+                                isHalf={true}
+                                emptyIcon={<FontAwesomeIcon icon={faStar} />}
+                                halfIcon={<FontAwesomeIcon icon={faStarHalf} />}
+                                fullIcon={<FontAwesomeIcon icon={faStar} />}
+                                edit={false}
+                                activeColor="#ffd700"
+                            />
+                            </span>
+                        </Card.Text>
                         <Card.Text id="srcCountry">
                             <span className="font-weight-bold">Source Country:</span> {offers[key].source_country}
                         </Card.Text>
@@ -45,7 +67,7 @@ export function OfferDashboardComponent() {
                         </Card.Text>
                     </Card.Body>
                     <Card.Footer>
-                        <Card.Link>View Offer Details</Card.Link>
+                        <Card.Link href="/">View Offer Details</Card.Link>
                     </Card.Footer>
                 </Card>
             </Col>
