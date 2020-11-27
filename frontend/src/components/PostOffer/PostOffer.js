@@ -88,7 +88,7 @@ class PostOffer extends Component {
       params.set("bank_type", 1);
       params.set("user_id", this.state.user_id);
       axios
-        .get("http://localhost:8080" + "/getuserbank?" + params.toString())
+        .get(process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString())
         .then((res) => {
           if (res.status === 200) {
             if (res.data.length !== 0) {
@@ -123,7 +123,7 @@ class PostOffer extends Component {
       params.set("bank_type", 2);
       params.set("user_id", this.state.user_id);
       axios
-        .get("http://localhost:8080" + "/getuserbank?" + params.toString())
+        .get(process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString())
         .then((res) => {
           if (res.status === 200) {
             if (res.data.length !== 0) {
@@ -165,7 +165,7 @@ class PostOffer extends Component {
       this.state.destination_bank === true
     ) {
       axios
-        .post("http://localhost:8080" + "/postoffer", values)
+        .post(process.env.REACT_APP_ROOT_URL + "/postoffer", values)
         .then((res) => {
           if (res.status === 200) {
             console.log("yay");
@@ -186,7 +186,7 @@ class PostOffer extends Component {
     );
 
     axios
-      .get("http://localhost:8080" + "/rates")
+      .get(process.env.REACT_APP_ROOT_URL + "/rates")
       .then((res) => {
         if (res.status === 200) {
           if (res.data) {

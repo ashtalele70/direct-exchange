@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Table from 'react-bootstrap/Table'
 import axios from "axios";
@@ -23,7 +21,7 @@ class Rates extends Component{
         );
         
         axios
-          .get("http://localhost:8080" + "/rates")
+          .get(process.env.REACT_APP_ROOT_URL + "/rates")
           .then((res) => {
             if (res.status === 200) {
               if (res.data) {

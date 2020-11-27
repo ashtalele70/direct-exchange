@@ -40,7 +40,7 @@ class AddBank extends Component {
 
     console.log(values);
     axios
-      .post("http://localhost:8080" + "/addbank", values)
+      .post(process.env.REACT_APP_ROOT_URL + "/addbank", values)
       .then((res) => {
         if (res.status === 200) {
           console.log("yay");
@@ -62,7 +62,7 @@ class AddBank extends Component {
     );
 
     axios
-      .get("http://localhost:8080" + "/rates")
+      .get(process.env.REACT_APP_ROOT_URL + "/rates")
       .then((res) => {
         if (res.status === 200) {
           if (res.data) {
