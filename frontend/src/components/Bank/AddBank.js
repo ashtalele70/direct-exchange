@@ -4,9 +4,7 @@ import Button from "react-bootstrap/Button";
 import { Col, Modal } from "react-bootstrap";
 import Container from "react-bootstrap/Container";
 import axios from "axios";
-import CurrencyInput from "react-currency-input";
-import Tooltip from "react-bootstrap/Tooltip";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+
 class AddBank extends Component {
   constructor(props) {
     super(props);

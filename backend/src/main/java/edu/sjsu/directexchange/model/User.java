@@ -1,19 +1,11 @@
 package edu.sjsu.directexchange.model;
-
-
-//import lombok.Getter;
-import lombok.Setter;
-
 import java.util.List;
-
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "user")
-//@Setter
-//@Getter
 public class User {
 
   @Id
@@ -21,59 +13,69 @@ public class User {
   @Column
   private int id;
 
-//  @Column
-//  private String password;
+  @Column
+  private String username;
 
   @Column
-  private int oauthType;
+  private int oauth_type;
 
   @Column
   private boolean isVerified;
+
+  @Column
+  private String nickname;
+
+  public long getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public int getOauth_type() {
+    return oauth_type;
+  }
+
+  public void setOauth_type(int oauth_type) {
+    this.oauth_type = oauth_type;
+  }
+
+  public String getNickname() {
+    return nickname;
+  }
+
+  public void setNickname(String nickname) {
+    this.nickname = nickname;
+  }
   
   @OneToMany(mappedBy = "user")
   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "user",
   	"ratings"})
   private List<Reputation> ratings;
 
-public int getId() {
-	return id;
-}
+  public boolean isVerified() {
+    return isVerified;
+  }
 
-public void setId(int id) {
-	this.id = id;
-}
+  public void setVerified(boolean isVerified) {
+    this.isVerified = isVerified;
+  }
 
-//public String getPassword() {
-//	return password;
-//}
-//
-//public void setPassword(String password) {
-//	this.password = password;
-//}
+  public List<Reputation> getRatings() {
+    return ratings;
+  }
 
-public int getOauthType() {
-	return oauthType;
-}
+  public void setRatings(List<Reputation> ratings) {
+    this.ratings = ratings;
+  }
 
-public void setOauthType(int oauthType) {
-	this.oauthType = oauthType;
-}
-
-public boolean isVerified() {
-	return isVerified;
-}
-
-public void setVerified(boolean isVerified) {
-	this.isVerified = isVerified;
-}
-
-public List<Reputation> getRatings() {
-	return ratings;
-}
-
-public void setRatings(List<Reputation> ratings) {
-	this.ratings = ratings;
-}
-  
-  
 }
