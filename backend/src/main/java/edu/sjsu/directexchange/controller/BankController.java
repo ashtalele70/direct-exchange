@@ -35,7 +35,7 @@ public class BankController {
 	@PostMapping("/addbank")
 	@ResponseStatus(HttpStatus.OK)
 	public void addBank(@RequestBody Bank bank) {
-		System.out.println("u");
+		
 		bankService.addBank(bank);
 		
 	}
