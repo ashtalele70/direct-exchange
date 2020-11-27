@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import edu.sjsu.directexchange.model.Offer;
+import edu.sjsu.directexchange.model.User;
 
 @Repository
 public class OfferDaoImpl implements OfferDao{
@@ -35,8 +36,18 @@ public class OfferDaoImpl implements OfferDao{
 
 
 	@Override
-	public List<Offer> getAllOffers() {
-		Query query = entityManager.createQuery("from Offer where offer_status = 0");
+	public List<Offer> getAllOffers(Integer id) {
+		if(id != null) {
+			User user = entityManager.find(User.class, id);
+			if(user != null) {
+				Query query = entityManager.createQuery("from Offer where user_id =: id")
+						.setParameter("id", id);
+				List<Offer> offers = query.getResultList();
+				return offers;
+			}
+		}
+		
+		Query query = entityManager.createQuery("from Offer where offer_status = 1");
 		List<Offer> offers = query.getResultList();
 		return offers;
 	}
