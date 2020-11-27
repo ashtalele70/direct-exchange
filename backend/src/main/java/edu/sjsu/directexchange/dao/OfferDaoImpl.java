@@ -1,6 +1,7 @@
 package edu.sjsu.directexchange.dao;
 
-import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -71,6 +72,76 @@ public class OfferDaoImpl implements OfferDao{
 		});
 		
 		return offers;
+	}
+
+	@Override
+	public List<Offer> getMatchingOffers(Integer id) {
+		Offer offer = entityManager.find(Offer.class, id);
+		List<Offer> offers = new ArrayList<>();
+		//single matches
+		List<Offer> singleOffers = getSingleMatches(id, offer);
+		//split matches
+		List<List<Offer>> splitOffers = getSplitMatches(id, offer);
+
+		return singleOffers;
+	}
+
+	private  List<Offer>  getSingleMatches(int id, Offer offer) {
+
+		Query offersQuery = entityManager.createQuery("from Offer  where " +
+			"source_country =: source_country and source_currency =: " +
+			"source_currency and destination_country =: destination_country and " +
+			"destination_currency =: destination_currency and expiration_date >= " +
+			":expiration_date and remit_amount between :remit_amount_exchange_minus and " +
+			":remit_amount_exchange_plus ")
+			.setParameter("source_country", offer.getDestination_country())
+			.setParameter("source_currency", offer.getDestination_currency())
+			.setParameter("destination_country", offer.getSource_country())
+			.setParameter("destination_currency", offer.getSource_currency())
+			.setParameter("expiration_date" ,
+				new java.util.Date(System.currentTimeMillis()))
+			.setParameter("remit_amount_exchange_plus",
+				(Float) offer.getRemit_amount() * offer.getExchange_rate() * 1.05F)
+			.setParameter("remit_amount_exchange_minus",
+				offer.getRemit_amount() * offer.getExchange_rate() * 0.95F);
+		return offersQuery.getResultList();
+	}
+
+	private  List<List<Offer>>  getSplitMatches(int id, Offer offer) {
+
+		Query offersQuery = entityManager.createQuery("from Offer  where " +
+			"source_country =: source_country and source_currency =: " +
+			"source_currency and destination_country =: destination_country and " +
+			"destination_currency =: destination_currency and expiration_date >= " +
+			":expiration_date")
+			.setParameter("source_country", offer.getDestination_country())
+			.setParameter("source_currency", offer.getDestination_currency())
+			.setParameter("destination_country", offer.getSource_country())
+			.setParameter("destination_currency", offer.getSource_currency())
+			.setParameter("expiration_date" ,
+				new java.util.Date(System.currentTimeMillis()));
+
+
+		HashMap<Offer, Integer> map = new HashMap<>();
+		List<Offer> offers = offersQuery.getResultList();
+		List<List<Offer>> matchedSplitOffers = new ArrayList<>();
+
+		for(Offer o1 : offers) {
+			for(Offer o2 : offers) {
+				if(o1.equals(o2)) continue;
+				if((o1.getRemit_amount() + o2.getRemit_amount()) <=
+					(offer.getRemit_amount() * offer.getExchange_rate() * 1.05) &&
+					(o1.getRemit_amount() + o2.getRemit_amount()) >=
+						(offer.getRemit_amount() * offer.getExchange_rate() * 0.95)) {
+					List<Offer> temp = new ArrayList<>();
+					temp.add(o1);
+					temp.add(o2);
+					matchedSplitOffers.add(temp);
+				}
+			}
+		}
+
+		return matchedSplitOffers;
 	}
 
 }

@@ -32,7 +32,7 @@ export function OfferDashboardComponent() {
                         <Card.Text className = "float-right">
                             <span className="font-weight-bold">Rating: <ReactStars
                                 count={5}
-                                value={offers[key].ratings.length > 0 ? offers[key].ratings[0].avgRating : 0}
+                                value={offers[key].ratings && offers[key].ratings.length > 0 ? offers[key].ratings[0].avgRating : 0}
                                 onChange={onRatingChangeHandler}
                                 size={24}
                                 isHalf={true}

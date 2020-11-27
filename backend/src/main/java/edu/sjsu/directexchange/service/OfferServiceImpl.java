@@ -32,4 +32,10 @@ public class OfferServiceImpl implements OfferService {
 	@Override
 	public List<Offer> getAllOffers(Integer id) {
 		return offerDao.getAllOffers(id);
-	}}
+	}
+
+	@Override
+	public List<Offer> getMatchingOffers(Integer id) {
+		return offerDao.getMatchingOffers(id);
+	}
+}

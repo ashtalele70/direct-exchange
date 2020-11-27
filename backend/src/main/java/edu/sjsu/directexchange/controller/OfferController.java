@@ -35,5 +35,10 @@ public class OfferController {
 	public List<Offer> getAllOffers(@RequestParam(name = "id", required = false) Integer id) {
 		return offerService.getAllOffers(id);
 	}
+
+	@GetMapping("/getMatchingOffers")
+	public List<Offer> getMatchingOffers(@RequestParam(name = "id") Integer id) {
+		return offerService.getMatchingOffers(id);
+	}
 	
 }

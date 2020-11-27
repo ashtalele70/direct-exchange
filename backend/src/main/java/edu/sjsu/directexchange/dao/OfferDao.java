@@ -13,4 +13,6 @@ public interface OfferDao {
 	public void postOffer(Offer offer);
 
 	public List<Offer> getAllOffers(Integer id);
+
+	public List<Offer> getMatchingOffers(Integer id);
 }
