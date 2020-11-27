@@ -1,6 +1,8 @@
 package edu.sjsu.directexchange.model;
-
+import java.util.List;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "user")
@@ -9,7 +11,7 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column
-  private long id;
+  private int id;
 
   @Column
   private String username;
@@ -27,7 +29,7 @@ public class User {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(int id) {
     this.id = id;
   }
 
@@ -47,20 +49,33 @@ public class User {
     this.oauth_type = oauth_type;
   }
 
-  public boolean isVerified() {
-    return isVerified;
-  }
-
-  public void setVerified(boolean verified) {
-    isVerified = verified;
-  }
-
   public String getNickname() {
     return nickname;
   }
 
   public void setNickname(String nickname) {
     this.nickname = nickname;
+  }
+  
+  @OneToMany(mappedBy = "user")
+  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "user",
+  	"ratings"})
+  private List<Reputation> ratings;
+
+  public boolean isVerified() {
+    return isVerified;
+  }
+
+  public void setVerified(boolean isVerified) {
+    this.isVerified = isVerified;
+  }
+
+  public List<Reputation> getRatings() {
+    return ratings;
+  }
+
+  public void setRatings(List<Reputation> ratings) {
+    this.ratings = ratings;
   }
 
 }

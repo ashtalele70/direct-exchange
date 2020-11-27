@@ -20,8 +20,15 @@ class Navigation extends Component {
                             />{" "}
                             Home
                         </Navbar.Brand>
+                        <Nav>
+                            {this.props.firebase.auth.currentUser && <Nav.Link href="/offerDashboard">Offer Dashboard</Nav.Link>}
+                            {this.props.firebase.auth.currentUser && <Nav.Link href="/AddBank">Add Bank</Nav.Link>}
+                            {this.props.firebase.auth.currentUser && <Nav.Link href="/Rates">Exchange Rates</Nav.Link>}
+                            {this.props.firebase.auth.currentUser && <Nav.Link href="/PostOffer">Post Exchange Offer</Nav.Link>}
+                        </Nav>
                     <Nav className="mr-auto">
                     </Nav>
+
                     <Nav>
                         {!this.props.firebase.auth.currentUser && <Nav.Link href="/login">Login</Nav.Link>}
                         {!this.props.firebase.auth.currentUser && <Nav.Link href="/signup">Sign Up</Nav.Link>}
