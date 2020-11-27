@@ -31,7 +31,15 @@ public class BankDaoImpl implements BankDao {
 
 	@Override
 	public void addBank(Bank bank) {
-		entityManager.merge(bank);
+		if(bank.getBank_type()==3) {
+			bank.setBank_type(1);
+			entityManager.merge(bank);
+			bank.setBank_type(2);
+		}
+		else {
+			entityManager.merge(bank);
+		}
+		
 	}
 
 }

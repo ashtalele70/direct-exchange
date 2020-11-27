@@ -26,7 +26,7 @@ public class OfferController {
 	@PostMapping("/postoffer")
 	@ResponseStatus(HttpStatus.OK)
 	public void postOffer(@RequestBody Offer offer ) {
-		System.out.println("ok?");
+		
 		offerService.postOffer(offer);
 		
 	}
