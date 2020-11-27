@@ -22,8 +22,13 @@ class LoginForm extends Component {
 
         this.props.firebase
             .doSignInWithEmailAndPassword(username, password)
-            .then(() => {
-                this.props.history.push('/');
+            .then((authUser) => {
+                if(authUser.user.emailVerified) this.props.history.push('/');
+
+                else {
+                    this.props.firebase.doSignOut();
+                    this.props.history.push('/verifyemail');
+                }
             })
             .catch(error => {
                 this.setState({ error });

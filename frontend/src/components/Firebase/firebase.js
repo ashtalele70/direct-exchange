@@ -32,6 +32,11 @@ class Firebase {
 
     doSignInWithFacebook = () =>
         this.auth.signInWithPopup(this.facebookProvider);
+
+    doSendEmailVerification = () =>
+        this.auth.currentUser.sendEmailVerification({
+            url: process.env.REACT_APP_REDIRECT_URL,
+        });
 }
 
 export default Firebase;

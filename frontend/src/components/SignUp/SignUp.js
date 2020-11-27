@@ -47,9 +47,8 @@ class SignUpForm extends Component {
             .then(authUser => {
                 this.setState({oauth_type : 3})
                 axios.post(process.env.REACT_APP_ROOT_URL +'/user', this.state).then((res) => {
-                    if (res.status === 200) {
-                        this.props.history.push("/login");
-                    }
+                    this.props.firebase.doSendEmailVerification();
+                    this.props.history.push("/verifyemail");
                 });
             })
             .catch(error => {

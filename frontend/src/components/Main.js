@@ -5,6 +5,7 @@ import Navbar from "./Navbar/Navbar";
 import SignUp from "./SignUp/SignUp";
 import Login from "./Login/Login";
 import Logout from "./Logout/Logout";
+import Verify from "./EmailVerification/EmailVerification"
 import {withAuthentication} from "./Session/AuthUserContext";
 
 
@@ -20,6 +21,7 @@ class Home extends Component {
                 {this.props.authUser && (
                     <div>
                         <Route path="/" component={Navbar} />
+                        <Route path="/verifyemail" component={Verify} />
                         <Route path="/logout" component={Logout} />
                     </div>
                 )}
@@ -29,6 +31,7 @@ class Home extends Component {
                          <Route path="/" component={Navbar} />
                          <Route path="/signup" component={SignUp} />
                          <Route path="/login" component={Login} />
+                         <Route path="/verifyemail" component={Verify} />
                          <Route path="/logout" component={Logout} />
                      </div>
                  )
