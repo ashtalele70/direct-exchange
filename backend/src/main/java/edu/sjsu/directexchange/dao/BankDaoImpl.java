@@ -35,6 +35,7 @@ public class BankDaoImpl implements BankDao {
 			bank.setBank_type(1);
 			entityManager.merge(bank);
 			bank.setBank_type(2);
+			entityManager.merge(bank);
 		}
 		else {
 			entityManager.merge(bank);

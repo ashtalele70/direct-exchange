@@ -39,9 +39,11 @@ class Rates extends Component{
 
         const rates=this.state.rates.map((rate,index)=>(
             <tr>
-            <td>{rate.source}</td>
-            <td>{rate.destination}</td>
-            <td>{rate.rate}</td>
+                <td>{rate.source_currency}</td>
+                <td>{rate.source_country}</td>
+                <td>{rate.destination_currency}</td>
+                <td>{rate.destination_country}</td>
+                <td>{rate.rate}</td>
             </tr>
         ));
         return(
@@ -50,9 +52,11 @@ class Rates extends Component{
                 <Table striped bordered hover size="sm">
                 <thead>
                 <tr>
-                <th>From Currency</th>
-                <th>To Currency</th>
-                <th>Prevailing Rate</th>
+                    <th>From Currency</th>
+                    <th>From Country</th>
+                    <th>To Currency</th>
+                    <th>To country</th>
+                    <th>Prevailing Rate</th>
                 </tr>
             </thead>
             <tbody>

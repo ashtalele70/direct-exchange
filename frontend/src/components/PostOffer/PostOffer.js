@@ -145,7 +145,6 @@ class PostOffer extends Component {
   };
 
   submitHandler = (event) => {
-    event.preventDefault();
     var values = {
       user_id: 1,
       source_country: this.state.source_country,
@@ -162,8 +161,8 @@ class PostOffer extends Component {
     };
     console.log(values);
     if (
-      this.state.source_bank === false &&
-      this.state.destination_bank === false
+      this.state.source_bank === true &&
+      this.state.destination_bank === true
     ) {
       axios
         .post("http://localhost:8080" + "/postoffer", values)
@@ -177,8 +176,7 @@ class PostOffer extends Component {
         })
         .catch((err) => {});
     } else {
-      console.log("o");
-      console.log(this.state.bank_message);
+      event.preventDefault();
       this.setState({ show: true });
     }
   };
