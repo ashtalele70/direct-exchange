@@ -1,10 +1,13 @@
 package edu.sjsu.directexchange.dao;
 
+import edu.sjsu.directexchange.exception.EmailIdExistsException;
+import edu.sjsu.directexchange.exception.NicknameExistsException;
 import edu.sjsu.directexchange.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 @Repository
@@ -18,7 +21,7 @@ public class UserDaoImpl implements UserDao {
   }
 
   @Override
-  public User getUserById(Long id) {
+  public User getUserById(int id) {
     User user = entityManager.find(User.class, id);
     return user;
   }
@@ -26,6 +29,20 @@ public class UserDaoImpl implements UserDao {
   @Override
   @Transactional
   public void createUser(User user) {
+    Query usernameQuery=entityManager.createQuery("from User where username " +
+      "=: " +
+      "username").setParameter("username", user.getUsername());
+
+    if(usernameQuery.getResultList() != null && usernameQuery.getResultList().size() > 0) throw new  EmailIdExistsException(
+      "Email Id Already  Exists");
+
+    Query nicknameQuery=entityManager.createQuery("from User where nickname " +
+      "=: " +
+      "nickname").setParameter("nickname", user.getNickname());
+
+    if(nicknameQuery.getResultList() != null && nicknameQuery.getResultList().size() > 0)
+      throw new NicknameExistsException("Nickname Already Exists");
+
     entityManager.merge(user);
   }
 

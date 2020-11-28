@@ -1,12 +1,11 @@
 package edu.sjsu.directexchange.dao;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import edu.sjsu.directexchange.model.SplitOffer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -74,17 +73,18 @@ public class OfferDaoImpl implements OfferDao{
 		return offers;
 	}
 
-	@Override
-	public List<Offer> getMatchingOffers(Integer id) {
-		Offer offer = entityManager.find(Offer.class, id);
-		List<Offer> offers = new ArrayList<>();
-		//single matches
-		List<Offer> singleOffers = getSingleMatches(id, offer);
-		//split matches
-		List<List<Offer>> splitOffers = getSplitMatches(id, offer);
+		@Override
+		public List<Offer> getSingleMatches(Integer id) {
+			Offer offer = entityManager.find(Offer.class, id);
+			return getSingleMatches(id, offer);
+		}
 
-		return singleOffers;
-	}
+		@Override
+		public Set<SplitOffer> getSplitMatches(Integer id) {
+			Offer offer = entityManager.find(Offer.class, id);
+			return getSplitMatches(id, offer);
+		}
+
 
 	private  List<Offer>  getSingleMatches(int id, Offer offer) {
 
@@ -107,7 +107,7 @@ public class OfferDaoImpl implements OfferDao{
 		return offersQuery.getResultList();
 	}
 
-	private  List<List<Offer>>  getSplitMatches(int id, Offer offer) {
+	private Set<SplitOffer> getSplitMatches(int id, Offer offer) {
 
 		Query offersQuery = entityManager.createQuery("from Offer  where " +
 			"source_country =: source_country and source_currency =: " +
@@ -121,10 +121,8 @@ public class OfferDaoImpl implements OfferDao{
 			.setParameter("expiration_date" ,
 				new java.util.Date(System.currentTimeMillis()));
 
-
-		HashMap<Offer, Integer> map = new HashMap<>();
 		List<Offer> offers = offersQuery.getResultList();
-		List<List<Offer>> matchedSplitOffers = new ArrayList<>();
+		Set<SplitOffer> matchedSplitOffers = new HashSet<>();
 
 		for(Offer o1 : offers) {
 			for(Offer o2 : offers) {
@@ -133,10 +131,19 @@ public class OfferDaoImpl implements OfferDao{
 					(offer.getRemit_amount() * offer.getExchange_rate() * 1.05) &&
 					(o1.getRemit_amount() + o2.getRemit_amount()) >=
 						(offer.getRemit_amount() * offer.getExchange_rate() * 0.95)) {
-					List<Offer> temp = new ArrayList<>();
-					temp.add(o1);
-					temp.add(o2);
-					matchedSplitOffers.add(temp);
+					SplitOffer splitOffer = new SplitOffer();
+					if(o1.getId() < o2.getId()){
+						splitOffer.addOffer(o1);
+						splitOffer.addOffer(o2);
+					}
+					else {
+						splitOffer.addOffer(o2);
+						splitOffer.addOffer(o1);
+					}
+
+
+					if(!matchedSplitOffers.contains(splitOffer))
+						matchedSplitOffers.add(splitOffer);
 				}
 			}
 		}

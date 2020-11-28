@@ -12,7 +12,7 @@ public class UserServiceImpl implements UserService {
   UserDao userDao;
 
   @Override
-  public User getUserById(Long id) {
+  public User getUserById(int id) {
     return userDao.getUserById(id);
   }
 

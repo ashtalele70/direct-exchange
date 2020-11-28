@@ -2,7 +2,9 @@ package edu.sjsu.directexchange.controller;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 
+import edu.sjsu.directexchange.model.SplitOffer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -36,9 +38,13 @@ public class OfferController {
 		return offerService.getAllOffers(id);
 	}
 
-	@GetMapping("/getMatchingOffers")
-	public List<Offer> getMatchingOffers(@RequestParam(name = "id") Integer id) {
-		return offerService.getMatchingOffers(id);
+	@GetMapping("/getSingleMatches")
+	public List<Offer> getSingleMatches(@RequestParam(name = "id") Integer id) {
+		return offerService.getSingleMatches(id);
 	}
-	
+
+	@GetMapping("/getSplitMatches")
+	public Set<SplitOffer> getSplitMatches(@RequestParam(name = "id") Integer id) {
+		return offerService.getSplitMatches(id);
+	}
 }

@@ -18,7 +18,7 @@ public class UserController {
   }
 
   @GetMapping("/user/{id}")
-  public User getUserById(@PathVariable Long id){
+  public User getUserById(@PathVariable int id){
     return userService.getUserById(id);
   }
 
@@ -28,7 +28,7 @@ public class UserController {
   }
 
   @PutMapping("/user/{id}")
-  public void updateUser(@RequestBody User user, @PathVariable Long id) {
+  public void updateUser(@RequestBody User user, @PathVariable int id) {
     User dbUser = userService.getUserById(id);
     dbUser.setNickname(user.getNickname());
     userService.updateUser(dbUser);
