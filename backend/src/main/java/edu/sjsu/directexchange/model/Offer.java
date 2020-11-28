@@ -21,7 +21,10 @@ public class Offer {
 	
 	@Column
 	private int user_id;
-	
+
+	@Transient
+	private String nickname;
+
 	@Column
 	private String source_country;
 	
@@ -169,6 +172,13 @@ public class Offer {
 	public void setRatings(List<Reputation> ratings) {
 		this.ratings = ratings;
 	}
-	
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
 	
 }

@@ -104,7 +104,14 @@ public class OfferDaoImpl implements OfferDao{
 				(Float) offer.getRemit_amount() * offer.getExchange_rate() * 1.05F)
 			.setParameter("remit_amount_exchange_minus",
 				offer.getRemit_amount() * offer.getExchange_rate() * 0.95F);
-		return offersQuery.getResultList();
+		List<Offer> matchedOffers =  offersQuery.getResultList();
+
+		for(Offer moffer : matchedOffers) {
+			User user = entityManager.find(User.class, moffer.getUser_id());
+			moffer.setNickname(user.getNickname());
+		}
+
+		return matchedOffers;
 	}
 
 	private Set<SplitOffer> getSplitMatches(int id, Offer offer) {
@@ -132,6 +139,11 @@ public class OfferDaoImpl implements OfferDao{
 					(o1.getRemit_amount() + o2.getRemit_amount()) >=
 						(offer.getRemit_amount() * offer.getExchange_rate() * 0.95)) {
 					SplitOffer splitOffer = new SplitOffer();
+					User user1 = entityManager.find(User.class, o1.getUser_id());
+					o1.setNickname(user1.getNickname());
+					User user2 = entityManager.find(User.class, o2.getUser_id());
+					o2.setNickname(user2.getNickname());
+
 					if(o1.getId() < o2.getId()){
 						splitOffer.addOffer(o1);
 						splitOffer.addOffer(o2);
