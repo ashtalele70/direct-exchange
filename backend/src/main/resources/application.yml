@@ -3,3 +3,7 @@ spring:
     url: jdbc:mysql://35.230.33.50:3306/direct_exchange
     username: root
     password: SJSU@1234CMPE275
+server:
+  error:
+    include-message: always
+    include-binding-errors: always

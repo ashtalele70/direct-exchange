@@ -5,7 +5,7 @@ import edu.sjsu.directexchange.model.User;
 
 public interface UserDao {
 
-  User getUserById(Long id);
+  User getUserById(int id);
 
   void createUser(User user);
 
