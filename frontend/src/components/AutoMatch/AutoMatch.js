@@ -30,7 +30,6 @@ class AutoMatch extends Component {
       .then((res) => {
         if (res.status === 200) {
           if (res.data) {
-            console.log("YAY!!");
             return res.data.nickname;
           }
         }
@@ -86,7 +85,7 @@ class AutoMatch extends Component {
     const singleOffers = this.state.singleOffers.map((offer, index) => (
       <div>
         <Card border="primary" style={{ width: "18rem" }}>
-          <Card.Header>{this.getUser(offer.user_id)}'s Offer</Card.Header>
+          <Card.Header>{offer.nickname}'s Offer</Card.Header>
           <Card.Body>
             <Card.Text>
               <b>Offer Amount: </b>
@@ -118,7 +117,7 @@ class AutoMatch extends Component {
                     <Row className="mt-3 mb-5">
                       <Card border="primary" style={{ width: "18rem" }}>
                         <Card.Header>
-                          {offer.offers[0].user_id}'s Offer
+                          {offer.offers[0].nickname}'s Offer
                         </Card.Header>
                         <Card.Body>
                           <Card.Text>
@@ -136,7 +135,7 @@ class AutoMatch extends Component {
 
                       <Card border="primary" style={{ width: "18rem" }}>
                         <Card.Header>
-                          {offer.offers[1].user_id}'s Offer
+                          {offer.offers[1].nickname}'s Offer
                         </Card.Header>
                         <Card.Body>
                           <Card.Text>
