@@ -81,11 +81,36 @@ class AutoMatch extends Component {
     this.setState({ switch: switchValue });
   };
 
+  submitHandler = (offer1, offer2) => {
+    let paramAccept = new URLSearchParams();
+    paramAccept.set("offer", 1);
+    paramAccept.set("offer1", 1);
+    paramAccept.set("offer2", 1);
+
+    axios
+      .get(
+        process.env.REACT_APP_ROOT_URL +
+          "/getSplitMatches?" +
+          paramAccept.toString()
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          if (res.data) {
+            console.log(res.data);
+            this.setState({ splitOffers: res.data });
+          }
+        }
+      })
+      .catch((err) => {});
+  };
+
   render() {
     const singleOffers = this.state.singleOffers.map((offer, index) => (
       <div>
         <Card border="primary" style={{ width: "18rem" }}>
-          <Card.Header>{offer.nickname}'s Offer</Card.Header>
+          <Card.Header>
+            <b>{offer.nickname}'s Offer</b>
+          </Card.Header>
           <Card.Body>
             <Card.Text>
               <b>Offer Amount: </b>
@@ -97,7 +122,12 @@ class AutoMatch extends Component {
               <b>Exchange Rate: </b>
               {offer.exchange_rate}
             </Card.Text>
-            <Button variant="primary">select</Button>
+            <Button
+              variant="primary"
+              onClick={() => this.submitHadler1(offer.id)}
+            >
+              Accept
+            </Button>
           </Card.Body>
         </Card>
         <br />
@@ -117,7 +147,7 @@ class AutoMatch extends Component {
                     <Row className="mt-3 mb-5">
                       <Card border="primary" style={{ width: "18rem" }}>
                         <Card.Header>
-                          {offer.offers[0].nickname}'s Offer
+                          <b>{offer.offers[0].nickname}'s Offer</b>
                         </Card.Header>
                         <Card.Body>
                           <Card.Text>
@@ -135,7 +165,7 @@ class AutoMatch extends Component {
 
                       <Card border="primary" style={{ width: "18rem" }}>
                         <Card.Header>
-                          {offer.offers[1].nickname}'s Offer
+                          <b>{offer.offers[1].nickname}'s Offer</b>
                         </Card.Header>
                         <Card.Body>
                           <Card.Text>
@@ -154,7 +184,14 @@ class AutoMatch extends Component {
                   </CardDeck>
                 </div>
               </Card.Text>
-              <Button variant="primary">Select</Button>
+              <Button
+                variant="primary"
+                onClick={() =>
+                  this.submitHadler(offer.offers[0].id, offer.offers[1].id)
+                }
+              >
+                Accept
+              </Button>
             </Card.Body>
           </Card>
           <br />
