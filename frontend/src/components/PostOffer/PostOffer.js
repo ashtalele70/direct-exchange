@@ -1,12 +1,15 @@
 import React, { Component } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { Col, Modal } from "react-bootstrap";
-import Container from "react-bootstrap/Container";
+import {
+  Col,
+  Modal,
+  Container,
+  Button,
+  Form,
+  Tooltip,
+  OverlayTrigger,
+} from "react-bootstrap";
 import axios from "axios";
 import CurrencyInput from "react-currency-input";
-import Tooltip from "react-bootstrap/Tooltip";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 
 class PostOffer extends Component {
   constructor(props) {
@@ -53,7 +56,6 @@ class PostOffer extends Component {
   };
 
   exchageRate() {
-    var rates = this.state.rates;
     if (
       this.state.source_currency !== "" &&
       this.state.destination_currency !== ""
@@ -88,7 +90,9 @@ class PostOffer extends Component {
       params.set("bank_type", 1);
       params.set("user_id", this.state.user_id);
       axios
-        .get(process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString())
+        .get(
+          process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString()
+        )
         .then((res) => {
           if (res.status === 200) {
             if (res.data.length !== 0) {
@@ -123,7 +127,9 @@ class PostOffer extends Component {
       params.set("bank_type", 2);
       params.set("user_id", this.state.user_id);
       axios
-        .get(process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString())
+        .get(
+          process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString()
+        )
         .then((res) => {
           if (res.status === 200) {
             if (res.data.length !== 0) {
@@ -181,10 +187,6 @@ class PostOffer extends Component {
     }
   };
   getRates = () => {
-    axios.defaults.headers.common["x-auth-token"] = localStorage.getItem(
-      "token"
-    );
-
     axios
       .get(process.env.REACT_APP_ROOT_URL + "/rates")
       .then((res) => {
