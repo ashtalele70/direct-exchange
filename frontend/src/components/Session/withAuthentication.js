@@ -2,6 +2,7 @@ import React from 'react';
 
 import AuthUserContext from './context';
 import { withFirebase } from '../Firebase/FirebaseProvider';
+import axios from "axios";
 
 const withAuthentication = Component => {
     class WithAuthentication extends React.Component {
@@ -9,7 +10,7 @@ const withAuthentication = Component => {
             super(props);
 
             this.state = {
-                authUser: null,
+                authUser: null
             };
         }
 
@@ -19,8 +20,24 @@ const withAuthentication = Component => {
                     authUser
                         ? this.setState({ authUser })
                         : this.setState({ authUser: null });
+                    if(authUser) {
+                        var params = new URLSearchParams();
+                        params.set("email", authUser.email);
+                        axios
+                            .get(process.env.REACT_APP_ROOT_URL + "/user?" + params.toString())
+                            .then((res) => {
+                                if (res.status === 200) {
+                                    if (res.data) {
+                                        localStorage.setItem("userId", res.data);
+                                    }
+                                }
+                            });
+                    } else {
+                        localStorage.removeItem("userId");
+                    }
+
                 },
-            );
+            )
         }
 
         componentWillUnmount() {

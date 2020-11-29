@@ -1,20 +1,21 @@
 import React, { Component } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { Col, Modal } from "react-bootstrap";
-import Container from "react-bootstrap/Container";
+import {
+  Col,
+  Modal,
+  Container,
+  Button,
+  Form,
+  Tooltip,
+  OverlayTrigger,
+} from "react-bootstrap";
 import axios from "axios";
 import CurrencyInput from "react-currency-input";
-import Tooltip from "react-bootstrap/Tooltip";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 
 class PostOffer extends Component {
   constructor(props) {
     super(props);
     this.state = {
       show: false,
-      bankCurrency: "USD",
-      bankCountry: "United States",
       source_country: "United",
       source_currency: "",
       remit_amount: "",
@@ -29,11 +30,9 @@ class PostOffer extends Component {
       rates: "",
       amount: "0.00",
       remit_amount_destination: 0,
-      user_id: 1,
-      source_bank: false,
-      destination_bank: false,
-      bank_message: "",
-      close: false,
+      user_id: localStorage.getItem("userId"),
+      source_bank_message: "",
+      destination_bank_message: "",
     };
   }
 
@@ -46,6 +45,7 @@ class PostOffer extends Component {
   }
 
   handleChange = (event, maskedvalue, floatvalue) => {
+    console.log(maskedvalue * Number(this.state.exchange_rate));
     this.setState({
       amount: maskedvalue,
       remit_amount_destination: maskedvalue * this.state.exchange_rate,
@@ -53,7 +53,6 @@ class PostOffer extends Component {
   };
 
   exchageRate() {
-    var rates = this.state.rates;
     if (
       this.state.source_currency !== "" &&
       this.state.destination_currency !== ""
@@ -88,20 +87,20 @@ class PostOffer extends Component {
       params.set("bank_type", 1);
       params.set("user_id", this.state.user_id);
       axios
-        .get(process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString())
+        .get(
+          process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString()
+        )
         .then((res) => {
           if (res.status === 200) {
-            if (res.data.length !== 0) {
-              this.setState({ source_bank: true });
-            } else {
+            if (res.data.length === 0) {
               var message =
-                this.state.bank_message +
                 " \n country: " +
                 this.state.source_currency +
                 " currency: " +
                 this.state.source_country;
-
-              this.setState({ bank_message: message });
+              this.setState({ source_bank_message: message });
+            } else {
+              this.setState({ source_bank_message: "" });
             }
           }
         })
@@ -123,20 +122,20 @@ class PostOffer extends Component {
       params.set("bank_type", 2);
       params.set("user_id", this.state.user_id);
       axios
-        .get(process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString())
+        .get(
+          process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString()
+        )
         .then((res) => {
           if (res.status === 200) {
-            if (res.data.length !== 0) {
-              this.setState({ destination_bank: true });
-            } else {
+            if (res.data.length === 0) {
               var message =
-                this.state.bank_message +
-                "\ncountry: " +
-                this.state.destination_country +
+                " \n country: " +
+                this.state.destination_currency +
                 " currency: " +
-                this.state.destination_currency;
-              console.log(message);
-              this.setState({ bank_message: message });
+                this.state.destination_country;
+              this.setState({ destination_bank_message: message });
+            } else {
+              this.setState({ destination_bank_message: "" });
             }
           }
         })
@@ -146,7 +145,7 @@ class PostOffer extends Component {
 
   submitHandler = (event) => {
     var values = {
-      user_id: 1,
+      user_id: this.state.user_id,
       source_country: this.state.source_country,
       source_currency: this.state.source_currency,
       remit_amount: this.state.amount,
@@ -156,22 +155,20 @@ class PostOffer extends Component {
       expiration_date: this.state.expiration_date,
       allow_counter_offer: this.state.allow_counter_offer,
       allow_split_offer: this.state.allow_split_offer,
-      offer_status: "INIT",
+      offer_status: this.state.offer_status,
       is_counter: 0,
     };
-    console.log(values);
+    console.log(this.state.source_bank_message);
+    console.log(this.state.destination_bank_message);
     if (
-      this.state.source_bank === true &&
-      this.state.destination_bank === true
+      this.state.source_bank_message === "" &&
+      this.state.destination_bank_message === ""
     ) {
       axios
         .post(process.env.REACT_APP_ROOT_URL + "/postoffer", values)
         .then((res) => {
           if (res.status === 200) {
-            console.log("yay");
-            if (res.data) {
-              console.log(res.data);
-            }
+            this.props.history.push("/postoffer");
           }
         })
         .catch((err) => {});
@@ -180,11 +177,18 @@ class PostOffer extends Component {
       this.setState({ show: true });
     }
   };
-  getRates = () => {
-    axios.defaults.headers.common["x-auth-token"] = localStorage.getItem(
-      "token"
-    );
 
+  onSwitchCounterOffer = () => {
+    let switchValue = this.state.allow_counter_offer === 0 ? 1 : 0;
+    this.setState({ allow_counter_offer: switchValue });
+  };
+
+  onSwitchSplitOffer = () => {
+    let switchValue = this.state.allow_split_offer === 0 ? 1 : 0;
+    this.setState({ allow_split_offer: switchValue });
+  };
+
+  getRates = () => {
     axios
       .get(process.env.REACT_APP_ROOT_URL + "/rates")
       .then((res) => {
@@ -328,15 +332,11 @@ class PostOffer extends Component {
               >
                 <Form.Group as={Col} id="allowCounterOffer">
                   <Form.Check
+                    onChange={this.onSwitchCounterOffer}
                     type="switch"
-                    label="Allow Counter Offer"
-                    id="custom-switch-counter"
+                    id="custom-switch1"
+                    label="allow counter offer"
                     checked={this.state.allow_counter_offer}
-                    onChange={(event) =>
-                      this.setState({
-                        allow_counter_offer: event.target.checked,
-                      })
-                    }
                   />
                 </Form.Group>
               </OverlayTrigger>
@@ -346,13 +346,11 @@ class PostOffer extends Component {
               >
                 <Form.Group as={Col} id="allowSplitOffer">
                   <Form.Check
+                    onChange={this.onSwitchSplitOffer}
                     type="switch"
-                    label="Allow split Offer"
-                    id="custom-switch-split"
+                    id="custom-switch2"
+                    label="allow split offer"
                     checked={this.state.allow_split_offer}
-                    onChange={(event) =>
-                      this.setState({ allow_split_offer: event.target.checked })
-                    }
                   />
                 </Form.Group>
               </OverlayTrigger>
@@ -378,7 +376,9 @@ class PostOffer extends Component {
           </Modal.Header>
           <Modal.Body>
             <b>Please add bank details for</b>
-            {this.state.bank_message}
+            {this.state.source_bank_message}
+            {"\n"}
+            {this.state.destination_bank_message}
           </Modal.Body>
 
           <Modal.Footer>

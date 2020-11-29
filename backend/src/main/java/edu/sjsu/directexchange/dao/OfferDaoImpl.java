@@ -1,11 +1,11 @@
 package edu.sjsu.directexchange.dao;
 
-import java.sql.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import edu.sjsu.directexchange.model.SplitOffer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -71,6 +71,96 @@ public class OfferDaoImpl implements OfferDao{
 		});
 		
 		return offers;
+	}
+
+		@Override
+		public List<Offer> getSingleMatches(Integer id) {
+			Offer offer = entityManager.find(Offer.class, id);
+			return getSingleMatches(id, offer);
+		}
+
+		@Override
+		public Set<SplitOffer> getSplitMatches(Integer id) {
+			Offer offer = entityManager.find(Offer.class, id);
+			return getSplitMatches(id, offer);
+		}
+
+
+	private  List<Offer>  getSingleMatches(int id, Offer offer) {
+
+		Query offersQuery = entityManager.createQuery("from Offer  where " +
+			"source_country =: source_country and source_currency =: " +
+			"source_currency and destination_country =: destination_country and " +
+			"destination_currency =: destination_currency and expiration_date >= " +
+			":expiration_date and remit_amount between :remit_amount_exchange_minus and " +
+			":remit_amount_exchange_plus ")
+			.setParameter("source_country", offer.getDestination_country())
+			.setParameter("source_currency", offer.getDestination_currency())
+			.setParameter("destination_country", offer.getSource_country())
+			.setParameter("destination_currency", offer.getSource_currency())
+			.setParameter("expiration_date" ,
+				new java.util.Date(System.currentTimeMillis()))
+			.setParameter("remit_amount_exchange_plus",
+				(Float) offer.getRemit_amount() * offer.getExchange_rate() * 1.05F)
+			.setParameter("remit_amount_exchange_minus",
+				offer.getRemit_amount() * offer.getExchange_rate() * 0.95F);
+		List<Offer> matchedOffers =  offersQuery.getResultList();
+
+		for(Offer moffer : matchedOffers) {
+			User user = entityManager.find(User.class, moffer.getUser_id());
+			moffer.setNickname(user.getNickname());
+		}
+
+		return matchedOffers;
+	}
+
+	private Set<SplitOffer> getSplitMatches(int id, Offer offer) {
+
+		Query offersQuery = entityManager.createQuery("from Offer  where " +
+			"source_country =: source_country and source_currency =: " +
+			"source_currency and destination_country =: destination_country and " +
+			"destination_currency =: destination_currency and expiration_date >= " +
+			":expiration_date")
+			.setParameter("source_country", offer.getDestination_country())
+			.setParameter("source_currency", offer.getDestination_currency())
+			.setParameter("destination_country", offer.getSource_country())
+			.setParameter("destination_currency", offer.getSource_currency())
+			.setParameter("expiration_date" ,
+				new java.util.Date(System.currentTimeMillis()));
+
+		List<Offer> offers = offersQuery.getResultList();
+		Set<SplitOffer> matchedSplitOffers = new HashSet<>();
+
+		for(Offer o1 : offers) {
+			for(Offer o2 : offers) {
+				if(o1.equals(o2)) continue;
+				if((o1.getRemit_amount() + o2.getRemit_amount()) <=
+					(offer.getRemit_amount() * offer.getExchange_rate() * 1.05) &&
+					(o1.getRemit_amount() + o2.getRemit_amount()) >=
+						(offer.getRemit_amount() * offer.getExchange_rate() * 0.95)) {
+					SplitOffer splitOffer = new SplitOffer();
+					User user1 = entityManager.find(User.class, o1.getUser_id());
+					o1.setNickname(user1.getNickname());
+					User user2 = entityManager.find(User.class, o2.getUser_id());
+					o2.setNickname(user2.getNickname());
+
+					if(o1.getId() < o2.getId()){
+						splitOffer.addOffer(o1);
+						splitOffer.addOffer(o2);
+					}
+					else {
+						splitOffer.addOffer(o2);
+						splitOffer.addOffer(o1);
+					}
+
+
+					if(!matchedSplitOffers.contains(splitOffer))
+						matchedSplitOffers.add(splitOffer);
+				}
+			}
+		}
+
+		return matchedSplitOffers;
 	}
 
 }
