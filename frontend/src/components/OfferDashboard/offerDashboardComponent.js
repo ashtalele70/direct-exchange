@@ -1,35 +1,91 @@
 
 import { useEffect, useState } from 'react';
 import { getAllOffers } from './offerDashboardService';
-import { Card, CardDeck, Container, Row, Col } from 'react-bootstrap';
+import { Card, CardDeck, Container, Row, Col, Modal, Button, Dropdown, FormControl, InputGroup, Form } from 'react-bootstrap';
 import ReactStars from "react-rating-stars-component";
 import { faStar, faStarHalf } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export function OfferDashboardComponent() {
     const [offers, setOffers] = useState([]);
+    const [allOffers, setAllOffers] = useState([]);
     let offerList = [];
 
     useEffect(() => {
         async function fetchData() {
             const response = await getAllOffers();
             setOffers(response);
+            setAllOffers(response);
         }
         fetchData();
     }, []);
 
     const onRatingChangeHandler = (newRating) => {
         console.log(newRating);
-      };
+    };
+
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    const getOfferList = () => {
+        let list = [];
+        if((srcCurrency == "" && destCurrency == "" && srcAmount == 0 && destAmount == 0) || offers.length == 0) {
+            allOffers.forEach(obj => list.push(obj));
+        } else {
+            offers.forEach(obj => list.push(obj));
+        }
+        return list;
+    }
+
+    const [srcCurrency, setSrcCurrency] = useState("");
+    const handleSrcCurrencyChange = (e) => {
+        setSrcCurrency(e);
+        setOffers(allOffers.filter(offer => {
+            return offer.source_currency == e;
+        }));
+    }
+
+    const [destCurrency, setDestCurrency] = useState("");
+    const handleDestCurrencyChange = (e) => {
+        setDestCurrency(e);
+        setOffers(allOffers.filter(offer => {
+            return offer.destination_currency == e;
+        }));
+    }
+
+    const [srcAmount, setSrcAmount] = useState(0);
+    const handleSrcAmountChange = (e) => {
+        setSrcAmount(Number(e.target.value));
+        setOffers(allOffers.filter(offer => {
+            return offer.remit_amount == Number(e.target.value);
+        }));
+    }
+
+    const [destAmount, setDestAmount] = useState(0);
+    const handleDestAmountChange = (e) => {
+        setDestAmount(Number(e.target.value));
+        setOffers(allOffers.filter(offer => {
+            return (offer.remit_amount) * (offer.exchange_rate) == Number(e.target.value);
+        }));
+    }
+
+    const handleClear = () => {
+        setSrcCurrency("");
+        setDestCurrency("");
+        setSrcAmount(0);
+        setDestAmount(0);
+        setOffers(allOffers);
+    }
 
     if (offers) {
         offerList = Object.keys(offers).map(key =>
-
             <Col xs={2} md={4} lg={6} className="mt-3">
                 <Card bg="light" border="secondary" className="mt-2">
                     <Card.Body>
                         <Card.Title className="text-center">OFFER {Number(key) + 1}</Card.Title>
-                        <Card.Text className = "float-right">
+                        <Card.Text className="float-right">
                             <span className="font-weight-bold">Rating: <ReactStars
                                 count={5}
                                 value={offers[key].ratings && offers[key].ratings.length > 0 ? offers[key].ratings[0].avgRating : 0}
@@ -71,12 +127,77 @@ export function OfferDashboardComponent() {
                     </Card.Footer>
                 </Card>
             </Col>
-
         );
     }
 
     return (
         <Container>
+            <Button variant="primary" onClick={handleShow} className="mt-5 float-right">
+                Filter Results
+            </Button>
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Filter By</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Row>
+                        <Col md={5}>
+                            <Form>
+                                <Form.Group controlId="formGroupSrcCurrency">
+                                    <Form.Label>Source Currency</Form.Label>
+                                    <Dropdown id="dropdown-basic-button" onSelect={(e) => handleSrcCurrencyChange(e)}>
+                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                            {srcCurrency ? srcCurrency : "Please Select"}
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item eventKey="USD">USD</Dropdown.Item>
+                                            <Dropdown.Item eventKey="INR">INR</Dropdown.Item>
+                                            <Dropdown.Item eventKey="RMB">RMB</Dropdown.Item>
+                                            <Dropdown.Item eventKey="EUR">EUR</Dropdown.Item>
+                                            <Dropdown.Item eventKey="GBP">GBP</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </Form.Group>
+                                <Form.Group controlId="formGroupDestCurrency">
+                                    <Form.Label>Destination Currency</Form.Label>
+                                    <Dropdown id="dropdown-basic-button" onSelect={(e) => handleDestCurrencyChange(e)}>
+                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                            {destCurrency ? destCurrency : "Please Select"}
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item eventKey="USD">USD</Dropdown.Item>
+                                            <Dropdown.Item eventKey="INR">INR</Dropdown.Item>
+                                            <Dropdown.Item eventKey="RMB">RMB</Dropdown.Item>
+                                            <Dropdown.Item eventKey="EUR">EUR</Dropdown.Item>
+                                            <Dropdown.Item eventKey="GBP">GBP</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </Form.Group>
+                            </Form>
+                        </Col>
+                        <Col md={7}>
+                            <Form>
+                                <Form.Group controlId="formGroupEmail">
+                                    <Form.Label>Source Currency Amount</Form.Label>
+                                    <FormControl defaultValue={srcAmount} aria-label="Amount (to the nearest dollar)" onChange={(e) => handleSrcAmountChange(e)} />
+                                </Form.Group>
+                                <Form.Group controlId="formGroupPassword">
+                                    <Form.Label>Destination Currency Amount</Form.Label>
+                                    <FormControl defaultValue={destAmount} aria-label="Amount (to the nearest dollar)" onChange={(e) => handleDestAmountChange(e)} />
+                                </Form.Group>
+                            </Form>
+                        </Col>
+                    </Row>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClear}>
+                        Clear
+                    </Button>
+                    <Button variant="primary" onClick={handleClose}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <CardDeck>
                 <Row className="mt-3 mb-5">
                     {offerList}
