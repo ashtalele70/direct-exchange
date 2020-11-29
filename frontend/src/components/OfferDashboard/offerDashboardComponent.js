@@ -11,9 +11,11 @@ export function OfferDashboardComponent() {
     const [allOffers, setAllOffers] = useState([]);
     const [startIndex, setStartIndex] = useState(0);
     const [active, setActivePage] = useState(1);
+    const [currentOffer, setCurrentOffer] = useState({});
     let offerList = [];
     let itemsPerPage = 10;
     let items = [];
+    let reviews = [];
 
     useEffect(() => {
         async function fetchData() {
@@ -29,17 +31,26 @@ export function OfferDashboardComponent() {
     // };
 
     const [show, setShow] = useState(false);
-    //const [showOfferDetailModal, setShowOfferDetailModel] = useState(false);
+    const [showOfferDetailModal, setShowOfferDetailModal] = useState(false);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    // const handleCloseOfferDetailModal = () => setShowOfferDetailModel(false);
-    // const handleShowOfferDetailModal = () => setShowOfferDetailModel(true);
+    const handleCloseOfferDetailModal = () => setShowOfferDetailModal(false);
+    const handleShowOfferDetailModal = (e, offer) => {
+        setShowOfferDetailModal(true);
+        let reviews = [];
+        offer.ratings.forEach(rating => {
+            reviews.push(rating.reviewComment);
+        });
+        let fullOffer = JSON.parse(JSON.stringify(offer));
+        fullOffer.reviews = reviews;
+        setCurrentOffer(fullOffer);
+    }
 
     const getOfferList = () => {
         let list = [];
-        if((srcCurrency == "" && destCurrency == "" && srcAmount == 0 && destAmount == 0) || offers.length == 0) {
+        if ((srcCurrency == "" && destCurrency == "" && srcAmount == 0 && destAmount == 0) || offers.length == 0) {
             allOffers.forEach(obj => list.push(obj));
         } else {
             offers.forEach(obj => list.push(obj));
@@ -89,7 +100,7 @@ export function OfferDashboardComponent() {
 
     const pageOnClickHandler = (e) => {
         let page = Number(e.target.innerText[0]);
-        setStartIndex((page-1)*10);
+        setStartIndex((page - 1) * 10);
         setActivePage(page);
     }
 
@@ -98,7 +109,7 @@ export function OfferDashboardComponent() {
         for (let number = 1; number <= pageCount; number++) {
             items.push(
                 <Pagination.Item key={number} active={number === active}>
-                {number}
+                    {number}
                 </Pagination.Item>,
             );
         }
@@ -146,13 +157,20 @@ export function OfferDashboardComponent() {
                         </Card.Text>
                     </Card.Body>
                     <Card.Footer>
-                        <Card.Link href="/">View Offer Details</Card.Link>
+                        <Button variant="outline-primary" onClick={(e, offer) => handleShowOfferDetailModal(e, offers[key])}>View Offer Details</Button>
+                        {offers[key].allow_counter_offer == 1 && <Button variant="outline-primary" className="ml-5">Make Counter Offer</Button>}
                     </Card.Footer>
                 </Card>
             </Col>
         );
-        
-        offerList = ((startIndex+10) < offerList.length) ? offerList.slice(startIndex, startIndex+10) : offerList.slice(startIndex);
+
+        offerList = ((startIndex + 10) < offerList.length) ? offerList.slice(startIndex, startIndex + 10) : offerList.slice(startIndex);
+    }
+
+    if (currentOffer && currentOffer.reviews) {
+        reviews = currentOffer.reviews.map(comment =>
+            <p className="font-italic">"{comment}"</p>
+        );
     }
 
     return (
@@ -223,75 +241,44 @@ export function OfferDashboardComponent() {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            {/* <Modal show={show} onHide={handleCloseOfferDetailModal}>
+            <Modal show={showOfferDetailModal} onHide={handleCloseOfferDetailModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Filter By</Modal.Title>
+                    <Modal.Title>Offer Details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Row>
-                        <Col md={5}>
-                            <Form>
-                                <Form.Group controlId="formGroupSrcCurrency">
-                                    <Form.Label>Source Currency</Form.Label>
-                                    <Dropdown id="dropdown-basic-button" onSelect={(e) => handleSrcCurrencyChange(e)}>
-                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                            {srcCurrency ? srcCurrency : "Please Select"}
-                                        </Dropdown.Toggle>
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item eventKey="USD">USD</Dropdown.Item>
-                                            <Dropdown.Item eventKey="INR">INR</Dropdown.Item>
-                                            <Dropdown.Item eventKey="RMB">RMB</Dropdown.Item>
-                                            <Dropdown.Item eventKey="EUR">EUR</Dropdown.Item>
-                                            <Dropdown.Item eventKey="GBP">GBP</Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                </Form.Group>
-                                <Form.Group controlId="formGroupDestCurrency">
-                                    <Form.Label>Destination Currency</Form.Label>
-                                    <Dropdown id="dropdown-basic-button" onSelect={(e) => handleDestCurrencyChange(e)}>
-                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                            {destCurrency ? destCurrency : "Please Select"}
-                                        </Dropdown.Toggle>
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item eventKey="USD">USD</Dropdown.Item>
-                                            <Dropdown.Item eventKey="INR">INR</Dropdown.Item>
-                                            <Dropdown.Item eventKey="RMB">RMB</Dropdown.Item>
-                                            <Dropdown.Item eventKey="EUR">EUR</Dropdown.Item>
-                                            <Dropdown.Item eventKey="GBP">GBP</Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                </Form.Group>
-                            </Form>
+                        <Col>
+                            <span className="d-block"><span className="font-weight-bold text-primary">Source Country: </span>{currentOffer.source_country}</span>
+                            <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Source Currency: </span>{currentOffer.source_currency}</span>
+                            <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Destination Country: </span>{currentOffer.destination_country}</span>
+                            <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Destination Currency: </span>{currentOffer.destination_currency}</span>
+                            <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Remit Amount: </span>{currentOffer.remit_amount}</span>
+                            <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Exchange Rate: </span>{currentOffer.exchange_rate}</span>
+                            <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Expiration Date: </span>{currentOffer.expiration_date}</span>
                         </Col>
-                        <Col md={7}>
-                            <Form>
-                                <Form.Group controlId="formGroupEmail">
-                                    <Form.Label>Source Currency Amount</Form.Label>
-                                    <FormControl defaultValue={srcAmount} aria-label="Amount (to the nearest dollar)" onChange={(e) => handleSrcAmountChange(e)} />
-                                </Form.Group>
-                                <Form.Group controlId="formGroupPassword">
-                                    <Form.Label>Destination Currency Amount</Form.Label>
-                                    <FormControl defaultValue={destAmount} aria-label="Amount (to the nearest dollar)" onChange={(e) => handleDestAmountChange(e)} />
-                                </Form.Group>
-                            </Form>
-                        </Col>
-                    </Row>
+                        <Col>
+                            <span className="font-weight-bold text-primary">Rating: <ReactStars
+                                count={5}
+                                value={currentOffer.ratings && currentOffer.ratings.length > 0 ? currentOffer.ratings[0].avgRating : 0}
+                                size={24}
+                                isHalf={true}
+                                emptyIcon={<FontAwesomeIcon icon={faStar} />}
+                                halfIcon={<FontAwesomeIcon icon={faStarHalf} />}
+                                fullIcon={<FontAwesomeIcon icon={faStar} />}
+                                edit={false}
+                                activeColor="#ffd700"
+                            />
+                            </span>
+                            {reviews.length > 0 && <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Reviews: </span>{reviews}</span>}
+                        </Col></Row>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClear}>
-                        Clear
-                    </Button>
-                    <Button variant="primary" onClick={handleClose}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
-            </Modal> */}
+            </Modal>
             <CardDeck>
                 <Row className="mt-3 mb-5">
                     {offerList}
                 </Row>
             </CardDeck>
-            <Pagination className="float-right" onClick = {(e) => pageOnClickHandler(e)}>{items}</Pagination>
+            <Pagination className="float-right" onClick={(e) => pageOnClickHandler(e)}>{items}</Pagination>
         </Container>
     )
 }
