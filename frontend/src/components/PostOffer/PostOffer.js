@@ -48,8 +48,7 @@ class PostOffer extends Component {
     console.log(maskedvalue * Number(this.state.exchange_rate));
     this.setState({
       amount: maskedvalue,
-      remit_amount_destination:
-        Float(maskedvalue) * Float(this.state.exchange_rate),
+      remit_amount_destination: maskedvalue * this.state.exchange_rate,
     });
   };
 
