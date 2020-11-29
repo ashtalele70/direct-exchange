@@ -16,8 +16,6 @@ class PostOffer extends Component {
     super(props);
     this.state = {
       show: false,
-      bankCurrency: "USD",
-      bankCountry: "United States",
       source_country: "United",
       source_currency: "",
       remit_amount: "",
@@ -32,11 +30,9 @@ class PostOffer extends Component {
       rates: "",
       amount: "0.00",
       remit_amount_destination: 0,
-      user_id: 1,
-      source_bank: false,
-      destination_bank: false,
-      bank_message: "",
-      close: false,
+      user_id: 45,
+      source_bank_message: "",
+      destination_bank_message: "",
     };
   }
 
@@ -49,9 +45,11 @@ class PostOffer extends Component {
   }
 
   handleChange = (event, maskedvalue, floatvalue) => {
+    console.log(maskedvalue * Number(this.state.exchange_rate));
     this.setState({
       amount: maskedvalue,
-      remit_amount_destination: maskedvalue * this.state.exchange_rate,
+      remit_amount_destination:
+        Float(maskedvalue) * Float(this.state.exchange_rate),
     });
   };
 
@@ -95,17 +93,15 @@ class PostOffer extends Component {
         )
         .then((res) => {
           if (res.status === 200) {
-            if (res.data.length !== 0) {
-              this.setState({ source_bank: true });
-            } else {
+            if (res.data.length === 0) {
               var message =
-                this.state.bank_message +
                 " \n country: " +
                 this.state.source_currency +
                 " currency: " +
                 this.state.source_country;
-
-              this.setState({ bank_message: message });
+              this.setState({ source_bank_message: message });
+            } else {
+              this.setState({ source_bank_message: "" });
             }
           }
         })
@@ -132,17 +128,15 @@ class PostOffer extends Component {
         )
         .then((res) => {
           if (res.status === 200) {
-            if (res.data.length !== 0) {
-              this.setState({ destination_bank: true });
-            } else {
+            if (res.data.length === 0) {
               var message =
-                this.state.bank_message +
-                "\ncountry: " +
-                this.state.destination_country +
+                " \n country: " +
+                this.state.destination_currency +
                 " currency: " +
-                this.state.destination_currency;
-              console.log(message);
-              this.setState({ bank_message: message });
+                this.state.destination_country;
+              this.setState({ destination_bank_message: message });
+            } else {
+              this.setState({ destination_bank_message: "" });
             }
           }
         })
@@ -152,7 +146,7 @@ class PostOffer extends Component {
 
   submitHandler = (event) => {
     var values = {
-      user_id: 1,
+      user_id: 45,
       source_country: this.state.source_country,
       source_currency: this.state.source_currency,
       remit_amount: this.state.amount,
@@ -162,22 +156,20 @@ class PostOffer extends Component {
       expiration_date: this.state.expiration_date,
       allow_counter_offer: this.state.allow_counter_offer,
       allow_split_offer: this.state.allow_split_offer,
-      offer_status: "INIT",
+      offer_status: this.state.offer_status,
       is_counter: 0,
     };
-    console.log(values);
+    console.log(this.state.source_bank_message);
+    console.log(this.state.destination_bank_message);
     if (
-      this.state.source_bank === true &&
-      this.state.destination_bank === true
+      this.state.source_bank_message === "" &&
+      this.state.destination_bank_message === ""
     ) {
       axios
         .post(process.env.REACT_APP_ROOT_URL + "/postoffer", values)
         .then((res) => {
           if (res.status === 200) {
-            console.log("yay");
-            if (res.data) {
-              console.log(res.data);
-            }
+            this.props.history.push("/postoffer");
           }
         })
         .catch((err) => {});
@@ -385,7 +377,9 @@ class PostOffer extends Component {
           </Modal.Header>
           <Modal.Body>
             <b>Please add bank details for</b>
-            {this.state.bank_message}
+            {this.state.source_bank_message}
+            {"\n"}
+            {this.state.destination_bank_message}
           </Modal.Body>
 
           <Modal.Footer>
