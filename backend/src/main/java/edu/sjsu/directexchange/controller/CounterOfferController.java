@@ -18,9 +18,10 @@ public class CounterOfferController {
 
 	@PostMapping("/counterOffer/{userId}/{offerId}")
 	@ResponseStatus(HttpStatus.OK)
-	  public String createUser( @RequestBody Offer offer, @PathVariable int userId, @PathVariable int offerId) {
-		
+	  public String createUser( @RequestBody Offer offer, @PathVariable String userId, @PathVariable String offerId) {
+		int userID = Integer.parseInt(userId);
+		int offerID = Integer.parseInt(offerId);
 	
-		 return counterOfferService.createCounterOffer( offer, userId, offerId);
+		 return counterOfferService.createCounterOffer( offer, userID, userID);
 	  }
 }

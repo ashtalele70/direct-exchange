@@ -15,13 +15,13 @@ class CounterOffer extends Component {
       show: false,
       bankCurrency: "USD",
       bankCountry: "United States",
-      source_country: "United",
-      source_currency: "",
-      remit_amount: "",
-      destination_country: "United",
-      destination_currency: "",
-      exchange_rate: "",
-      expiration_date: "",
+      source_country: "United States",
+      source_currency: "USD",
+      remit_amount: "50.00",
+      destination_country: "India",
+      destination_currency: "INR",
+      exchange_rate: "76.12",
+      expiration_date: "2022-01-02",
       allow_counter_offer: 1,
       allow_split_offer: 1,
       offer_status: "Pending",
@@ -156,19 +156,21 @@ class CounterOffer extends Component {
       expiration_date: this.state.expiration_date,
       allow_counter_offer: this.state.allow_counter_offer,
       allow_split_offer: this.state.allow_split_offer,
-      offer_status: "INIT",
+      offer_status: "PENDING",
       is_counter: 0,
     };
+    const a=45;
+    const b=13;
     console.log(values);
-    if (
-      this.state.source_bank === true &&
-      this.state.destination_bank === true
+    if ( 1==1
+    //   this.state.source_bank === true &&
+    //   this.state.destination_bank === true
     ) {
       axios
-        .post(process.env.REACT_APP_ROOT_URL + "/postoffer", values)
+        .post(process.env.REACT_APP_ROOT_URL + "/counterOffer/" +a+"/"+b, values)
         .then((res) => {
           if (res.status === 200) {
-            console.log("yay");
+            console.log("Bananayaya");
             if (res.data) {
               console.log(res.data);
             }
@@ -332,7 +334,7 @@ class CounterOffer extends Component {
                 type="submit"
                 onClick={this.submitHandler}
               >
-                Post Offer
+                Post Counter Offer
               </Button>
             </OverlayTrigger>
           </Form>
