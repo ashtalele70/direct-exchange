@@ -186,6 +186,17 @@ class PostOffer extends Component {
       this.setState({ show: true });
     }
   };
+
+  onSwitchCounterOffer = () => {
+    let switchValue = this.state.allow_counter_offer === 0 ? 1 : 0;
+    this.setState({ allow_counter_offer: switchValue });
+  };
+
+  onSwitchSplitOffer = () => {
+    let switchValue = this.state.allow_split_offer === 0 ? 1 : 0;
+    this.setState({ allow_split_offer: switchValue });
+  };
+
   getRates = () => {
     axios
       .get(process.env.REACT_APP_ROOT_URL + "/rates")
@@ -330,15 +341,11 @@ class PostOffer extends Component {
               >
                 <Form.Group as={Col} id="allowCounterOffer">
                   <Form.Check
+                    onChange={this.onSwitchCounterOffer}
                     type="switch"
-                    label="Allow Counter Offer"
-                    id="custom-switch-counter"
+                    id="custom-switch1"
+                    label="allow counter offer"
                     checked={this.state.allow_counter_offer}
-                    onChange={(event) =>
-                      this.setState({
-                        allow_counter_offer: event.target.checked,
-                      })
-                    }
                   />
                 </Form.Group>
               </OverlayTrigger>
@@ -348,13 +355,11 @@ class PostOffer extends Component {
               >
                 <Form.Group as={Col} id="allowSplitOffer">
                   <Form.Check
+                    onChange={this.onSwitchSplitOffer}
                     type="switch"
-                    label="Allow split Offer"
-                    id="custom-switch-split"
+                    id="custom-switch2"
+                    label="allow split offer"
                     checked={this.state.allow_split_offer}
-                    onChange={(event) =>
-                      this.setState({ allow_split_offer: event.target.checked })
-                    }
                   />
                 </Form.Group>
               </OverlayTrigger>
