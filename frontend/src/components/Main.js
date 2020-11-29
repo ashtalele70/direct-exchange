@@ -8,6 +8,7 @@ import Logout from "./Logout/Logout";
 import Verify from "./EmailVerification/EmailVerification"
 import Rates from "./Rates/Rates";
 import PostOffer from "./PostOffer/PostOffer";
+import CounterOffer from "./Counter_offer/CounterOffer";
 import AddBank from "./Bank/AddBank";
 import { OfferDashboardComponent } from "./OfferDashboard/offerDashboardComponent";
 import {withAuthentication} from "./Session/AuthUserContext";
@@ -29,6 +30,7 @@ class Home extends Component {
                         <Route path="/verifyemail" component={Verify}/>
                         <Route path="/rates" component={Rates}/>
                         <Route path="/postoffer" component={PostOffer}/>
+                        <Route path="/CounterOffer" component={CounterOffer}/>
                         <Route path="/offerDashboard" component={OfferDashboardComponent}/>
                         <Route path="/addbank" component={AddBank}/>
                         <Route path="/logout" component={Logout}/>
