@@ -85,7 +85,7 @@ class AutoMatch extends Component {
     let paramAccept = new URLSearchParams();
     paramAccept.set("offerId1", 45);
     paramAccept.set("offerId2", offerId2);
-    paramAccept.set("offerId3", 0);
+    paramAccept.set("offerId3", offerId3);
 
     axios
       .post(

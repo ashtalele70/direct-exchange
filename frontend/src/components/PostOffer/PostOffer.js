@@ -30,7 +30,7 @@ class PostOffer extends Component {
       rates: "",
       amount: "0.00",
       remit_amount_destination: 0,
-      user_id: 45,
+      user_id: localStorage.getItem("userId"),
       source_bank_message: "",
       destination_bank_message: "",
     };
@@ -145,7 +145,7 @@ class PostOffer extends Component {
 
   submitHandler = (event) => {
     var values = {
-      user_id: 45,
+      user_id: this.state.user_id,
       source_country: this.state.source_country,
       source_currency: this.state.source_currency,
       remit_amount: this.state.amount,

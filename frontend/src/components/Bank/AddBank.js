@@ -17,7 +17,7 @@ class AddBank extends Component {
       account_address: "",
       primary_currency: "",
       bank_type: 1,
-      user_id: 45,
+      user_id: localStorage.getItem("userId"),
       rates: "",
     };
   }
