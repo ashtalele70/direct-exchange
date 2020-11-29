@@ -81,16 +81,16 @@ class AutoMatch extends Component {
     this.setState({ switch: switchValue });
   };
 
-  submitHandler = (offer1, offer2) => {
+  submitHandler = (offerId2, offerId3) => {
     let paramAccept = new URLSearchParams();
-    paramAccept.set("offer", 1);
-    paramAccept.set("offer1", 1);
-    paramAccept.set("offer2", 1);
+    paramAccept.set("offerId1", 45);
+    paramAccept.set("offerId2", offerId2);
+    paramAccept.set("offerId3", 0);
 
     axios
-      .get(
+      .post(
         process.env.REACT_APP_ROOT_URL +
-          "/getSplitMatches?" +
+          "/acceptedOffer?" +
           paramAccept.toString()
       )
       .then((res) => {
@@ -124,7 +124,7 @@ class AutoMatch extends Component {
             </Card.Text>
             <Button
               variant="primary"
-              onClick={() => this.submitHadler1(offer.id)}
+              onClick={() => this.submitHandler(offer.id)}
             >
               Accept
             </Button>

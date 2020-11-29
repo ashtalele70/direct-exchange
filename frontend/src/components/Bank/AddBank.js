@@ -16,8 +16,8 @@ class AddBank extends Component {
       account_holder: "",
       account_address: "",
       primary_currency: "",
-      bank_type: "",
-      user_id: 1,
+      bank_type: 1,
+      user_id: 45,
       rates: "",
     };
   }
@@ -123,7 +123,7 @@ class AddBank extends Component {
                 >
                   <option>Choose</option>
                   {this.state.rates &&
-                    this.state.rates.map((e, key) => {
+                    [...new Set(this.state.rates)].map((e, key) => {
                       return (
                         <option key={key} value={e.Key}>
                           {e.source_country}
@@ -172,12 +172,11 @@ class AddBank extends Component {
                 <Form.Label>Account type</Form.Label>
                 <Form.Control
                   as="select"
-                  defaultValue="Choose..."
+                  defaultValue={this.state.bank_type}
                   onChange={(event) =>
                     this.setState({ bank_type: event.target.value })
                   }
                 >
-                  <option disabled>Choose</option>
                   <option value="1">{"Sending"}</option>
                   <option value="2">{"Recieving"}</option>
                   <option value="3">{"Sending/Recieving"}</option>
