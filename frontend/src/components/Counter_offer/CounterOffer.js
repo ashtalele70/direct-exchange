@@ -18,7 +18,8 @@ class CounterOffer extends Component {
       show: false,
       exchange_rate: "",
       expiration_date: "",
-     
+     showbank: false,
+     showMon:false,
       offer_status: "Pending",
       is_counter: 0,
       rates: [],
@@ -37,12 +38,74 @@ class CounterOffer extends Component {
    
   }
 
+  sourceCountryChange = () => {
+ 
+      let params = new URLSearchParams();
+      params.set("source_country", this.state.Og_offer_det.destination_country);
+      params.set("source_currency", this.state.Og_offer_det.destination_currency);
+      params.set("bank_type", 1);
+      params.set("user_id", this.state.user_id);
+      axios
+        .get(
+          process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString()
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.data.length === 0) {
+              var message =
+                " \n country: " +
+                this.state.source_currency +
+                " currency: " +
+                this.state.source_country;
+              this.setState({ source_bank_message: message });
+            } else {
+              this.setState({ source_bank_message: "" });
+            }
+          }
+        })
+        .catch((err) => {});
+    
+  };
+
+ 
+
+  destinationCountryChange = (event) => {
+   
+      let params = new URLSearchParams();
+      params.set("source_country", this.state.Og_offer_det.source_country);
+      params.set("source_currency", this.state.Og_offer_det.source_currency);
+      params.set("bank_type", 2);
+      params.set("user_id", this.state.user_id);
+      axios
+        .get(
+          process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString()
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.data.length === 0) {
+              var message =
+                " \n country: " +
+                this.state.destination_currency +
+                " currency: " +
+                this.state.destination_country;
+              this.setState({ destination_bank_message: message });
+            } else {
+              this.setState({ destination_bank_message: "" });
+            }
+          }
+        })
+        .catch((err) => {});
+    
+  };
+
   handleChange = (event, maskedvalue, floatvalue) => {
     console.log(maskedvalue * Number(this.state.exchange_rate));
     this.setState({
       amount: maskedvalue,
       remit_amount_destination: maskedvalue * this.state.exchange_rate,
     });
+    this.sourceCountryChange();
+    this. destinationCountryChange();
   };
 
   getOgOfferDet= () => {
@@ -61,7 +124,13 @@ class CounterOffer extends Component {
   getInitialState() {
     return { amount: "0.00" };
   }
-
+  hideBankModal = () => {
+    this.setState({ showbank: false });
+  };
+ 
+  hideMonModal = () => {
+    this.setState({ showMon: false });
+  };
  
   submitHandler = (event) => {
     var values = {
@@ -80,28 +149,42 @@ class CounterOffer extends Component {
     };
     let og_offer_user_id= this.state.Og_offer_det.user_id;
     let og_offer_id=this.state.Og_offer_det.id;
-    console.log("milk"+ og_offer_user_id + og_offer_id);
+    
     let money= this.state.Og_offer_det.remit_amount;
  let myMon= this.state.remit_amount_destination;
+
+
     if ( myMon>= 0.9*money && myMon<= 1.1*money)
   {
-    console.log("enter back")
+    if (
+      this.state.source_bank_message === "" &&
+      this.state.destination_bank_message === ""
+    )
+    {
+  
       axios
        .post(process.env.REACT_APP_ROOT_URL + "/counterOffer/" + og_offer_user_id+"/"+og_offer_id, values)
-      // .post("http://localhost:8080/counterOffer/67/63", values)
        .then((res) => {
           if (res.status === 200) {
-            console.log("kiara" + res)
+           
            // this.props.history.push("/postoffer");
           }
         })
         .catch((err) => {});
-    } else {
-      console.log("enter front")
+    } 
+    else {
+      console.log("bank fail")
       event.preventDefault();
-      this.setState({ show: true });
+      this.setState({ showbank: true });
     }
-  };
+  }
+    else {
+      console.log("mon fail")
+      event.preventDefault();
+      this.setState({ showMon: true });
+    
+    }
+   };
 
 
 
@@ -111,8 +194,6 @@ class CounterOffer extends Component {
       .then((res) => {
         if (res.status === 200) {
           if (res.data) {
-
-            console.log("hello beaty")
             console.log(res.data);
             this.setState({ rates: res.data });
             this.exchageRate();
@@ -250,6 +331,38 @@ class CounterOffer extends Component {
           </Form>
         </Container>
 
+
+        <Modal show={this.state.showbank} onHide={this.hideBankModal} animation={false}>
+          <Modal.Header>
+            <Modal.Title>Error</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <b>Please add bank details for source and destination</b>
+        
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.hideBankModal}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal show={this.state.showMon} onHide={this.hideMonModal} animation={false}>
+          <Modal.Header>
+            <Modal.Title>Error</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <b>Please add money in range </b>
+            
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.hideMonModal}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
         
       </div>
     );
