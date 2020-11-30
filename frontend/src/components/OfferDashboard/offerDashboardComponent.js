@@ -19,11 +19,7 @@ export function OfferDashboardComponent() {
 
     useEffect(() => {
         async function fetchData() {
-<<<<<<< Updated upstream
             const response = await getAllOffers({"id": localStorage.getItem("userId")});
-=======
-            const response = await getAllOffers({"id": localStorage.getItem("user_id")});
->>>>>>> Stashed changes
             setOffers(response);
             setAllOffers(response);
         }

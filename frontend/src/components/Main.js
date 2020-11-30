@@ -10,14 +10,9 @@ import Rates from "./Rates/Rates";
 import PostOffer from "./PostOffer/PostOffer";
 import AddBank from "./Bank/AddBank";
 import { OfferDashboardComponent } from "./OfferDashboard/offerDashboardComponent";
-<<<<<<< Updated upstream
 import { MyOffersComponent } from "./MyOffers/myOffersComponent";
 import { withAuthentication } from "./Session/AuthUserContext";
 import AutoMatch from "./AutoMatch/AutoMatch";
-
-=======
-import {withAuthentication} from "./Session/AuthUserContext";
->>>>>>> Stashed changes
 
 class Home extends Component {
   constructor(props) {
