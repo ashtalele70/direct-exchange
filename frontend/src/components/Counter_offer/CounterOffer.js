@@ -104,6 +104,7 @@ class CounterOffer extends Component {
       amount: maskedvalue,
       remit_amount_destination: maskedvalue * this.state.exchange_rate,
     });
+    this.exchageRate();
     this.sourceCountryChange();
     this. destinationCountryChange();
   };
@@ -240,6 +241,7 @@ class CounterOffer extends Component {
                    value={this.state.Og_offer_det.destination_currency}
                    aria-describedby="basic-addon2"
                    readOnly="true"
+                  // onChange={this.exchageRate()}
                 >
                 </Form.Control>
               </Form.Group>
