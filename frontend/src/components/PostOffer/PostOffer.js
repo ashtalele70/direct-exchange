@@ -16,10 +16,10 @@ class PostOffer extends Component {
     super(props);
     this.state = {
       show: false,
-      source_country: "United",
+      source_country: "",
       source_currency: "",
       remit_amount: "",
-      destination_country: "United",
+      destination_country: "",
       destination_currency: "",
       exchange_rate: "",
       expiration_date: "",
@@ -33,11 +33,13 @@ class PostOffer extends Component {
       user_id: localStorage.getItem("userId"),
       source_bank_message: "",
       destination_bank_message: "",
+      currencies: []
     };
   }
 
   componentDidMount() {
     this.getRates();
+    this.getCurrencies();
   }
 
   getInitialState() {
@@ -73,6 +75,17 @@ class PostOffer extends Component {
     this.setState({ source_currency: event.target.value }, () => {
       this.exchageRate();
     });
+    axios
+        .get(process.env.REACT_APP_ROOT_URL + "/country?currency=" + event.target.value)
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.data) {
+              this.setState({ source_country: res.data });
+            }
+          }
+        })
+        .catch((err) => {});
+
   };
 
   hideModal = () => {
@@ -112,6 +125,17 @@ class PostOffer extends Component {
     this.setState({ destination_currency: event.target.value }, () => {
       this.exchageRate();
     });
+
+    axios
+        .get(process.env.REACT_APP_ROOT_URL + "/country?currency=" + event.target.value)
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.data) {
+              this.setState({ destination_country: res.data });
+            }
+          }
+        })
+        .catch((err) => {});
   };
 
   destinationCountryChange = (event) => {
@@ -194,12 +218,24 @@ class PostOffer extends Component {
       .then((res) => {
         if (res.status === 200) {
           if (res.data) {
-            console.log(res.data);
             this.setState({ rates: res.data });
           }
         }
       })
       .catch((err) => {});
+  };
+
+  getCurrencies = () => {
+    axios
+        .get(process.env.REACT_APP_ROOT_URL + "/currencies")
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.data) {
+              this.setState({ currencies: res.data });
+            }
+          }
+        })
+        .catch((err) => {});
   };
   render() {
     return (
@@ -215,11 +251,12 @@ class PostOffer extends Component {
                   onChange={this.sourceCurrencyChange}
                 >
                   <option>Choose</option>
-                  {this.state.rates &&
-                    this.state.rates.map((e, key) => {
+                  {this.state.currencies
+                  &&
+                    this.state.currencies.map((e, key) => {
                       return (
-                        <option key={key} value={e.Key}>
-                          {e.source_currency}
+                        <option key={key} value={e.Key} disabled={e == this.state.destination_currency}>
+                          {e}
                         </option>
                       );
                     })}
@@ -229,19 +266,21 @@ class PostOffer extends Component {
               <Form.Group as={Col} controlId="fromCountry">
                 <Form.Label>From (Country) </Form.Label>
                 <Form.Control
-                  as="select"
-                  defaultValue="Choose..."
-                  onChange={this.sourceCountryChange}
+                  as="text"
+                  // value=
+                  readOnly="readOnly"
+                  // onChange={this.sourceCountryChange}
                 >
-                  <option>Choose</option>
-                  {this.state.rates &&
-                    this.state.rates.map((e, key) => {
-                      return (
-                        <option key={key} value={e.Key}>
-                          {e.source_country}
-                        </option>
-                      );
-                    })}
+                  {this.state.source_country}
+                  {/*<option>Choose</option>*/}
+                  {/*{this.state.rates &&*/}
+                  {/*  this.state.rates.map((e, key) => {*/}
+                  {/*    return (*/}
+                  {/*      <option key={key} value={e.Key}>*/}
+                  {/*        {e.source_country}*/}
+                  {/*      </option>*/}
+                  {/*    );*/}
+                  {/*  })}*/}
                 </Form.Control>
               </Form.Group>
             </Form.Row>
@@ -254,35 +293,37 @@ class PostOffer extends Component {
                   onChange={this.destinationCurrencyChange}
                 >
                   <option>Choose</option>
-
-                  {this.state.rates &&
-                    this.state.rates.map((e, key) => {
-                      return (
-                        <option key={key} value={e.Key}>
-                          {e.destination_currency}
+                  {this.state.currencies
+                  &&
+                  this.state.currencies.map((e, key) => {
+                    return (
+                        <option key={key} value={e.Key} disabled={e == this.state.source_currency}>
+                          {e}
                         </option>
-                      );
-                    })}
+                    );
+                  })}
                 </Form.Control>
               </Form.Group>
 
               <Form.Group as={Col} controlId="toCountry">
                 <Form.Label>To (Country)</Form.Label>
                 <Form.Control
-                  as="select"
-                  defaultValue="Choose..."
-                  onChange={this.destinationCountryChange}
+                  as="text"
+                  // defaultValue="Choose..."
+                  readOnly="readOnly"
+                  // onChange={this.destinationCountryChange}
                 >
-                  <option>Choose</option>
+                  {this.state.destination_country}
+                  {/*<option>Choose</option>*/}
 
-                  {this.state.rates &&
-                    this.state.rates.map((e, key) => {
-                      return (
-                        <option key={key} value={e.Key}>
-                          {e.destination_country}
-                        </option>
-                      );
-                    })}
+                  {/*{this.state.rates &&*/}
+                  {/*  this.state.rates.map((e, key) => {*/}
+                  {/*    return (*/}
+                  {/*      <option key={key} value={e.Key}>*/}
+                  {/*        {e.destination_country}*/}
+                  {/*      </option>*/}
+                  {/*    );*/}
+                  {/*  })}*/}
                 </Form.Control>
               </Form.Group>
             </Form.Row>

@@ -21,8 +21,6 @@ public class RatesDaoImpl implements RatesDao {
 		this.entityManager = entityManager;
 	}
 
-
-
 	@Override
 	public List<Rates> getRates() {
 
@@ -31,5 +29,27 @@ public class RatesDaoImpl implements RatesDao {
 		return rates;
 			
 	}
+
+	@Override
+	public List<String> getCurrencies() {
+
+		Query query=entityManager.createQuery("select distinct " +
+			"source_currency from" +
+			" Rates");
+		List<String> currencies = query.getResultList();
+		return currencies;
+	}
+
+	@Override
+	public String getCountry(String currency) {
+
+		Query query=entityManager.createQuery("select distinct source_country " +
+			"from Rates " +
+			"where source_currency =: source_currency").setParameter(
+				"source_currency", currency);
+		String country = (String) query.getSingleResult();
+		return country;
+	}
+
 
 }
