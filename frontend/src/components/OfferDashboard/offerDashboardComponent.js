@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { getAllOffers } from './offerDashboardService';
+import { getAllOffers, getFilteredOffers } from './offerDashboardService';
 import { Card, CardDeck, Container, Row, Col, Modal, Button, Dropdown, FormControl, Pagination, Form } from 'react-bootstrap';
 import ReactStars from "react-rating-stars-component";
 import { faStar, faStarHalf } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,7 @@ export function OfferDashboardComponent() {
     let itemsPerPage = 10;
     let items = [];
     let reviews = [];
+    let filterCriteria = {};
 
     useEffect(() => {
         async function fetchData() {
@@ -59,35 +60,51 @@ export function OfferDashboardComponent() {
     }
 
     const [srcCurrency, setSrcCurrency] = useState("");
-    const handleSrcCurrencyChange = (e) => {
+    const handleSrcCurrencyChange = async (e) => {
         setSrcCurrency(e);
-        setOffers(allOffers.filter(offer => {
-            return offer.source_currency == e;
-        }));
+        filterCriteria["sourceCurrency"] = e;
+        filterCriteria["id"] = localStorage.getItem("userId");
+        const response = await getFilteredOffers(filterCriteria);
+        setOffers(response);
+        // setOffers(allOffers.filter(offer => {
+        //     return offer.source_currency == e;
+        // }));
     }
 
     const [destCurrency, setDestCurrency] = useState("");
-    const handleDestCurrencyChange = (e) => {
+    const handleDestCurrencyChange = async (e) => {
         setDestCurrency(e);
-        setOffers(allOffers.filter(offer => {
-            return offer.destination_currency == e;
-        }));
+        filterCriteria["destinationCurrency"] = e;
+        filterCriteria["id"] = localStorage.getItem("userId");
+        const response = await getFilteredOffers(filterCriteria);
+        setOffers(response);
+        // setOffers(allOffers.filter(offer => {
+        //     return offer.destination_currency == e;
+        // }));
     }
 
     const [srcAmount, setSrcAmount] = useState(0);
-    const handleSrcAmountChange = (e) => {
+    const handleSrcAmountChange = async (e) => {
         setSrcAmount(Number(e.target.value));
-        setOffers(allOffers.filter(offer => {
-            return offer.remit_amount == Number(e.target.value);
-        }));
+        filterCriteria["sourceAmount"] = Number(e.target.value);
+        filterCriteria["id"] = localStorage.getItem("userId");
+        const response = await getFilteredOffers(filterCriteria);
+        setOffers(response);
+        // setOffers(allOffers.filter(offer => {
+        //     return offer.remit_amount == Number(e.target.value);
+        // }));
     }
 
     const [destAmount, setDestAmount] = useState(0);
-    const handleDestAmountChange = (e) => {
+    const handleDestAmountChange = async (e) => {
         setDestAmount(Number(e.target.value));
-        setOffers(allOffers.filter(offer => {
-            return (offer.remit_amount) * (offer.exchange_rate) == Number(e.target.value);
-        }));
+        filterCriteria["destinationAmount"] = Number(e.target.value);
+        filterCriteria["id"] = localStorage.getItem("userId");
+        const response = await getFilteredOffers(filterCriteria);
+        setOffers(response);
+        // setOffers(allOffers.filter(offer => {
+        //     return (offer.remit_amount) * (offer.exchange_rate) == Number(e.target.value);
+        // }));
     }
 
     const handleClear = () => {
