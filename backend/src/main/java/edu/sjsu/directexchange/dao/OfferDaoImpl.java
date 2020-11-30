@@ -1,13 +1,11 @@
 package edu.sjsu.directexchange.dao;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -181,5 +179,53 @@ public class OfferDaoImpl implements OfferDao{
 		}
 
 		return matchedSplitOffers;
+	}
+
+
+	@Override
+	public List<Offer> getFilteredOffers
+		(Integer id, String sourceCurrency,
+		 float sourceAmount,
+		 String destinationCurrency, float destinationAmount) {
+
+		Query query1 = entityManager.createQuery("from Offer where offer_status = 1 and user_id != :user_id")
+			.setParameter("user_id", id);
+
+		List<Offer> offers = query1.getResultList();
+		checkOfferExpiry(offers);
+
+		Query query2 = entityManager.createQuery("from Offer where offer_status = 1 and user_id != :user_id")
+			.setParameter("user_id", id);
+
+		offers = query2.getResultList();
+
+		offers =offers.stream().
+			filter(x ->
+				((sourceCurrency == "" || (sourceCurrency != null && sourceCurrency != ""
+				&& x.getSource_currency().equals(sourceCurrency)
+			))&&(destinationCurrency == "" ||
+					(destinationCurrency != null && destinationCurrency != ""
+				&& x.getDestination_currency().equals(destinationCurrency)))
+								&&(sourceAmount == 0 ||
+					(sourceAmount != 0 && x.getRemit_amount() == sourceAmount))
+								&&(destinationAmount == 0 ||
+					(destinationAmount != 0 && (x.getRemit_amount()  * x.getExchange_rate()) == destinationAmount)))
+			).collect(Collectors.toList());
+
+		offers.forEach(offer -> {
+			Query ratingQuery = entityManager.createQuery("from Reputation where user_id =: user_id")
+				.setParameter("user_id", offer.getUser_id());
+
+			List<Reputation> ratings = ratingQuery.getResultList();
+			ratings.forEach(rating -> ratingSum += rating.getRating());
+			avgRating = ratingSum / ratings.size();
+			ratings.forEach(rating -> rating.setAvgRating(avgRating));
+			offer.setRatings(ratings);
+
+			ratingSum = 0f;
+			avgRating = 0f;
+		});
+
+		return offers;
 	}
 }

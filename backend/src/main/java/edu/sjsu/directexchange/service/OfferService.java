@@ -17,4 +17,9 @@ public interface OfferService {
 	public List<Offer> getAllOffers(Integer id);
 		
 	public List<Offer> getMyOffers(Integer id);
+
+	public List<Offer> getFilteredOffers(Integer id, String sourceCurrency,
+																			 float sourceAmount,
+																			 String destinationCurrency,
+																			 float destinationAmount);
 }

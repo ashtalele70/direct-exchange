@@ -48,5 +48,22 @@ public class OfferController {
 	@GetMapping("/getMyOffers")
 	public List<Offer> getMyOffers(@RequestParam(name = "id") Integer id) {
 		return offerService.getMyOffers(id);
-	}	
+	}
+
+	@GetMapping("/getFilteredOffers")
+	public List<Offer> getFilteredOffers
+		(@RequestParam(name = "id") Integer id,
+		 @RequestParam (required = false) String sourceCurrency,
+		 @RequestParam (required = false) Float sourceAmount,
+		 @RequestParam (required = false) String destinationCurrency,
+		 @RequestParam (required = false) Float destinationAmount) {
+
+
+		if(sourceCurrency == null) sourceCurrency="";
+		if(destinationCurrency == null) destinationCurrency="";
+		if(sourceAmount == null) sourceAmount=0f;
+		if(destinationAmount == null) destinationAmount=0f;
+		return offerService.getFilteredOffers(id, sourceCurrency, sourceAmount,
+			destinationCurrency, destinationAmount);
+	}
 }

@@ -43,4 +43,13 @@ public class OfferServiceImpl implements OfferService {
 	public List<Offer> getMyOffers(Integer id) {
 		return offerDao.getMyOffers(id);
 	}
+
+	@Override
+	public List<Offer> getFilteredOffers
+		(Integer id, String sourceCurrency,
+		 float sourceAmount, String destinationCurrency,
+		 float destinationAmount) {
+		return offerDao.getFilteredOffers(id, sourceCurrency, sourceAmount,
+			destinationCurrency, destinationAmount);
+	}
 }

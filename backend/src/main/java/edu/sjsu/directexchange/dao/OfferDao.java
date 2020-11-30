@@ -17,4 +17,10 @@ public interface OfferDao {
 	public Set<SplitOffer> getSplitMatches(Integer id);
 
 	public List<Offer> getMyOffers(Integer id);
+
+	public List<Offer> getFilteredOffers
+		(Integer id, String sourceCurrency,
+		 float sourceAmount,
+		 String destinationCurrency,
+		 float destinationAmount);
 }
