@@ -187,7 +187,7 @@ class AutoMatch extends Component {
               <Button
                 variant="primary"
                 onClick={() =>
-                  this.submitHadler(offer.offers[0].id, offer.offers[1].id)
+                  this.submitHandler(offer.offers[0].id, offer.offers[1].id)
                 }
               >
                 Accept

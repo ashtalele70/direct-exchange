@@ -53,7 +53,7 @@ public class Offer {
 	private int allow_split_offer;
 	
 	@Column
-	private String offer_status;
+	private int offer_status;
 	
 	@Column
 	private	int is_counter;
@@ -141,12 +141,12 @@ public class Offer {
 		this.allow_counter_offer = allow_counter_offer;
 	}
 
-	public String getOffer_status() {
+	public int getOffer_status() {
 		return offer_status;
 	}
 
-	public void setOffer_status(String offer_status) {
-		this.offer_status = offer_status;
+	public void setOffer_status(int i) {
+		this.offer_status = i;
 	}
 
 	public int getIs_counter() {
