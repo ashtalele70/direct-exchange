@@ -1,6 +1,5 @@
 package edu.sjsu.directexchange.controller;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -28,13 +27,11 @@ public class OfferController {
 	@PostMapping("/postoffer")
 	@ResponseStatus(HttpStatus.OK)
 	public void postOffer(@RequestBody Offer offer ) {
-		
 		offerService.postOffer(offer);
-		
 	}
 	
 	@GetMapping("/getAllOffers")
-	public List<Offer> getAllOffers(@RequestParam(name = "id", required = false) Integer id) {
+	public List<Offer> getAllOffers(@RequestParam(name = "id") Integer id) {
 		return offerService.getAllOffers(id);
 	}
 
@@ -46,5 +43,27 @@ public class OfferController {
 	@GetMapping("/getSplitMatches")
 	public Set<SplitOffer> getSplitMatches(@RequestParam(name = "id") Integer id) {
 		return offerService.getSplitMatches(id);
+	}
+	
+	@GetMapping("/getMyOffers")
+	public List<Offer> getMyOffers(@RequestParam(name = "id") Integer id) {
+		return offerService.getMyOffers(id);
+	}
+
+	@GetMapping("/getFilteredOffers")
+	public List<Offer> getFilteredOffers
+		(@RequestParam(name = "id") Integer id,
+		 @RequestParam (required = false) String sourceCurrency,
+		 @RequestParam (required = false) Float sourceAmount,
+		 @RequestParam (required = false) String destinationCurrency,
+		 @RequestParam (required = false) Float destinationAmount) {
+
+
+		if(sourceCurrency == null) sourceCurrency="";
+		if(destinationCurrency == null) destinationCurrency="";
+		if(sourceAmount == null) sourceAmount=0f;
+		if(destinationAmount == null) destinationAmount=0f;
+		return offerService.getFilteredOffers(id, sourceCurrency, sourceAmount,
+			destinationCurrency, destinationAmount);
 	}
 }

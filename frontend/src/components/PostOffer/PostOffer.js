@@ -7,25 +7,26 @@ import {
   Form,
   Tooltip,
   OverlayTrigger,
+  Alert
 } from "react-bootstrap";
 import axios from "axios";
-import CurrencyInput from "react-currency-input";
+//import CurrencyInput from "react-currency-input";
 
 class PostOffer extends Component {
   constructor(props) {
     super(props);
     this.state = {
       show: false,
-      source_country: "United",
+      source_country: "",
       source_currency: "",
       remit_amount: "",
-      destination_country: "United",
+      destination_country: "",
       destination_currency: "",
       exchange_rate: "",
       expiration_date: "",
       allow_counter_offer: 1,
       allow_split_offer: 1,
-      offer_status: "Pending",
+      offer_status: 1,
       is_counter: 0,
       rates: "",
       amount: "0.00",
@@ -33,11 +34,13 @@ class PostOffer extends Component {
       user_id: localStorage.getItem("userId"),
       source_bank_message: "",
       destination_bank_message: "",
+      currencies: []
     };
   }
 
   componentDidMount() {
     this.getRates();
+    this.getCurrencies();
   }
 
   getInitialState() {
@@ -45,11 +48,19 @@ class PostOffer extends Component {
   }
 
   handleChange = (event, maskedvalue, floatvalue) => {
-    console.log(maskedvalue * Number(this.state.exchange_rate));
-    this.setState({
-      amount: maskedvalue,
-      remit_amount_destination: maskedvalue * this.state.exchange_rate,
-    });
+    // parseFloat(maskedvalue.replace(',','.').replace(' ',''));
+    //console.log(event);
+    if(event.target.value) {
+      this.setState({
+        amount: Number(maskedvalue),
+        remit_amount_destination:  parseFloat(event.target.value) * parseFloat(this.state.exchange_rate),
+      });
+    } else{
+      this.setState({
+        remit_amount_destination:  0,
+      });
+    }
+
   };
 
   exchageRate() {
@@ -73,6 +84,17 @@ class PostOffer extends Component {
     this.setState({ source_currency: event.target.value }, () => {
       this.exchageRate();
     });
+    axios
+        .get(process.env.REACT_APP_ROOT_URL + "/country?currency=" + event.target.value)
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.data) {
+              this.setState({ source_country: res.data });
+            }
+          }
+        })
+        .catch((err) => {});
+
   };
 
   hideModal = () => {
@@ -112,6 +134,17 @@ class PostOffer extends Component {
     this.setState({ destination_currency: event.target.value }, () => {
       this.exchageRate();
     });
+
+    axios
+        .get(process.env.REACT_APP_ROOT_URL + "/country?currency=" + event.target.value)
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.data) {
+              this.setState({ destination_country: res.data });
+            }
+          }
+        })
+        .catch((err) => {});
   };
 
   destinationCountryChange = (event) => {
@@ -144,6 +177,7 @@ class PostOffer extends Component {
   };
 
   submitHandler = (event) => {
+    event.preventDefault();
     var values = {
       user_id: this.state.user_id,
       source_country: this.state.source_country,
@@ -168,13 +202,14 @@ class PostOffer extends Component {
         .post(process.env.REACT_APP_ROOT_URL + "/postoffer", values)
         .then((res) => {
           if (res.status === 200) {
-            this.props.history.push("/postoffer");
+            //this.props.history.push("/postoffer");
+            this.setState( {showSuccess: true });
           }
         })
         .catch((err) => {});
     } else {
-      event.preventDefault();
-      this.setState({ show: true });
+      //event.preventDefault();
+      this.setState({ showError: true });
     }
   };
 
@@ -194,18 +229,40 @@ class PostOffer extends Component {
       .then((res) => {
         if (res.status === 200) {
           if (res.data) {
-            console.log(res.data);
             this.setState({ rates: res.data });
           }
         }
       })
       .catch((err) => {});
   };
+
+  getCurrencies = () => {
+    axios
+        .get(process.env.REACT_APP_ROOT_URL + "/currencies")
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.data) {
+              this.setState({ currencies: res.data });
+            }
+          }
+        })
+        .catch((err) => {});
+  };
   render() {
     return (
       <div style={{ paddingTop: 10 }}>
+        {this.state.showSuccess == true && <Alert variant="success" onClose={() => this.setState({ showSuccess: false })} dismissible>
+          Offer Posted Successfully
+        </Alert>}
+        {this.state.showError == true && <Alert variant="danger" onClose={() => this.setState({ showError: false })} dismissible>
+        <b>Please add bank details for</b>
+            {this.state.source_bank_message}
+            {"\n"}
+            {this.state.destination_bank_message}
+        </Alert>}
+        
         <Container className="m-5 d-flex justify-content-center">
-          <Form>
+          <Form onSubmit={this.submitHandler}>
             <Form.Row>
               <Form.Group as={Col} controlId="fromCurrency">
                 <Form.Label>From (Currency) </Form.Label>
@@ -215,11 +272,12 @@ class PostOffer extends Component {
                   onChange={this.sourceCurrencyChange}
                 >
                   <option>Choose</option>
-                  {this.state.rates &&
-                    this.state.rates.map((e, key) => {
+                  {this.state.currencies
+                  &&
+                    this.state.currencies.map((e, key) => {
                       return (
-                        <option key={key} value={e.Key}>
-                          {e.source_currency}
+                        <option key={key} value={e.Key} disabled={e == this.state.destination_currency}>
+                          {e}
                         </option>
                       );
                     })}
@@ -229,19 +287,21 @@ class PostOffer extends Component {
               <Form.Group as={Col} controlId="fromCountry">
                 <Form.Label>From (Country) </Form.Label>
                 <Form.Control
-                  as="select"
-                  defaultValue="Choose..."
-                  onChange={this.sourceCountryChange}
+                  as="text"
+                  // value=
+                  readOnly="readOnly"
+                  // onChange={this.sourceCountryChange}
                 >
-                  <option>Choose</option>
-                  {this.state.rates &&
-                    this.state.rates.map((e, key) => {
-                      return (
-                        <option key={key} value={e.Key}>
-                          {e.source_country}
-                        </option>
-                      );
-                    })}
+                  {this.state.source_country}
+                  {/*<option>Choose</option>*/}
+                  {/*{this.state.rates &&*/}
+                  {/*  this.state.rates.map((e, key) => {*/}
+                  {/*    return (*/}
+                  {/*      <option key={key} value={e.Key}>*/}
+                  {/*        {e.source_country}*/}
+                  {/*      </option>*/}
+                  {/*    );*/}
+                  {/*  })}*/}
                 </Form.Control>
               </Form.Group>
             </Form.Row>
@@ -254,45 +314,52 @@ class PostOffer extends Component {
                   onChange={this.destinationCurrencyChange}
                 >
                   <option>Choose</option>
-
-                  {this.state.rates &&
-                    this.state.rates.map((e, key) => {
-                      return (
-                        <option key={key} value={e.Key}>
-                          {e.destination_currency}
+                  {this.state.currencies
+                  &&
+                  this.state.currencies.map((e, key) => {
+                    return (
+                        <option key={key} value={e.Key} disabled={e == this.state.source_currency}>
+                          {e}
                         </option>
-                      );
-                    })}
+                    );
+                  })}
                 </Form.Control>
               </Form.Group>
 
               <Form.Group as={Col} controlId="toCountry">
                 <Form.Label>To (Country)</Form.Label>
                 <Form.Control
-                  as="select"
-                  defaultValue="Choose..."
-                  onChange={this.destinationCountryChange}
+                  as="text"
+                  // defaultValue="Choose..."
+                  readOnly="readOnly"
+                  // onChange={this.destinationCountryChange}
                 >
-                  <option>Choose</option>
+                  {this.state.destination_country}
+                  {/*<option>Choose</option>*/}
 
-                  {this.state.rates &&
-                    this.state.rates.map((e, key) => {
-                      return (
-                        <option key={key} value={e.Key}>
-                          {e.destination_country}
-                        </option>
-                      );
-                    })}
+                  {/*{this.state.rates &&*/}
+                  {/*  this.state.rates.map((e, key) => {*/}
+                  {/*    return (*/}
+                  {/*      <option key={key} value={e.Key}>*/}
+                  {/*        {e.destination_country}*/}
+                  {/*      </option>*/}
+                  {/*    );*/}
+                  {/*  })}*/}
                 </Form.Control>
               </Form.Group>
             </Form.Row>
             <Form.Row>
               <Form.Group as={Col} controlId="sendAmount">
                 <Form.Label> Send amount &nbsp; </Form.Label>
-                <CurrencyInput
+                {/* <CurrencyInput
                   value={this.state.amount}
                   onChangeEvent={this.handleChange}
-                />
+                /> */}
+                <Form.Control
+                  // defaultValue={this.state.amount}
+                  onChange={this.handleChange}
+                  type="number"
+                ></Form.Control>
               </Form.Group>
             </Form.Row>
 
@@ -306,7 +373,7 @@ class PostOffer extends Component {
                 />
               </Form.Group>
               <Form.Group as={Col} controlId="recieveAmount">
-                <Form.Label>Recieve amount</Form.Label>
+                <Form.Label>Receive amount</Form.Label>
                 <Form.Control
                   type="name"
                   value={this.state.remit_amount_destination}
@@ -362,7 +429,6 @@ class PostOffer extends Component {
               <Button
                 variant="primary"
                 type="submit"
-                onClick={this.submitHandler}
               >
                 Post Offer
               </Button>
@@ -370,7 +436,7 @@ class PostOffer extends Component {
           </Form>
         </Container>
 
-        <Modal show={this.state.show} onHide={this.hideModal} animation={false}>
+        {/* <Modal show={this.state.show} onHide={this.hideModal} animation={false}>
           <Modal.Header>
             <Modal.Title>Error</Modal.Title>
           </Modal.Header>
@@ -386,7 +452,7 @@ class PostOffer extends Component {
               Close
             </Button>
           </Modal.Footer>
-        </Modal>
+        </Modal> */}
       </div>
     );
   }

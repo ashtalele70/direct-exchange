@@ -1,6 +1,11 @@
 package edu.sjsu.directexchange.dao;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -19,47 +24,62 @@ public class OfferDaoImpl implements OfferDao{
 	private EntityManager entityManager;
 	private float ratingSum;
 	private float avgRating;
-	
+	private Date date1, date2;
 	
 	@Autowired
 	public OfferDaoImpl(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
 
-
-
-
 	@Override
-	public void postOffer(Offer offer) {
-		
+	public void postOffer(Offer offer) {		
 		entityManager.merge(offer);
 	}
-
-
-
+	
+	private void checkOfferExpiry(List<Offer> offers) {
+		Date currentDate = new Date(System.currentTimeMillis());
+		offers.forEach(offer -> {
+			if (offer.getExpiration_date().before(currentDate)) {
+				offer.setOffer_status(3);
+				entityManager.merge(offer);
+			}
+		});
+	}
+	
+	@Override
+	public List<Offer> getMyOffers(Integer id) {
+		List<Offer> offers = new ArrayList<>();
+		User user = entityManager.find(User.class, id);
+		if(user != null) {
+			Query query = entityManager.createQuery("from Offer where user_id =: id order by offer_status")
+					.setParameter("id", id);
+			
+			offers = query.getResultList();
+			checkOfferExpiry(offers);
+		}
+		
+		return offers;
+	}
 
 	@Override
 	public List<Offer> getAllOffers(Integer id) {
-		Query query = null;
+		Query query1 = entityManager.createQuery("from Offer where offer_status = 1 and user_id != :user_id")
+					.setParameter("user_id", id);
 		
-		if(id != null) {
-			User user = entityManager.find(User.class, id);
-			if(user != null) {
-				query = entityManager.createQuery("from Offer where user_id =: id")
-						.setParameter("id", id);
-			} else {
-				// throw invalid user exception
-			}
-		} else {
-			query = entityManager.createQuery("from Offer where offer_status = 1");
-		}
+		List<Offer> offers = query1.getResultList();
+		checkOfferExpiry(offers);
 		
-		List<Offer> offers = query.getResultList();
+		Query query2 = entityManager.createQuery("from Offer where offer_status = 1 and user_id != :user_id")
+				.setParameter("user_id", id);
+	
+		offers = query2.getResultList();
+		Query query = entityManager.createQuery("from Offer where offer_status = 1 and user_id != :user_id")
+					.setParameter("user_id", id);
+		
 		offers.forEach(offer -> {
 			Query ratingQuery = entityManager.createQuery("from Reputation where user_id =: user_id")
 					.setParameter("user_id", offer.getUser_id());
-			
-			
+						
 			List<Reputation> ratings = ratingQuery.getResultList();
 			ratings.forEach(rating -> ratingSum += rating.getRating());
 			avgRating = ratingSum / ratings.size();
@@ -73,18 +93,17 @@ public class OfferDaoImpl implements OfferDao{
 		return offers;
 	}
 
-		@Override
-		public List<Offer> getSingleMatches(Integer id) {
-			Offer offer = entityManager.find(Offer.class, id);
-			return getSingleMatches(id, offer);
-		}
+	@Override
+	public List<Offer> getSingleMatches(Integer id) {
+		Offer offer = entityManager.find(Offer.class, id);
+		return getSingleMatches(id, offer);
+	}
 
-		@Override
-		public Set<SplitOffer> getSplitMatches(Integer id) {
-			Offer offer = entityManager.find(Offer.class, id);
-			return getSplitMatches(id, offer);
-		}
-
+	@Override
+	public Set<SplitOffer> getSplitMatches(Integer id) {
+		Offer offer = entityManager.find(Offer.class, id);
+		return getSplitMatches(id, offer);
+	}
 
 	private  List<Offer>  getSingleMatches(int id, Offer offer) {
 
@@ -153,7 +172,6 @@ public class OfferDaoImpl implements OfferDao{
 						splitOffer.addOffer(o1);
 					}
 
-
 					if(!matchedSplitOffers.contains(splitOffer))
 						matchedSplitOffers.add(splitOffer);
 				}
@@ -163,4 +181,51 @@ public class OfferDaoImpl implements OfferDao{
 		return matchedSplitOffers;
 	}
 
+
+	@Override
+	public List<Offer> getFilteredOffers
+		(Integer id, String sourceCurrency,
+		 float sourceAmount,
+		 String destinationCurrency, float destinationAmount) {
+
+		Query query1 = entityManager.createQuery("from Offer where offer_status = 1 and user_id != :user_id")
+			.setParameter("user_id", id);
+
+		List<Offer> offers = query1.getResultList();
+		checkOfferExpiry(offers);
+
+		Query query2 = entityManager.createQuery("from Offer where offer_status = 1 and user_id != :user_id")
+			.setParameter("user_id", id);
+
+		offers = query2.getResultList();
+
+		offers =offers.stream().
+			filter(x ->
+				((sourceCurrency == "" || (sourceCurrency != null && sourceCurrency != ""
+				&& x.getSource_currency().equals(sourceCurrency)
+			))&&(destinationCurrency == "" ||
+					(destinationCurrency != null && destinationCurrency != ""
+				&& x.getDestination_currency().equals(destinationCurrency)))
+								&&(sourceAmount == 0 ||
+					(sourceAmount != 0 && x.getRemit_amount() == sourceAmount))
+								&&(destinationAmount == 0 ||
+					(destinationAmount != 0 && (x.getRemit_amount()  * x.getExchange_rate()) == destinationAmount)))
+			).collect(Collectors.toList());
+
+		offers.forEach(offer -> {
+			Query ratingQuery = entityManager.createQuery("from Reputation where user_id =: user_id")
+				.setParameter("user_id", offer.getUser_id());
+
+			List<Reputation> ratings = ratingQuery.getResultList();
+			ratings.forEach(rating -> ratingSum += rating.getRating());
+			avgRating = ratingSum / ratings.size();
+			ratings.forEach(rating -> rating.setAvgRating(avgRating));
+			offer.setRatings(ratings);
+
+			ratingSum = 0f;
+			avgRating = 0f;
+		});
+
+		return offers;
+	}
 }

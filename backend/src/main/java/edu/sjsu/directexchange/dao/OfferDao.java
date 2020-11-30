@@ -1,15 +1,12 @@
 package edu.sjsu.directexchange.dao;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Set;
 
 import edu.sjsu.directexchange.model.Offer;
 import edu.sjsu.directexchange.model.SplitOffer;
 
-
 public interface OfferDao {
-
 
 	public void postOffer(Offer offer);
 
@@ -18,4 +15,12 @@ public interface OfferDao {
 	public List<Offer> getSingleMatches(Integer id);
 
 	public Set<SplitOffer> getSplitMatches(Integer id);
+
+	public List<Offer> getMyOffers(Integer id);
+
+	public List<Offer> getFilteredOffers
+		(Integer id, String sourceCurrency,
+		 float sourceAmount,
+		 String destinationCurrency,
+		 float destinationAmount);
 }

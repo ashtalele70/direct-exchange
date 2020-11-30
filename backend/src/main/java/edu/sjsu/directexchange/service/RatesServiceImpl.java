@@ -21,4 +21,14 @@ public class RatesServiceImpl implements RatesService {
 		return ratesDao.getRates();
 	}
 
+	@Override
+	public List<String> getCurrencies() {
+		return ratesDao.getCurrencies();
+	}
+
+	@Override
+	public String getCountry(String currency) {
+		return ratesDao.getCountry(currency);
+	}
+
 }
