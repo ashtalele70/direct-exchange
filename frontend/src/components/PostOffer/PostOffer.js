@@ -7,9 +7,10 @@ import {
   Form,
   Tooltip,
   OverlayTrigger,
+  Alert
 } from "react-bootstrap";
 import axios from "axios";
-import CurrencyInput from "react-currency-input";
+//import CurrencyInput from "react-currency-input";
 
 class PostOffer extends Component {
   constructor(props) {
@@ -25,7 +26,7 @@ class PostOffer extends Component {
       expiration_date: "",
       allow_counter_offer: 1,
       allow_split_offer: 1,
-      offer_status: "Pending",
+      offer_status: 1,
       is_counter: 0,
       rates: "",
       amount: "0.00",
@@ -45,10 +46,11 @@ class PostOffer extends Component {
   }
 
   handleChange = (event, maskedvalue, floatvalue) => {
-    console.log(maskedvalue * Number(this.state.exchange_rate));
+    // parseFloat(maskedvalue.replace(',','.').replace(' ',''));
+    //console.log(event);
     this.setState({
-      amount: maskedvalue,
-      remit_amount_destination: maskedvalue * this.state.exchange_rate,
+      amount: Number(maskedvalue),
+      remit_amount_destination:  parseFloat(event.target.value) * parseFloat(this.state.exchange_rate),
     });
   };
 
@@ -144,6 +146,7 @@ class PostOffer extends Component {
   };
 
   submitHandler = (event) => {
+    event.preventDefault();
     var values = {
       user_id: this.state.user_id,
       source_country: this.state.source_country,
@@ -168,13 +171,14 @@ class PostOffer extends Component {
         .post(process.env.REACT_APP_ROOT_URL + "/postoffer", values)
         .then((res) => {
           if (res.status === 200) {
-            this.props.history.push("/postoffer");
+            //this.props.history.push("/postoffer");
+            this.setState( {showSuccess: true });
           }
         })
         .catch((err) => {});
     } else {
-      event.preventDefault();
-      this.setState({ show: true });
+      //event.preventDefault();
+      this.setState({ showError: true });
     }
   };
 
@@ -201,11 +205,22 @@ class PostOffer extends Component {
       })
       .catch((err) => {});
   };
+
   render() {
     return (
       <div style={{ paddingTop: 10 }}>
+        {this.state.showSuccess == true && <Alert variant="success" onClose={() => this.setState({ showSuccess: false })} dismissible>
+          Offer Posted Successfully
+        </Alert>}
+        {this.state.showError == true && <Alert variant="danger" onClose={() => this.setState({ showError: false })} dismissible>
+        <b>Please add bank details for</b>
+            {this.state.source_bank_message}
+            {"\n"}
+            {this.state.destination_bank_message}
+        </Alert>}
+        
         <Container className="m-5 d-flex justify-content-center">
-          <Form>
+          <Form onSubmit={this.submitHandler}>
             <Form.Row>
               <Form.Group as={Col} controlId="fromCurrency">
                 <Form.Label>From (Currency) </Form.Label>
@@ -289,10 +304,14 @@ class PostOffer extends Component {
             <Form.Row>
               <Form.Group as={Col} controlId="sendAmount">
                 <Form.Label> Send amount &nbsp; </Form.Label>
-                <CurrencyInput
+                {/* <CurrencyInput
                   value={this.state.amount}
                   onChangeEvent={this.handleChange}
-                />
+                /> */}
+                <Form.Control
+                  defaultValue={this.state.amount}
+                  onChange={this.handleChange}
+                ></Form.Control>
               </Form.Group>
             </Form.Row>
 
@@ -306,7 +325,7 @@ class PostOffer extends Component {
                 />
               </Form.Group>
               <Form.Group as={Col} controlId="recieveAmount">
-                <Form.Label>Recieve amount</Form.Label>
+                <Form.Label>Receive amount</Form.Label>
                 <Form.Control
                   type="name"
                   value={this.state.remit_amount_destination}
@@ -362,7 +381,6 @@ class PostOffer extends Component {
               <Button
                 variant="primary"
                 type="submit"
-                onClick={this.submitHandler}
               >
                 Post Offer
               </Button>
@@ -370,7 +388,7 @@ class PostOffer extends Component {
           </Form>
         </Container>
 
-        <Modal show={this.state.show} onHide={this.hideModal} animation={false}>
+        {/* <Modal show={this.state.show} onHide={this.hideModal} animation={false}>
           <Modal.Header>
             <Modal.Title>Error</Modal.Title>
           </Modal.Header>
@@ -386,7 +404,7 @@ class PostOffer extends Component {
               Close
             </Button>
           </Modal.Footer>
-        </Modal>
+        </Modal> */}
       </div>
     );
   }
