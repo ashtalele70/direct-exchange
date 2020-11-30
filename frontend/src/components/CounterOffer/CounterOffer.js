@@ -156,8 +156,10 @@ class PostOffer extends Component {
       allow_counter_offer: this.state.allow_counter_offer,
       allow_split_offer: this.state.allow_split_offer,
       offer_status: this.state.offer_status,
-      is_counter: 0,
+      is_counter: 1,
     };
+    let og_offer_user_id="";
+    let og_offer_id="";
     console.log(this.state.source_bank_message);
     console.log(this.state.destination_bank_message);
     if (
@@ -326,35 +328,7 @@ class PostOffer extends Component {
               </Form.Group>
             </Form.Row>
 
-            <Form.Row>
-              <OverlayTrigger
-                overlay={<Tooltip id={`tooltip-top`}>Allows</Tooltip>}
-              >
-                <Form.Group as={Col} id="allowCounterOffer">
-                  <Form.Check
-                    onChange={this.onSwitchCounterOffer}
-                    type="switch"
-                    id="custom-switch1"
-                    label="allow counter offer"
-                    checked={this.state.allow_counter_offer}
-                  />
-                </Form.Group>
-              </OverlayTrigger>
-
-              <OverlayTrigger
-                overlay={<Tooltip id={`tooltip-top`}>allow</Tooltip>}
-              >
-                <Form.Group as={Col} id="allowSplitOffer">
-                  <Form.Check
-                    onChange={this.onSwitchSplitOffer}
-                    type="switch"
-                    id="custom-switch2"
-                    label="allow split offer"
-                    checked={this.state.allow_split_offer}
-                  />
-                </Form.Group>
-              </OverlayTrigger>
-            </Form.Row>
+            
 
             <OverlayTrigger
               overlay={<Tooltip id={`tooltip-top`}>allow</Tooltip>}
@@ -364,7 +338,7 @@ class PostOffer extends Component {
                 type="submit"
                 onClick={this.submitHandler}
               >
-                Post Offer
+                Post Counter  Offer
               </Button>
             </OverlayTrigger>
           </Form>

@@ -41,46 +41,59 @@ class SignUpForm extends Component {
         if (data.password && data.confirm_password &&
             data.password !== data.confirm_password) {
             this.setState({show_pass_error: true})
-        }
-        this.props.firebase
-            .doCreateUserWithEmailAndPassword(data.username, data.password)
-            .then(authUser => {
-
-                this.setState({oauth_type : 3})
-                axios.post(process.env.REACT_APP_ROOT_URL +'/user', this.state).then((res) => {
-                    if (res.status === 200) {
-                        this.props.firebase.doSendEmailVerification();
-                        this.props.history.push("/verifyemail");
-                    }
-                });
+        } else {
+            this.setState({oauth_type: 3});
+            const data = this.state;
+            axios.post(process.env.REACT_APP_ROOT_URL +'/user', data).
+            then((res) => {
+                if (res.status === 200) {
+                    this.props.firebase
+                        .doCreateUserWithEmailAndPassword(this.state.username, this.state.password)
+                        .then(authUser => {
+                            this.props.firebase.doSendEmailVerification();
+                            this.props.history.push("/verifyemail");
+                        })
+                        .catch(error => {
+                            this.setState({ error });
+                        });
+                }
             })
-            .catch(error => {
-                this.setState({ error });
-            });
+                .catch(error => {
+                    {error.response && this.setState({ error : {message : error.response && error.response.data.message }})};
+                });
+        }
+
+
     }
 
     onSubmitGoogle = (event) => {
         event.preventDefault();
-        this.props.firebase
-            .doSignInWithGoogle()
-            .then(socialAuthUser => {
-                this.setState({ error: null });
-                this.setState({oauth_type : 1});
-                this.setState({username : socialAuthUser.user.email});
-                this.setState({nickname : socialAuthUser.user.email});
-                axios.post(process.env.REACT_APP_ROOT_URL +'/user', this.state).then((res) => {
-                    if (res.status === 200) {
-                        this.props.firebase.doSendEmailVerification();
-                        this.props.history.push("/verifyemail");
-                    }
-                });
+
+                this.props.firebase
+                    .doSignInWithGoogle()
+                    .then(socialAuthUser => {
+                        this.setState({error: null});
+                        this.setState({oauth_type: 1});
+                        this.setState({username: socialAuthUser.user.email});
+                        this.setState({nickname: socialAuthUser.user.email});
+                        axios.post(process.env.REACT_APP_ROOT_URL +'/user', this.state).then((res) => {
+                            if (res.status === 200) {
+                                this.props.firebase.doSendEmailVerification();
+                                this.props.history.push("/verifyemail");
+                            }
+                    })
+                    .catch(error => {
+                        if (error.code === ERROR_CODE_ACCOUNT_EXISTS) {
+                            error.message = ERROR_MSG_ACCOUNT_EXISTS;
+                        }
+                        this.setState({ error });
+                    });
+
+
             })
-            .catch(error => {
-                if (error.code === ERROR_CODE_ACCOUNT_EXISTS) {
-                    error.message = ERROR_MSG_ACCOUNT_EXISTS;
-                }
-                this.setState({ error });
-            });
+        // });
+
+
     }
 
     onSubmitFacebook = (event) => {
@@ -198,11 +211,11 @@ class SignUpForm extends Component {
 
             </Form>
             <Form onSubmit={this.onSubmitGoogle}>
-                <Button type="submit" variant="danger" >Sign Up with Google</Button>
+                <Button type="submit" variant="danger" >Sign In with Google</Button>
             </Form>
                 <p></p>
             <Form onSubmit={this.onSubmitFacebook}>
-                <Button type="submit">Sign Up with Facebook</Button>
+                <Button type="submit">Sign In with Facebook</Button>
             </Form>
                 {this.state.error && <p>{this.state.error.message}</p>}
             </Card.Body>

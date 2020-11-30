@@ -21,7 +21,7 @@ function sendRequest(type, route, data) {
     }
 
     return $.ajax({
-        url: process.env.REACT_APP_ROOT_URL_SLASH + route,
+        url: process.env.REACT_APP_ROOT_URL + route,
         data: formData,
         type,
         processData: false,
@@ -46,7 +46,7 @@ export function constructHttpRequest(type, route, data = null) {
                 });
             }
             return $.ajax({
-                url: process.env.REACT_APP_ROOT_URL_SLASH + paramRoute,
+                url: process.env.REACT_APP_ROOT_URL + paramRoute,
                 type: type,
                 xhrFields: {
                     withCredentials: true,
