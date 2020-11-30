@@ -24,4 +24,10 @@ public class CounterOfferServiceImpl implements CounterOfferService  {
 		return  counterOffer.createCounterOffer(offer, userId, offerId);
 	}
 
+
+	@Override
+	public Offer getOffer(Integer id) {
+		return counterOffer.getOffer(id);
+	}
+
 }

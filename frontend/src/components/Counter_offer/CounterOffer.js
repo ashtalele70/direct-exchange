@@ -1,206 +1,154 @@
 import React, { Component } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { Col, Modal } from "react-bootstrap";
-import Container from "react-bootstrap/Container";
+import {
+  Col,
+  Modal,
+  Container,
+  Button,
+  Form,
+  Tooltip,
+  OverlayTrigger,
+} from "react-bootstrap";
 import axios from "axios";
 import CurrencyInput from "react-currency-input";
-import Tooltip from "react-bootstrap/Tooltip";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 
 class CounterOffer extends Component {
   constructor(props) {
     super(props);
     this.state = {
       show: false,
-      bankCurrency: "USD",
-      bankCountry: "United States",
-      source_country: "United States",
-      source_currency: "USD",
-      remit_amount: "50.00",
-      destination_country: "India",
-      destination_currency: "INR",
-      exchange_rate: "76.12",
-      expiration_date: "2022-01-02",
-      allow_counter_offer: 1,
-      allow_split_offer: 1,
+      exchange_rate: "",
+      expiration_date: "",
+     
       offer_status: "Pending",
       is_counter: 0,
-      rates: "",
+      rates: [],
       amount: "0.00",
       remit_amount_destination: 0,
-      user_id: "62",
-      source_bank: false,
-      destination_bank: false,
-      bank_message: "",
-      close: false,
+      user_id: localStorage.getItem("userId"),
+      source_bank_message: "",
+      destination_bank_message: "",
+      Og_offer_det: {}
     };
   }
 
   componentDidMount() {
     this.getRates();
-  }
-
-  getInitialState() {
-    return { amount: "0.00" };
+    this.getOgOfferDet();
+   
   }
 
   handleChange = (event, maskedvalue, floatvalue) => {
+    console.log(maskedvalue * Number(this.state.exchange_rate));
     this.setState({
       amount: maskedvalue,
       remit_amount_destination: maskedvalue * this.state.exchange_rate,
     });
   };
 
-  exchageRate() {
-    var rates = this.state.rates;
-    if (
-      this.state.source_currency !== "" &&
-      this.state.destination_currency !== ""
-    ) {
-      this.state.rates.map((gh, i) => {
-        if (
-          this.state.source_currency === gh.source_currency &&
-          this.state.destination_currency === gh.destination_currency
-        ) {
-          console.log(gh);
-          this.setState({ exchange_rate: gh.rate });
-        }
-      });
-    }
-  }
-
-  sourceCurrencyChange = (event) => {
-    this.setState({ source_currency: event.target.value }, () => {
-      this.exchageRate();
-    });
-  };
-
-  hideModal = () => {
-    this.setState({ show: false });
-  };
-
-  sourceCountryChange = (event) => {
-    this.setState({ source_country: event.target.value }, () => {
-      let params = new URLSearchParams();
-      params.set("source_country", this.state.source_country);
-      params.set("source_currency", this.state.source_currency);
-      params.set("bank_type", 1);
-      params.set("user_id", this.state.user_id);
-      axios
-        .get(process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString())
-        .then((res) => {
-          if (res.status === 200) {
-            if (res.data.length !== 0) {
-              this.setState({ source_bank: true });
-            } else {
-              var message =
-                this.state.bank_message +
-                " \n country: " +
-                this.state.source_currency +
-                " currency: " +
-                this.state.source_country;
-
-              this.setState({ bank_message: message });
-            }
-          }
-        })
-        .catch((err) => {});
-    });
-  };
-
-  destinationCurrencyChange = (event) => {
-    this.setState({ destination_currency: event.target.value }, () => {
-      this.exchageRate();
-    });
-  };
-
-  destinationCountryChange = (event) => {
-    this.setState({ destination_country: event.target.value }, () => {
-      let params = new URLSearchParams();
-      params.set("source_country", this.state.destination_country);
-      params.set("source_currency", this.state.destination_currency);
-      params.set("bank_type", 2);
-      params.set("user_id", this.state.user_id);
-      axios
-        .get(process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString())
-        .then((res) => {
-          if (res.status === 200) {
-            if (res.data.length !== 0) {
-              this.setState({ destination_bank: true });
-            } else {
-              var message =
-                this.state.bank_message +
-                "\ncountry: " +
-                this.state.destination_country +
-                " currency: " +
-                this.state.destination_currency;
-              console.log(message);
-              this.setState({ bank_message: message });
-            }
-          }
-        })
-        .catch((err) => {});
-    });
-  };
-
-  submitHandler = (event) => {
-    var values = {
-      user_id: "62",
-      source_country: this.state.source_country,
-      source_currency: this.state.source_currency,
-      remit_amount: this.state.amount,
-      destination_country: this.state.destination_country,
-      destination_currency: this.state.destination_currency,
-      exchange_rate: this.state.exchange_rate,
-      expiration_date: this.state.expiration_date,
-      allow_counter_offer: this.state.allow_counter_offer,
-      allow_split_offer: this.state.allow_split_offer,
-      offer_status: "PENDING",
-      is_counter: 0,
-    };
-    const a=45;
-    const b=13;
-    console.log(values);
-    if ( 1==1
-    //   this.state.source_bank === true &&
-    //   this.state.destination_bank === true
-    ) {
-      axios
-        .post(process.env.REACT_APP_ROOT_URL + "/counterOffer/" +a+"/"+b, values)
-        .then((res) => {
-          if (res.status === 200) {
-            console.log("Bananayaya");
-            if (res.data) {
-              console.log(res.data);
-            }
-          }
-        })
-        .catch((err) => {});
-    } else {
-      event.preventDefault();
-      this.setState({ show: true });
-    }
-  };
-  getRates = () => {
-    axios.defaults.headers.common["x-auth-token"] = localStorage.getItem(
-      "token"
-    );
-
+  getOgOfferDet= () => {
     axios
-      .get(process.env.REACT_APP_ROOT_URL + "/rates")
+      .get(process.env.REACT_APP_ROOT_URL + "/getOffer/63" )
       .then((res) => {
         if (res.status === 200) {
           if (res.data) {
             console.log(res.data);
-            this.setState({ rates: res.data });
+            this.setState({ Og_offer_det: res.data });
           }
         }
       })
       .catch((err) => {});
   };
-  render() {
+  getInitialState() {
+    return { amount: "0.00" };
+  }
+
+ 
+  submitHandler = (event) => {
+    var values = {
+      user_id: this.state.user_id,
+      source_country: this.state.Og_offer_det.destination_country,
+      source_currency: this.state.Og_offer_det.destination_currency,
+      remit_amount: this.state.amount,
+      destination_country: this.state.Og_offer_det.source_country,
+      destination_currency: this.state.Og_offer_det.source_currency,
+      exchange_rate: this.state.exchange_rate,
+      expiration_date: this.state.expiration_date,
+      allow_counter_offer: "1",
+      allow_split_offer: "0",
+      offer_status: "1",
+      is_counter: 1,
+    };
+    let og_offer_user_id= this.state.Og_offer_det.user_id;
+    let og_offer_id=this.state.Og_offer_det.id;
+    console.log("milk"+ og_offer_user_id + og_offer_id);
+    let money= this.state.Og_offer_det.remit_amount;
+ let myMon= this.state.remit_amount_destination;
+    if ( myMon>= 0.9*money && myMon<= 1.1*money)
+  {
+    console.log("enter back")
+      axios
+       .post(process.env.REACT_APP_ROOT_URL + "/counterOffer/" + og_offer_user_id+"/"+og_offer_id, values)
+      // .post("http://localhost:8080/counterOffer/67/63", values)
+       .then((res) => {
+          if (res.status === 200) {
+            console.log("kiara" + res)
+           // this.props.history.push("/postoffer");
+          }
+        })
+        .catch((err) => {});
+    } else {
+      console.log("enter front")
+      event.preventDefault();
+      this.setState({ show: true });
+    }
+  };
+
+
+
+  getRates = () => {
+    axios
+      .get(process.env.REACT_APP_ROOT_URL + "/rates")
+      .then((res) => {
+        if (res.status === 200) {
+          if (res.data) {
+
+            console.log("hello beaty")
+            console.log(res.data);
+            this.setState({ rates: res.data });
+            this.exchageRate();
+          }
+        }
+      })
+      .catch((err) => {});
+  };
+
+  exchageRate() {
+    
+      this.state.rates.map((gh) => {
+       
+        if (
+          this.state.Og_offer_det.destination_currency == gh.source_currency &&
+          this.state.Og_offer_det.source_currency == gh.destination_currency
+        ) {
+         
+          this.setState({ exchange_rate: gh.rate });
+          
+         // return gh.rate;
+        }
+      });
+    
+  }
+
+   
+    render() {
+
+      let a =this.state.Og_offer_det.exchange_rate;
+     
+      
+      
+ 
     return (
+      
       <div style={{ paddingTop: 10 }}>
         <Container className="m-5 d-flex justify-content-center">
           <Form>
@@ -208,82 +156,45 @@ class CounterOffer extends Component {
               <Form.Group as={Col} controlId="fromCurrency">
                 <Form.Label>From (Currency) </Form.Label>
                 <Form.Control
-                  as="select"
-                  defaultValue="Choose..."
-                  onChange={this.sourceCurrencyChange}
+                   value={this.state.Og_offer_det.destination_currency}
+                   aria-describedby="basic-addon2"
+                   readOnly="true"
                 >
-                  <option>Choose</option>
-                  {this.state.rates &&
-                    this.state.rates.map((e, key) => {
-                      return (
-                        <option key={key} value={e.Key}>
-                          {e.source_currency}
-                        </option>
-                      );
-                    })}
                 </Form.Control>
               </Form.Group>
 
               <Form.Group as={Col} controlId="fromCountry">
                 <Form.Label>From (Country) </Form.Label>
                 <Form.Control
-                  as="select"
-                  defaultValue="Choose..."
-                  onChange={this.sourceCountryChange}
+                   value={this.state.Og_offer_det.destination_country}
+                   aria-describedby="basic-addon2"
+                   readOnly="true"
                 >
-                  <option>Choose</option>
-                  {this.state.rates &&
-                    this.state.rates.map((e, key) => {
-                      return (
-                        <option key={key} value={e.Key}>
-                          {e.source_country}
-                        </option>
-                      );
-                    })}
                 </Form.Control>
               </Form.Group>
-            </Form.Row>
+            </Form.Row>  
             <Form.Row>
               <Form.Group as={Col} controlId="toCurrency">
                 <Form.Label>To (Currency)</Form.Label>
                 <Form.Control
-                  as="select"
-                  defaultValue="Choose..."
-                  onChange={this.destinationCurrencyChange}
+                   value={this.state.Og_offer_det.source_currency}
+                   aria-describedby="basic-addon2"
+                   readOnly="true"
                 >
-                  <option>Choose</option>
-
-                  {this.state.rates &&
-                    this.state.rates.map((e, key) => {
-                      return (
-                        <option key={key} value={e.Key}>
-                          {e.destination_currency}
-                        </option>
-                      );
-                    })}
                 </Form.Control>
               </Form.Group>
 
               <Form.Group as={Col} controlId="toCountry">
                 <Form.Label>To (Country)</Form.Label>
                 <Form.Control
-                  as="select"
-                  defaultValue="Choose..."
-                  onChange={this.destinationCountryChange}
+                   value={this.state.Og_offer_det.source_country}
+                   aria-describedby="basic-addon2"
+                   readOnly="true"
                 >
-                  <option>Choose</option>
-
-                  {this.state.rates &&
-                    this.state.rates.map((e, key) => {
-                      return (
-                        <option key={key} value={e.Key}>
-                          {e.destination_country}
-                        </option>
-                      );
-                    })}
                 </Form.Control>
               </Form.Group>
             </Form.Row>
+
             <Form.Row>
               <Form.Group as={Col} controlId="sendAmount">
                 <Form.Label> Send amount &nbsp; </Form.Label>
@@ -301,6 +212,7 @@ class CounterOffer extends Component {
                   type="name"
                   readOnly="readOnly"
                   value={this.state.exchange_rate}
+    
                 />
               </Form.Group>
               <Form.Group as={Col} controlId="recieveAmount">
@@ -323,9 +235,7 @@ class CounterOffer extends Component {
                 />
               </Form.Group>
             </Form.Row>
-
-          
-
+              
             <OverlayTrigger
               overlay={<Tooltip id={`tooltip-top`}>allow</Tooltip>}
             >
@@ -340,21 +250,7 @@ class CounterOffer extends Component {
           </Form>
         </Container>
 
-        <Modal show={this.state.show} onHide={this.hideModal} animation={false}>
-          <Modal.Header>
-            <Modal.Title>Error</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <b>Please add bank details for</b>
-            {this.state.bank_message}
-          </Modal.Body>
-
-          <Modal.Footer>
-            <Button variant="secondary" onClick={this.hideModal}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        
       </div>
     );
   }

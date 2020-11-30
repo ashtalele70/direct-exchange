@@ -1,5 +1,7 @@
 package edu.sjsu.directexchange.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
@@ -29,18 +31,28 @@ public class CounterOfferDaoImpl implements CounterOfferDao {
 		
 		
 	Offer nOffer= entityManager.merge(offer);
-		
+		System.out.println(nOffer.getId());
 	Counter_offer cof = new Counter_offer();
 		
 	cof.setCounter_Offer_id(nOffer.getId());
 	cof.setOffer_id(offerId);
-	cof.setUser_id(nOffer.getUser_id());
-	cof.setOther_party_id(userId);
+	cof.setUser_id(userId);
+	cof.setOther_party_id(nOffer.getUser_id());
 	
 	entityManager.merge(cof);
 		
 			
 		return "Success";
+	}
+
+
+	@Override
+	public Offer getOffer(Integer id) {
+		
+		
+		Offer offe = entityManager.find(Offer.class, id);
+		
+		return offe;
 	}
 
 }

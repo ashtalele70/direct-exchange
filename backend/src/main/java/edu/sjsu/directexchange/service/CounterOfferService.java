@@ -10,6 +10,8 @@ public interface CounterOfferService {
 	
 	public String createCounterOffer(Offer offer , int userId, int offerId);
 
+	public Offer getOffer(Integer id);
+
 }
 
 

@@ -5,6 +5,8 @@ import edu.sjsu.directexchange.model.Offer;
 import edu.sjsu.directexchange.service.CounterOfferService;
 import edu.sjsu.directexchange.service.UserService;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,14 @@ public class CounterOfferController {
 		int userID = Integer.parseInt(userId);
 		int offerID = Integer.parseInt(offerId);
 	
-		 return counterOfferService.createCounterOffer( offer, userID, userID);
+	
+		 return counterOfferService.createCounterOffer( offer,  userID , offerID);
 	  }
+	
+
+	@GetMapping("/getOffer/{id}")
+	public Offer getAllOffers(@PathVariable Integer id) {
+		return counterOfferService.getOffer(id);
+	}
+	
 }
