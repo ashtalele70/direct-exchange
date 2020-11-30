@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { Col, Modal } from "react-bootstrap";
+import { Col, Alert } from "react-bootstrap";
 import Container from "react-bootstrap/Container";
 import axios from "axios";
 
@@ -44,16 +44,10 @@ class AddBank extends Component {
       .then((res) => {
         if (res.status === 200) {
           console.log("yay");
-          if (res.data) {
-            this.setState({ show: true });
-          }
+          this.setState({ show: true });
         }
       })
       .catch((err) => {});
-  };
-
-  hideModal = () => {
-    this.setState({ show: false });
   };
 
   getRates = () => {
@@ -77,6 +71,9 @@ class AddBank extends Component {
   render() {
     return (
       <div>
+        {this.state.show == true && <Alert variant="success" onClose={() => this.setState({ show: false })} dismissible>
+          Bank Added Successfully
+        </Alert>}
         <Container className="m-5 d-flex justify-content-center">
           <Form>
             <Form.Row>
@@ -178,8 +175,8 @@ class AddBank extends Component {
                   }
                 >
                   <option value="1">{"Sending"}</option>
-                  <option value="2">{"Recieving"}</option>
-                  <option value="3">{"Sending/Recieving"}</option>
+                  <option value="2">{"Receiving"}</option>
+                  <option value="3">{"Sending/Receiving"}</option>
                   );
                 </Form.Control>
               </Form.Group>
@@ -192,21 +189,7 @@ class AddBank extends Component {
               Add Bank
             </Button>
           </Form>
-        </Container>
-        <Modal show={this.state.show} onHide={this.hideModal} animation={false}>
-          <Modal.Header>
-            <Modal.Title>Success</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <b>Bank Added Successfully</b>
-          </Modal.Body>
-
-          <Modal.Footer>
-            <Button variant="secondary" onClick={this.hideModal}>
-              OK
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        </Container>        
       </div>
     );
   }

@@ -19,7 +19,11 @@ export function OfferDashboardComponent() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await getAllOffers();
+<<<<<<< Updated upstream
+            const response = await getAllOffers({"id": localStorage.getItem("userId")});
+=======
+            const response = await getAllOffers({"id": localStorage.getItem("user_id")});
+>>>>>>> Stashed changes
             setOffers(response);
             setAllOffers(response);
         }
@@ -105,7 +109,7 @@ export function OfferDashboardComponent() {
     }
 
     if (offers) {
-        let pageCount = (offers.length / itemsPerPage) + 1;
+        let pageCount = ((offers.length-1) / itemsPerPage) + 1;
         for (let number = 1; number <= pageCount; number++) {
             items.push(
                 <Pagination.Item key={number} active={number === active}>
@@ -282,3 +286,4 @@ export function OfferDashboardComponent() {
         </Container>
     )
 }
+

@@ -1,17 +1,23 @@
 import React, { Component } from "react";
 import { Route } from "react-router-dom";
 import "../App.css";
-import Navbar from "./Navbar/Navbar";
 import SignUp from "./SignUp/SignUp";
 import Login from "./Login/Login";
+import Navbar from "./Navbar/Navbar";
 import Logout from "./Logout/Logout";
 import Verify from "./EmailVerification/EmailVerification";
 import Rates from "./Rates/Rates";
 import PostOffer from "./PostOffer/PostOffer";
 import AddBank from "./Bank/AddBank";
 import { OfferDashboardComponent } from "./OfferDashboard/offerDashboardComponent";
+<<<<<<< Updated upstream
+import { MyOffersComponent } from "./MyOffers/myOffersComponent";
 import { withAuthentication } from "./Session/AuthUserContext";
 import AutoMatch from "./AutoMatch/AutoMatch";
+
+=======
+import {withAuthentication} from "./Session/AuthUserContext";
+>>>>>>> Stashed changes
 
 class Home extends Component {
   constructor(props) {
@@ -27,7 +33,8 @@ class Home extends Component {
             <Route path="/verifyemail" component={Verify} />
             <Route path="/rates" component={Rates} />
             <Route path="/postoffer" component={PostOffer} />
-            <Route path="/offerDashboard" component={OfferDashboardComponent} />
+            <Route path="/offerDashboard" component={OfferDashboardComponent} /> 
+            <Route path="/myOffers" component={MyOffersComponent} />
             <Route path="/addbank" component={AddBank} />
             <Route path="/logout" component={Logout} />
             <Route path="/autoMatch" component={AutoMatch} />
@@ -35,7 +42,7 @@ class Home extends Component {
         )}
         {!this.props.firebase.auth.currentUser && (
           <div>
-            <Route path="/" component={Navbar} />
+            {/* <Route path="/" component={Navbar} /> */}
             <Route path="/signup" component={SignUp} />
             <Route path="/login" component={Login} />
             <Route path="/verifyemail" component={Verify} />

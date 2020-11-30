@@ -1,6 +1,5 @@
 package edu.sjsu.directexchange.controller;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -28,13 +27,11 @@ public class OfferController {
 	@PostMapping("/postoffer")
 	@ResponseStatus(HttpStatus.OK)
 	public void postOffer(@RequestBody Offer offer ) {
-		
 		offerService.postOffer(offer);
-		
 	}
 	
 	@GetMapping("/getAllOffers")
-	public List<Offer> getAllOffers(@RequestParam(name = "id", required = false) Integer id) {
+	public List<Offer> getAllOffers(@RequestParam(name = "id") Integer id) {
 		return offerService.getAllOffers(id);
 	}
 
@@ -47,4 +44,9 @@ public class OfferController {
 	public Set<SplitOffer> getSplitMatches(@RequestParam(name = "id") Integer id) {
 		return offerService.getSplitMatches(id);
 	}
+	
+	@GetMapping("/getMyOffers")
+	public List<Offer> getMyOffers(@RequestParam(name = "id") Integer id) {
+		return offerService.getMyOffers(id);
+	}	
 }
