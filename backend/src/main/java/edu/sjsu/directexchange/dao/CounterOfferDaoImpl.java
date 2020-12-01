@@ -55,4 +55,17 @@ public class CounterOfferDaoImpl implements CounterOfferDao {
 		return offe;
 	}
 
+	
+	@Override
+	public List<Offer> getAllCounterOffers(Integer id) {
+		
+		Query query2 = entityManager.createQuery("from Offer where is_counter=1 and id in (select counter_offer_id from Counter_offer where offer_id=:id)")
+				.setParameter("id", id);
+			
+		List<Offer> offee = query2.getResultList();
+		
+		
+		return offee;
+	}
+
 }

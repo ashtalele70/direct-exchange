@@ -34,4 +34,9 @@ public class CounterOfferController {
 		return counterOfferService.getOffer(id);
 	}
 	
+	@GetMapping("/getAllCounterOffers/{id}")
+	public List<Offer> getAllCounterOffers(@PathVariable Integer id) {
+		return counterOfferService.getAllCounterOffers(id);
+	}
+	
 }

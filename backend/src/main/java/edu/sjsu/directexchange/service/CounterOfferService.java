@@ -12,6 +12,8 @@ public interface CounterOfferService {
 
 	public Offer getOffer(Integer id);
 
+	public List<Offer> getAllCounterOffers(Integer id);
+
 }
 
 

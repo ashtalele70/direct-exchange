@@ -30,4 +30,11 @@ public class CounterOfferServiceImpl implements CounterOfferService  {
 		return counterOffer.getOffer(id);
 	}
 
+
+	@Override
+	public List<Offer> getAllCounterOffers(Integer id) {
+		// TODO Auto-generated method stub
+		return counterOffer.getAllCounterOffers( id);
+	}
+
 }
