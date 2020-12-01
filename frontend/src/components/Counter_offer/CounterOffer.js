@@ -18,8 +18,8 @@ class CounterOffer extends Component {
       show: false,
       exchange_rate: "",
       expiration_date: "",
-     showbank: false,
-     showMon:false,
+      showbank: false,
+      showMon:false,
       offer_status: "Pending",
       is_counter: 0,
       rates: [],
@@ -111,7 +111,7 @@ class CounterOffer extends Component {
 
   getOgOfferDet= () => {
     axios
-      .get(process.env.REACT_APP_ROOT_URL + "/getOffer/63" )
+      .get(process.env.REACT_APP_ROOT_URL + "/getOffer/" + this.props.location.parentOfferId )
       .then((res) => {
         if (res.status === 200) {
           if (res.data) {
@@ -142,8 +142,8 @@ class CounterOffer extends Component {
       destination_country: this.state.Og_offer_det.source_country,
       destination_currency: this.state.Og_offer_det.source_currency,
       exchange_rate: this.state.exchange_rate,
-      expiration_date: this.state.expiration_date,
-      allow_counter_offer: "1",
+      expiration_date: Date.now(),
+      allow_counter_offer: "0",
       allow_split_offer: "0",
       offer_status: "1",
       is_counter: 1,
@@ -306,18 +306,18 @@ class CounterOffer extends Component {
                 />
               </Form.Group>
             </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col} controlId="expiryDate">
-                <Form.Label>Expiry Date for the offer</Form.Label>
-                <Form.Control
-                  type="date"
-                  placeholder="Expiry Date for the offer"
-                  onChange={(event) =>
-                    this.setState({ expiration_date: event.target.value })
-                  }
-                />
-              </Form.Group>
-            </Form.Row>
+            {/*<Form.Row>*/}
+            {/*  <Form.Group as={Col} controlId="expiryDate">*/}
+            {/*    <Form.Label>Expiry Date for the offer</Form.Label>*/}
+            {/*    <Form.Control*/}
+            {/*      type="date"*/}
+            {/*      placeholder="Expiry Date for the offer"*/}
+            {/*      onChange={(event) =>*/}
+            {/*        this.setState({ expiration_date: event.target.value })*/}
+            {/*      }*/}
+            {/*    />*/}
+            {/*  </Form.Group>*/}
+            {/*</Form.Row>*/}
               
             <OverlayTrigger
               overlay={<Tooltip id={`tooltip-top`}>allow</Tooltip>}
