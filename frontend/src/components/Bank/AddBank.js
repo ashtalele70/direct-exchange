@@ -24,6 +24,7 @@ class AddBank extends Component {
 
   componentDidMount() {
     this.getRates();
+    this.getCurrencies();
   }
   submitHandler = (event) => {
     event.preventDefault();
@@ -68,6 +69,34 @@ class AddBank extends Component {
       .catch((err) => {});
   };
 
+  getCurrencies = () => {
+    axios
+        .get(process.env.REACT_APP_ROOT_URL + "/currencies")
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.data) {
+              this.setState({ currencies: res.data });
+            }
+          }
+        })
+        .catch((err) => {});
+  };
+
+  currencyChange = (event) => {
+    this.setState({ primary_currency : event.target.value });
+    axios
+        .get(process.env.REACT_APP_ROOT_URL + "/country?currency=" + event.target.value)
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.data) {
+              this.setState({ country: res.data });
+            }
+          }
+        })
+        .catch((err) => {});
+
+  };
+
   render() {
     return (
       <div>
@@ -94,39 +123,37 @@ class AddBank extends Component {
                 <Form.Control
                   as="select"
                   defaultValue="Choose..."
-                  onChange={(event) =>
-                    this.setState({ primary_currency: event.target.value })
-                  }
+                  onChange={this.currencyChange}
                 >
                   <option>Choose</option>
-                  {this.state.rates &&
-                    this.state.rates.map((e, key) => {
-                      return (
+                  {this.state.currencies
+                  &&
+                  this.state.currencies.map((e, key) => {
+                    return (
                         <option key={key} value={e.Key}>
-                          {e.source_currency}
+                          {e}
                         </option>
-                      );
-                    })}
+                    );
+                  })}
                 </Form.Control>
               </Form.Group>
               <Form.Group as={Col} controlId="fromCountry">
                 <Form.Label>Country</Form.Label>
                 <Form.Control
-                  as="select"
-                  defaultValue="Choose..."
-                  onChange={(event) =>
-                    this.setState({ country: event.target.value })
-                  }
+                    as="text"
+                    // value=
+                    readOnly="readOnly"
                 >
-                  <option>Choose</option>
-                  {this.state.rates &&
-                    [...new Set(this.state.rates)].map((e, key) => {
-                      return (
-                        <option key={key} value={e.Key}>
-                          {e.source_country}
-                        </option>
-                      );
-                    })}
+                  {/*<option>Choose</option>*/}
+                  {this.state.country}
+                  {/*{this.state.rates &&*/}
+                  {/*  [...new Set(this.state.rates)].map((e, key) => {*/}
+                  {/*    return (*/}
+                  {/*      <option key={key} value={e.Key}>*/}
+                  {/*        {e.source_country}*/}
+                  {/*      </option>*/}
+                  {/*    );*/}
+                  {/*  })}*/}
                 </Form.Control>
               </Form.Group>
             </Form.Row>
