@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "offer")
 public class Offer {
@@ -31,7 +33,8 @@ public class Offer {
 	@Column
 	private String source_currency;
 	
-	@Column
+
+	@Column(precision = 5, scale = 4)
 	private float remit_amount;
 	
 	@Column

@@ -31,5 +31,7 @@ public class AcceptedOfferController {
 	public List<AcceptedOffer> getAcceptedOffers(@RequestParam int user_id) {
 		return acceptedOfferService.getAcceptedOffers(user_id);
 	}
+	
+	
   
 }

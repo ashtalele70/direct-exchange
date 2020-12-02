@@ -24,16 +24,36 @@ public class AcceptedOffer {
   private float remit_amount;
 
   @Column
-  private String currency;
+  private String source_currency;
+  
+  public String getSource_currency() {
+	return source_currency;
+}
+
+public void setSource_currency(String source_currency) {
+	this.source_currency = source_currency;
+}
+
+public String getDestination_currency() {
+	return destination_currency;
+}
+
+public void setDestination_currency(String destination_currency) {
+	this.destination_currency = destination_currency;
+}
+
+@Column
+  private String destination_currency;
 
   public AcceptedOffer (){}
 
-  public AcceptedOffer(String match_uuid, int user_id, int offer_id, float remit_amount, String currency) {
+  public AcceptedOffer(String match_uuid, int user_id, int offer_id, float remit_amount, String source_currency, String destination_currency) {
     this.match_uuid = match_uuid;
     this.user_id = user_id;
     this.offer_id = offer_id;
     this.remit_amount = remit_amount;
-    this.currency = currency;
+    this.source_currency = source_currency;
+    this.destination_currency=destination_currency;
   }
 
   public int getId() {
@@ -76,11 +96,5 @@ public class AcceptedOffer {
     this.remit_amount = remit_amount;
   }
 
-  public String getCurrency() {
-    return currency;
-  }
-
-  public void setCurrency(String currency) {
-    this.currency = currency;
-  }
+ 
 }

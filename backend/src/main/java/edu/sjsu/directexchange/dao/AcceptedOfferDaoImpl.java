@@ -26,26 +26,58 @@ public class AcceptedOfferDaoImpl implements AcceptedOfferDao {
 	public void createAcceptedOffers(int offerId1, int offerId2, int offerId3) {
 
 		UUID uuid = UUID.randomUUID();
+		float OfferId3_remit_amount=0;
+		Offer offer3=null;
+		User user3=null;
 
 		Offer offer1 = entityManager.find(Offer.class, offerId1);
 		User user1 = entityManager.find(User.class, offer1.getUser_id());
-		AcceptedOffer acceptedOffer1 = new AcceptedOffer(uuid.toString(), user1.getId(), offerId1,
-				offer1.getRemit_amount(), offer1.getSource_currency());
-		entityManager.merge(acceptedOffer1);
-
+		
 		Offer offer2 = entityManager.find(Offer.class, offerId2);
 		User user2 = entityManager.find(User.class, offer2.getUser_id());
-		AcceptedOffer acceptedOffer2 = new AcceptedOffer(uuid.toString(), user2.getId(), offerId2,
-				offer2.getRemit_amount(), offer2.getSource_currency());
-		entityManager.merge(acceptedOffer2);
-		System.out.print("offerId3 " + offerId3);
+		
+		
+		
 		if (offerId3 != 0) {
-			Offer offer3 = entityManager.find(Offer.class, offerId3);
-			User user3 = entityManager.find(User.class, offer3.getUser_id());
-			AcceptedOffer acceptedOffer3 = new AcceptedOffer(uuid.toString(), user3.getId(), offerId3,
-					offer3.getRemit_amount(), offer3.getSource_currency());
-			entityManager.merge(acceptedOffer3);
+			 offer3 = entityManager.find(Offer.class, offerId3);
+			 user3 = entityManager.find(User.class, offer3.getUser_id());
+			OfferId3_remit_amount=offer3.getRemit_amount();
 		}
+		
+		System.out.println(offer1.getRemit_amount());
+		System.out.println(offer1.getId());
+		System.out.println(offer2.getRemit_amount());
+		System.out.println(OfferId3_remit_amount);
+		System.out.println(offer1.getExchange_rate());
+		System.out.println( (offer2.getRemit_amount()+ OfferId3_remit_amount)/offer1.getExchange_rate());
+		
+		
+		if (offer1.getRemit_amount() != (offer2.getRemit_amount()+ OfferId3_remit_amount)/offer1.getExchange_rate()) {
+			offer1.setRemit_amount((offer2.getRemit_amount()+ OfferId3_remit_amount)/offer1.getExchange_rate());
+			
+			System.out.println(offer1.getRemit_amount());
+		}
+		
+		
+		AcceptedOffer acceptedOffer1 = new AcceptedOffer(uuid.toString(), user1.getId(), offerId1,
+				offer1.getRemit_amount(), offer1.getSource_currency(),offer1.getDestination_currency());
+		entityManager.merge(acceptedOffer1);
+		offer1.setOffer_status(5);
+		
+		AcceptedOffer acceptedOffer2 = new AcceptedOffer(uuid.toString(), user2.getId(), offerId2,
+				offer2.getRemit_amount(), offer2.getSource_currency(),offer2.getDestination_currency());
+		entityManager.merge(acceptedOffer2);
+		offer2.setOffer_status(5);
+		System.out.print("offerId3 " + offerId3);
+		
+		if (offerId3 != 0) {
+			AcceptedOffer acceptedOffer3 = new AcceptedOffer(uuid.toString(), user3.getId(), offerId3,
+					offer3.getRemit_amount(), offer3.getSource_currency(),offer3.getDestination_currency());
+			entityManager.merge(acceptedOffer3);
+			offer3.setOffer_status(5);
+		}
+		
+	
 
 	}
 

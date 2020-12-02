@@ -25,6 +25,7 @@ class AutoMatch extends Component {
       offerId2: "",
       offerId3: "",
       show: false,
+      new_remit_amount: 0,
     };
   }
 
@@ -104,19 +105,26 @@ class AutoMatch extends Component {
       (offerId2.remit_amount + offerId3.remit_amount) / offerId2.exchange_rate
     );
     */
+    var matching_offer =
+      (offerId2.remit_amount + (offerId3 === 0 ? 0 : offerId3.remit_amount)) *
+      offerId2.exchange_rate;
 
-    if (
-      (offerId2.remit_amount + (offerId3 === 0) ? 0 : offerId3.remit_amount) /
-        offerId2.exchange_rate !=
-      this.state.remit_amount
-    ) {
-      this.setState({ show: true, offerId2: offerId2, offerId3: offerId3 });
+    if (matching_offer != this.state.remit_amount) {
+      console.log(matching_offer);
+      console.log(this.state.remit_amount);
+      this.setState({
+        show: true,
+        offerId2: offerId2,
+        offerId3: offerId3,
+        new_remit_amount: matching_offer,
+      });
     } else {
       this.AcceptOffer(offerId2.id, offerId3.id);
     }
   };
 
   AcceptOffer = (offerId2, offerId3) => {
+    this.setState({ show: false });
     let paramAccept = new URLSearchParams();
     paramAccept.set("offerId1", this.state.offerId);
     paramAccept.set("offerId2", offerId2);
@@ -268,11 +276,24 @@ class AutoMatch extends Component {
           <Modal.Header>
             <Modal.Title>Remit amount does not match </Modal.Title>
           </Modal.Header>
-          <Modal.Body>change remit amount to</Modal.Body>
+          <Modal.Body>
+            Your current offer is {this.state.remit_amount}
+            would you like to change your offer to {
+              this.state.new_remit_amount
+            }{" "}
+          </Modal.Body>
 
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.hideModal}>
-              Update and proceed
+            <Button
+              variant="secondary"
+              onClick={() => {
+                this.setState({ show: false });
+              }}
+            >
+              Close
+            </Button>
+            <Button variant="primary" onClick={this.AcceptOffer}>
+              Proceed
             </Button>
           </Modal.Footer>
         </Modal>
