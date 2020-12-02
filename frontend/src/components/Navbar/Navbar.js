@@ -26,6 +26,7 @@ class Navigation extends Component {
                             {this.props.firebase.auth.currentUser && <Nav.Link href="/AddBank">Add Bank</Nav.Link>}
                             {this.props.firebase.auth.currentUser && <Nav.Link href="/Rates">Exchange Rates</Nav.Link>}
                             {this.props.firebase.auth.currentUser && <Nav.Link href="/PostOffer">Post Exchange Offer</Nav.Link>}
+                            {this.props.firebase.auth.currentUser && <Nav.Link href="/viewTransactions">View Transactions</Nav.Link>}
                         </Nav>
                     <Nav className="mr-auto">
                     </Nav>

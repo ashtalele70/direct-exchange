@@ -55,8 +55,7 @@ class GetMyCounterOffers extends Component {
         /* <div class="form-group row" paddingright>
                     <div class="col-lg-3">        </div>
                     <div class="col-lg-3"> */
-        this.state.Offers_list.length > 2 ?
-          <Col xs={2} md={4} lg={6} className="mt-3">
+          <Col xs={this.state.Offers_list.length > 2 ? 2 : 8} md={this.state.Offers_list.length > 2 ? 4 : 10} lg={this.state.Offers_list.length > 2 ? 6 : 12} className="mt-3">
             <Card bg="light" border="secondary" className="mt-2">
               <Card.Body>
 
@@ -102,54 +101,7 @@ class GetMyCounterOffers extends Component {
               </Card.Body>
             </Card>
 
-          </Col> :
-          <Col xs={8} md={10} lg={12} className="mt-3">
-            <Card bg="light" border="secondary" className="mt-2">
-              <Card.Body>
-
-                <Card.Title className="text-center">OFFER {i + 1}</Card.Title>
-
-                <Card.Text className="float-right">
-                  <span className="font-weight-bold">Rating: <ReactStars
-                    count={5}
-                    value={item.ratings && item.ratings.length > 0 ? item.ratings[0].avgRating : 0}
-                    size={24}
-                    isHalf={true}
-                    emptyIcon={<FontAwesomeIcon icon={faStar} />}
-                    halfIcon={<FontAwesomeIcon icon={faStarHalf} />}
-                    fullIcon={<FontAwesomeIcon icon={faStar} />}
-                    edit={false}
-                    activeColor="#ffd700"
-                  />
-                  </span>
-                </Card.Text>
-                <Card.Text id="srcCountry">
-                  <span className="font-weight-bold">Source Country:</span> {item.source_country}
-                </Card.Text>
-                <Card.Text id="srcCurrency">
-                  <span className="font-weight-bold">Source Currency:</span> {item.source_currency}
-                </Card.Text>
-                <Card.Text id="destCountry">
-                  <span className="font-weight-bold">Destination Country:</span> {item.destination_country}
-                </Card.Text>
-                <Card.Text id="destCurrency">
-                  <span className="font-weight-bold">Destination Currency:</span> {item.destination_currency}
-                </Card.Text>
-                <Card.Text id="remitAmount">
-                  <span className="font-weight-bold">Remit Amount:</span> {item.remit_amount}
-                </Card.Text>
-                <Card.Text id="exchangeRate">
-                  <span className="font-weight-bold">Exchange Rate:</span> {item.exchange_rate}
-                </Card.Text>
-                <Card.Text id="expiryDate">
-                  <span className="font-weight-bold">Expiration Date:</span> {item.expiration_date}
-                </Card.Text>
-
-
-              </Card.Body>
-            </Card>
-
-          </Col >
+          </Col>
         //</div>
         //  </div>
         //  </div>

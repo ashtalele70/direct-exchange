@@ -15,6 +15,7 @@ import { OfferDashboardComponent } from "./OfferDashboard/offerDashboardComponen
 import { MyOffersComponent } from "./MyOffers/myOffersComponent";
 import { withAuthentication } from "./Session/AuthUserContext";
 import AutoMatch from "./AutoMatch/AutoMatch";
+import { TransactionComponent } from "./Transaction/transactionComponent";
 
 class Home extends Component {
   constructor(props) {
@@ -37,6 +38,7 @@ class Home extends Component {
             <Route path="/addbank" component={AddBank} />
             <Route path="/logout" component={Logout} />
             <Route path="/autoMatch" component={AutoMatch} />
+            <Route path="/viewTransactions" component={TransactionComponent} />
           </div>
         )}
         {!this.props.firebase.auth.currentUser && (
