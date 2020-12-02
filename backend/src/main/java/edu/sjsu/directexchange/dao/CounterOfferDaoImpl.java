@@ -1,5 +1,7 @@
 package edu.sjsu.directexchange.dao;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -27,22 +29,18 @@ public class CounterOfferDaoImpl implements CounterOfferDao {
 
 	@Override
 	@Transactional
-	public String createCounterOffer(Offer offer, int userId, int offerId) {
-		
-		
-	Offer nOffer= entityManager.merge(offer);
-		System.out.println(nOffer.getId());
-	Counter_offer cof = new Counter_offer();
-		
-	cof.setCounter_Offer_id(nOffer.getId());
-	cof.setOffer_id(offerId);
-	cof.setUser_id(userId);
-	cof.setOther_party_id(nOffer.getUser_id());
-	
-	entityManager.merge(cof);
-		
-			
-		return "Success";
+	public int createCounterOffer(Offer offer, int userId, int offerId) {
+
+		Offer nOffer= entityManager.merge(offer);
+		Counter_offer cof = new Counter_offer();
+
+		cof.setCounter_Offer_id(nOffer.getId());
+		cof.setOffer_id(offerId);
+		cof.setUser_id(userId);
+		cof.setOther_party_id(nOffer.getUser_id());
+
+		entityManager.merge(cof);
+		return nOffer.getId();
 	}
 
 
@@ -53,6 +51,13 @@ public class CounterOfferDaoImpl implements CounterOfferDao {
 		Offer offe = entityManager.find(Offer.class, id);
 		
 		return offe;
+	}
+
+	@Override
+	public void updateCounterOfferStatusToExpired(int id) {
+		Offer offer = entityManager.find(Offer.class, id);
+		offer.setOffer_status(3);
+		entityManager.merge(offer);
 	}
 
 }

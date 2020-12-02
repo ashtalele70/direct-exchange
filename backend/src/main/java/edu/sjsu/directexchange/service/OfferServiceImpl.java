@@ -40,6 +40,7 @@ public class OfferServiceImpl implements OfferService {
 	}
 	
 	@Override
+	@Transactional
 	public List<Offer> getMyOffers(Integer id) {
 		return offerDao.getMyOffers(id);
 	}

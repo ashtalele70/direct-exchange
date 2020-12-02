@@ -18,9 +18,9 @@ class CounterOffer extends Component {
       show: false,
       exchange_rate: "",
       expiration_date: "",
-     showbank: false,
-     showMon:false,
-      offer_status: "Pending",
+      showbank: false,
+      showMon:false,
+      offer_status: "4",
       is_counter: 0,
       rates: [],
       amount: "0.00",
@@ -28,14 +28,14 @@ class CounterOffer extends Component {
       user_id: localStorage.getItem("userId"),
       source_bank_message: "",
       destination_bank_message: "",
-      Og_offer_det: {}
+      Og_offer_det: {},
     };
   }
 
   componentDidMount() {
     //this.getRates();
     this.getOgOfferDet();
-   
+    this.submitHandler = this.submitHandler.bind(this);
   }
 
   sourceCountryChange = () => {
@@ -117,7 +117,7 @@ class CounterOffer extends Component {
 
   getOgOfferDet= () => {
     axios
-      .get(process.env.REACT_APP_ROOT_URL + "/getOffer/21" )
+      .get(process.env.REACT_APP_ROOT_URL + "/getOffer/" + this.props.location.parentOfferId )
       .then((res) => {
         if (res.status === 200) {
           if (res.data) {
@@ -141,6 +141,7 @@ class CounterOffer extends Component {
   };
  
   submitHandler = (event) => {
+    event.preventDefault();
     var values = {
       user_id: this.state.user_id,
       source_country: this.state.Og_offer_det.destination_country,
@@ -149,51 +150,56 @@ class CounterOffer extends Component {
       destination_country: this.state.Og_offer_det.source_country,
       destination_currency: this.state.Og_offer_det.source_currency,
       exchange_rate: this.state.exchange_rate,
-      expiration_date: this.state.expiration_date,
-      allow_counter_offer: "1",
+      expiration_date: Date.now(),
+      allow_counter_offer: "0",
       allow_split_offer: "0",
-      offer_status: "1",
+      offer_status: "4",
       is_counter: 1,
     };
-    let og_offer_user_id= this.state.Og_offer_det.user_id;
-    let og_offer_id=this.state.Og_offer_det.id;
-    
-    let money= this.state.Og_offer_det.remit_amount;
- let myMon= this.state.remit_amount_destination;
+    console.log(values.expiration_date);
+    let og_offer_user_id = this.state.Og_offer_det.user_id;
+    let og_offer_id = this.state.Og_offer_det.id;
+
+    let money = this.state.Og_offer_det.remit_amount;
+    let myMon = this.state.remit_amount_destination;
 
 
-    if ( myMon>= 0.9*money && myMon<= 1.1*money)
-  {
-    if (
-      this.state.source_bank_message === "" &&
-      this.state.destination_bank_message === ""
-    )
-    {
-  
-      axios
-       .post(process.env.REACT_APP_ROOT_URL + "/counterOffer/" + og_offer_user_id+"/"+og_offer_id, values)
-       .then((res) => {
-          if (res.status === 200) {
-           
-           // this.props.history.push("/postoffer");
-          }
-        })
-        .catch((err) => {});
-    } 
-    else {
-      console.log("bank fail")
+    if (myMon < 0.9 * money || myMon > 1.1 * money) {
       event.preventDefault();
-      this.setState({ showbank: true });
+      this.setState({showMon: true});
+    } else if (this.state.source_bank_message !== "" ||
+        this.state.destination_bank_message !== "") {
+      event.preventDefault();
+      this.setState({showbank: true});
+    } else {
+      console.log(values.expiration_date);
+      axios
+          .post(process.env.REACT_APP_ROOT_URL + "/counterOffer/" + og_offer_user_id + "/" + og_offer_id, values)
+          .then((res) => {
+            if (res.status === 200) {
+              this.props.history.push("/postoffer");
+               // setTimeout(() => {
+               //   axios
+               //       .get(process.env.REACT_APP_ROOT_URL + "/getOffer/" + res.data)
+               //       .then(res => {
+               //         if(res.status === 200) {
+               //           if(res.data.offer_status === 3) {
+               //             var params = new URLSearchParams();
+               //             params.set("id", res.data.id);
+               //             axios
+               //                 .put(process.env.REACT_APP_ROOT_URL + "/updateCounterOfferStatusToExpired?" + params.toString())
+               //           }
+               //         }
+               //       })
+               // } , 300000);
+
+              this.props.history.push("/myOffers")
+            }
+          })
+          .catch((err) => {
+          });
     }
   }
-    else {
-      console.log("mon fail")
-      event.preventDefault();
-      this.setState({ showMon: true });
-    
-    }
-   };
-
 
 
   getRates = () => {
@@ -237,7 +243,7 @@ class CounterOffer extends Component {
       
  
     return (
-      
+
       <div style={{ paddingTop: 10 }}>
         <Container className="m-5 d-flex justify-content-center">
           <Form>
@@ -317,18 +323,18 @@ class CounterOffer extends Component {
                 />
               </Form.Group>
             </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col} controlId="expiryDate">
-                <Form.Label>Expiry Date for the offer</Form.Label>
-                <Form.Control
-                  type="date"
-                  placeholder="Expiry Date for the offer"
-                  onChange={(event) =>
-                    this.setState({ expiration_date: event.target.value })
-                  }
-                />
-              </Form.Group>
-            </Form.Row>
+            {/*<Form.Row>*/}
+            {/*  <Form.Group as={Col} controlId="expiryDate">*/}
+            {/*    <Form.Label>Expiry Date for the offer</Form.Label>*/}
+            {/*    <Form.Control*/}
+            {/*      type="date"*/}
+            {/*      placeholder="Expiry Date for the offer"*/}
+            {/*      onChange={(event) =>*/}
+            {/*        this.setState({ expiration_date: event.target.value })*/}
+            {/*      }*/}
+            {/*    />*/}
+            {/*  </Form.Group>*/}
+            {/*</Form.Row>*/}
               
             <OverlayTrigger
               overlay={<Tooltip id={`tooltip-top`}>allow</Tooltip>}
