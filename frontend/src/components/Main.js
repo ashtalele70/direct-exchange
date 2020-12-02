@@ -9,11 +9,13 @@ import Verify from "./EmailVerification/EmailVerification";
 import Rates from "./Rates/Rates";
 import PostOffer from "./PostOffer/PostOffer";
 import CounterOffer from "./Counter_offer/CounterOffer";
+import GetMyCounterOffers from "./Counter_offer/GetMyCounterOffers";
 import AddBank from "./Bank/AddBank";
 import { OfferDashboardComponent } from "./OfferDashboard/offerDashboardComponent";
 import { MyOffersComponent } from "./MyOffers/myOffersComponent";
 import { withAuthentication } from "./Session/AuthUserContext";
 import AutoMatch from "./AutoMatch/AutoMatch";
+import { TransactionComponent } from "./Transaction/transactionComponent";
 
 class Home extends Component {
   constructor(props) {
@@ -30,11 +32,13 @@ class Home extends Component {
             <Route path="/rates" component={Rates} />
             <Route path="/postoffer" component={PostOffer} />
             <Route path="/counterOffer" component={CounterOffer} />
+            <Route path="/MycounterOffer" component={GetMyCounterOffers} />
             <Route path="/offerDashboard" component={OfferDashboardComponent} />
             <Route path="/myOffers" component={MyOffersComponent} />
             <Route path="/addbank" component={AddBank} />
             <Route path="/logout" component={Logout} />
             <Route path="/autoMatch" component={AutoMatch} />
+            <Route path="/viewTransactions" component={TransactionComponent} />
           </div>
         )}
         {!this.props.firebase.auth.currentUser && (

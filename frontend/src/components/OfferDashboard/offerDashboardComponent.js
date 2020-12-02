@@ -58,16 +58,6 @@ export function OfferDashboardComponent() {
         })
     }
 
-    const getOfferList = () => {
-        let list = [];
-        if ((srcCurrency == "" && destCurrency == "" && srcAmount == 0 && destAmount == 0) || offers.length == 0) {
-            allOffers.forEach(obj => list.push(obj));
-        } else {
-            offers.forEach(obj => list.push(obj));
-        }
-        return list;
-    }
-
     const [srcCurrency, setSrcCurrency] = useState("");
     const handleSrcCurrencyChange = async (e) => {
         setSrcCurrency(e);
@@ -75,9 +65,6 @@ export function OfferDashboardComponent() {
         filterCriteria["id"] = localStorage.getItem("userId");
         const response = await getFilteredOffers(filterCriteria);
         setOffers(response);
-        // setOffers(allOffers.filter(offer => {
-        //     return offer.source_currency == e;
-        // }));
     }
 
     const [destCurrency, setDestCurrency] = useState("");
@@ -87,9 +74,6 @@ export function OfferDashboardComponent() {
         filterCriteria["id"] = localStorage.getItem("userId");
         const response = await getFilteredOffers(filterCriteria);
         setOffers(response);
-        // setOffers(allOffers.filter(offer => {
-        //     return offer.destination_currency == e;
-        // }));
     }
 
     const [srcAmount, setSrcAmount] = useState(0);
@@ -99,9 +83,6 @@ export function OfferDashboardComponent() {
         filterCriteria["id"] = localStorage.getItem("userId");
         const response = await getFilteredOffers(filterCriteria);
         setOffers(response);
-        // setOffers(allOffers.filter(offer => {
-        //     return offer.remit_amount == Number(e.target.value);
-        // }));
     }
 
     const [destAmount, setDestAmount] = useState(0);
@@ -111,9 +92,6 @@ export function OfferDashboardComponent() {
         filterCriteria["id"] = localStorage.getItem("userId");
         const response = await getFilteredOffers(filterCriteria);
         setOffers(response);
-        // setOffers(allOffers.filter(offer => {
-        //     return (offer.remit_amount) * (offer.exchange_rate) == Number(e.target.value);
-        // }));
     }
 
     const handleClear = () => {
@@ -141,7 +119,7 @@ export function OfferDashboardComponent() {
         }
 
         offerList = Object.keys(offers).map(key =>
-            <Col xs={2} md={4} lg={6} className="mt-3">
+            <Col xs={offers.length > 2 ? 2 : 8} md={offers.length > 2 ? 4 : 10} lg={offers.length > 2 ? 6 : 12} className="mt-3">
                 <Card bg="light" border="secondary" className="mt-2">
                     <Card.Body>
                         <Card.Title className="text-center">OFFER {Number(key) + 1}</Card.Title>

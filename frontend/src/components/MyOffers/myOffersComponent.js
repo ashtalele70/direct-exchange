@@ -7,13 +7,13 @@ import { faStar, faStarHalf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { OFFER_STATUS, OFFER_STATUS_COLOR } from '../../constants/offerStatus';
 
-export function MyOffersComponent() {
+export function MyOffersComponent({ history }) {
     const [offers, setOffers] = useState([]);
     let offerList = [];
 
     useEffect(() => {
         async function fetchData() {
-            const response = await getMyOffers({"id": localStorage.getItem("userId")});
+            const response = await getMyOffers({ "id": localStorage.getItem("userId") });
             setOffers(response);
         }
         fetchData();
@@ -21,7 +21,7 @@ export function MyOffersComponent() {
 
     if (offers) {
         offerList = Object.keys(offers).map(key =>
-            <Col xs={2} md={4} lg={6} className="mt-3">
+            <Col xs={offers.length > 2 ? 2 : 8} md={offers.length > 2 ? 4 : 10} lg={offers.length > 2 ? 6 : 12} className="mt-3">
                 <Card bg="light" border="secondary" className="mt-2">
                     <Card.Body>
                         <Card.Title className="text-center">OFFER {Number(key) + 1}</Card.Title>
@@ -63,10 +63,10 @@ export function MyOffersComponent() {
                         </Card.Text>
                     </Card.Body>
                     {offers[key].offer_status === 1 &&
-                    <Card.Footer>
-                        <Button variant="outline-primary" >Show Counter Offers</Button>
-                        <Button variant="outline-primary" className="ml-5">Show Matching Offers</Button>
-                    </Card.Footer>}
+                        <Card.Footer>
+                            <Button variant="outline-primary" onClick={() => history.push({ pathname: "/MycounterOffer", state: { offerId: offers[key].id } })}>Show Counter Offers</Button>
+                            <Button variant="outline-primary" className="ml-5">Show Matching Offers</Button>
+                        </Card.Footer>}
                 </Card>
             </Col>
         );

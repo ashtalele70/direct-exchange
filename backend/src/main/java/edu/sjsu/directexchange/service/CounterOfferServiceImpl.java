@@ -30,6 +30,12 @@ public class CounterOfferServiceImpl implements CounterOfferService  {
 	}
 
 	@Override
+	public List<Offer> getAllCounterOffers(Integer id) {
+		// TODO Auto-generated method stub
+		return counterOffer.getAllCounterOffers( id);
+	}
+
+	@Override
 	@Transactional
 	public void updateCounterOfferStatusToExpired(int id) {
 
