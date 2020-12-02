@@ -5,9 +5,9 @@ import { Card, CardDeck, Container, Row, Col, Button, Badge } from 'react-bootst
 import ReactStars from "react-rating-stars-component";
 import { faStar, faStarHalf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { OFFER_STATUS } from '../../constants/offerStatus';
+import { OFFER_STATUS, OFFER_STATUS_COLOR } from '../../constants/offerStatus';
 
-export function MyOffersComponent() {
+export function MyOffersComponent({ history }) {
     const [offers, setOffers] = useState([]);
     let offerList = [];
 
@@ -25,7 +25,7 @@ export function MyOffersComponent() {
                 <Card bg="light" border="secondary" className="mt-2">
                     <Card.Body>
                         <Card.Title className="text-center">OFFER {Number(key) + 1}</Card.Title>
-                        <Card.Text><Badge variant={offers[key].offer_status == 1 ? "primary" : (offers[key].offer_status == 2 ? "success" : "danger")}>{OFFER_STATUS[offers[key].offer_status]}</Badge></Card.Text>
+                        <Card.Text><Badge variant={OFFER_STATUS_COLOR[offers[key].offer_status]}>{OFFER_STATUS[offers[key].offer_status]}</Badge></Card.Text>
                         <Card.Text className="float-right">
                             <span className="font-weight-bold">Rating: <ReactStars
                                 count={5}
@@ -62,10 +62,11 @@ export function MyOffersComponent() {
                             <span className="font-weight-bold">Expiration Date:</span> {offers[key].expiration_date}
                         </Card.Text>
                     </Card.Body>
+                    {offers[key].offer_status === 1 &&
                     <Card.Footer>
-                        <Button variant="outline-primary" >Show Counter Offers</Button>
+                        <Button variant="outline-primary" onClick={() => history.push({pathname: "/MycounterOffer", state: { offerId: offers[key].id }})}>Show Counter Offers</Button>
                         <Button variant="outline-primary" className="ml-5">Show Matching Offers</Button>
-                    </Card.Footer>
+                    </Card.Footer>}
                 </Card>
             </Col>
         );
