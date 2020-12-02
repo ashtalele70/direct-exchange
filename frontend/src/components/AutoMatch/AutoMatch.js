@@ -8,6 +8,7 @@ import {
   Col,
   Button,
   Modal,
+  Alert,
 } from "react-bootstrap";
 import axios from "axios";
 
@@ -15,18 +16,26 @@ class AutoMatch extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      offerId: 0,
+      remit_amount: 0,
       singleOffers: [],
       splitOffers: [],
       user: "",
       switch: true,
       offerId2: "",
       offerId3: "",
-      show: true,
+      show: false,
     };
   }
 
   componentDidMount() {
-    this.getMatchingOffers();
+    if (this.props.location.state) {
+      this.setState({
+        offerId: this.props.location.state.offerId,
+        remit_amount: this.props.location.state.remit_amount,
+      });
+      this.getMatchingOffers();
+    }
   }
   getUser = (user_id) => {
     axios
@@ -85,13 +94,31 @@ class AutoMatch extends Component {
     this.setState({ switch: switchValue });
   };
 
-  submitHandler = (offerId2, offerId3) => {
-    this.setState({ show: true, offerId2: offerId2, offerId3: offerId3 });
+  submitHandler = (offerId2, offerId3 = 0) => {
+    /*
+    console.log("hmok");
+    console.log(offerId2.remit_amount);
+    console.log(offerId3.remit_amount);
+    console.log(this.state.remit_amount);
+    console.log(
+      (offerId2.remit_amount + offerId3.remit_amount) / offerId2.exchange_rate
+    );
+    */
+
+    if (
+      (offerId2.remit_amount + (offerId3 === 0) ? 0 : offerId3.remit_amount) /
+        offerId2.exchange_rate !=
+      this.state.remit_amount
+    ) {
+      this.setState({ show: true, offerId2: offerId2, offerId3: offerId3 });
+    } else {
+      this.AcceptOffer(offerId2.id, offerId3.id);
+    }
   };
 
   AcceptOffer = (offerId2, offerId3) => {
     let paramAccept = new URLSearchParams();
-    paramAccept.set("offerId1", 45);
+    paramAccept.set("offerId1", this.state.offerId);
     paramAccept.set("offerId2", offerId2);
     if (offerId3 !== undefined) {
       paramAccept.set("offerId3", offerId3);
@@ -115,6 +142,14 @@ class AutoMatch extends Component {
   };
 
   render() {
+    {
+      this.state.singleOffers.length == 0 &&
+        this.state.splitOffers.length == 0 && (
+          <Alert className="mt-5" variant="danger">
+            No matching offers
+          </Alert>
+        );
+    }
     const singleOffers = this.state.singleOffers.map((offer, index) => (
       <div>
         <Card border="primary" style={{ width: "18rem" }}>
@@ -132,7 +167,7 @@ class AutoMatch extends Component {
               <b>Exchange Rate: </b>
               {offer.exchange_rate}
             </Card.Text>
-            <Button variant="primary" onClick={() => this.AcceptOffer(offer)}>
+            <Button variant="primary" onClick={() => this.submitHandler(offer)}>
               Accept
             </Button>
           </Card.Body>
@@ -194,7 +229,7 @@ class AutoMatch extends Component {
               <Button
                 variant="primary"
                 onClick={() =>
-                  this.AcceptOffer(offer.offers[0], offer.offers[1])
+                  this.submitHandler(offer.offers[0], offer.offers[1])
                 }
               >
                 Accept
