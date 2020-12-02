@@ -20,8 +20,8 @@ public class TransactionServiceImpl implements TransactionService {
 
 	@Override
 	@Transactional
-	public void postTransaction(Transaction transaction) {
-		transactionDao.postTransaction(transaction);
+	public String postTransaction(Transaction transaction) {
+		return transactionDao.postTransaction(transaction);
 	}
 
 }

@@ -32,8 +32,8 @@ public class TransactionController {
 	
 	@PostMapping("/posttransaction")
 	@ResponseStatus(HttpStatus.OK)
-	public void postTransaction(@RequestBody Transaction transaction ) {
-		transactionService.postTransaction(transaction);
+	public String postTransaction(@RequestBody Transaction transaction ) {
+		return transactionService.postTransaction(transaction);
 	}
 
 }

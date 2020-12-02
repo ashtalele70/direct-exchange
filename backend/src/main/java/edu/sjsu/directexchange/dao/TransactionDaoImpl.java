@@ -27,9 +27,12 @@ public class TransactionDaoImpl implements TransactionDao{
 	
 
 	@Override
-	public void postTransaction(Transaction transaction) {
+	public String postTransaction(Transaction transaction) {
 		
-		entityManager.merge(transaction);
+		Transaction mergedTransaction = entityManager.merge(transaction);
+		if(mergedTransaction != null) return "Success";
+		
+		return "Error";
 		
 	}
 
