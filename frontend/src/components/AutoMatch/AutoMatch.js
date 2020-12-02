@@ -7,6 +7,7 @@ import {
   Row,
   Col,
   Button,
+  Modal,
 } from "react-bootstrap";
 import axios from "axios";
 
@@ -18,6 +19,9 @@ class AutoMatch extends Component {
       splitOffers: [],
       user: "",
       switch: true,
+      offerId2: "",
+      offerId3: "",
+      show: true,
     };
   }
 
@@ -38,7 +42,7 @@ class AutoMatch extends Component {
   };
   getMatchingOffers = () => {
     let paramsSingle = new URLSearchParams();
-    paramsSingle.set("id", 1);
+    paramsSingle.set("id", 13);
 
     axios
       .get(
@@ -57,7 +61,7 @@ class AutoMatch extends Component {
       .catch((err) => {});
 
     let paramsSplit = new URLSearchParams();
-    paramsSplit.set("id", 1);
+    paramsSplit.set("id", 13);
 
     axios
       .get(
@@ -82,10 +86,16 @@ class AutoMatch extends Component {
   };
 
   submitHandler = (offerId2, offerId3) => {
+    this.setState({ show: true, offerId2: offerId2, offerId3: offerId3 });
+  };
+
+  AcceptOffer = (offerId2, offerId3) => {
     let paramAccept = new URLSearchParams();
     paramAccept.set("offerId1", 45);
     paramAccept.set("offerId2", offerId2);
-    paramAccept.set("offerId3", offerId3);
+    if (offerId3 !== undefined) {
+      paramAccept.set("offerId3", offerId3);
+    }
 
     axios
       .post(
@@ -122,10 +132,7 @@ class AutoMatch extends Component {
               <b>Exchange Rate: </b>
               {offer.exchange_rate}
             </Card.Text>
-            <Button
-              variant="primary"
-              onClick={() => this.submitHandler(offer.id)}
-            >
+            <Button variant="primary" onClick={() => this.AcceptOffer(offer)}>
               Accept
             </Button>
           </Card.Body>
@@ -187,7 +194,7 @@ class AutoMatch extends Component {
               <Button
                 variant="primary"
                 onClick={() =>
-                  this.submitHandler(offer.offers[0].id, offer.offers[1].id)
+                  this.AcceptOffer(offer.offers[0], offer.offers[1])
                 }
               >
                 Accept
@@ -202,25 +209,39 @@ class AutoMatch extends Component {
     }
 
     return (
-      <Container className="m-5 d-flex justify-content-center">
-        <Form>
-          <Form.Check
-            onChange={this.onSwitchAction}
-            type="switch"
-            id="custom-switch"
-            label="Show Split Offer"
-            checked={this.state.switch}
-          />
+      <div style={{ paddingTop: 10 }}>
+        <Container className="m-5 d-flex justify-content-center">
+          <Form>
+            <Form.Check
+              onChange={this.onSwitchAction}
+              type="switch"
+              id="custom-switch"
+              label="Show Split Offer"
+              checked={this.state.switch}
+            />
 
-          <Row className="mt-3 mb-5">
-            <Col xs={2} md={4} lg={6} className="mt-3">
-              {singleOffers}
-              <br />
-              {splitOffers}
-            </Col>
-          </Row>
-        </Form>
-      </Container>
+            <Row className="mt-3 mb-5">
+              <Col xs={2} md={4} lg={6} className="mt-3">
+                {singleOffers}
+                <br />
+                {splitOffers}
+              </Col>
+            </Row>
+          </Form>
+        </Container>
+        <Modal show={this.state.show} onHide={this.hideModal} animation={false}>
+          <Modal.Header>
+            <Modal.Title>Remit amount does not match </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>change remit amount to</Modal.Body>
+
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.hideModal}>
+              Update and proceed
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
     );
   }
 }
