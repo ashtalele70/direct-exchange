@@ -34,6 +34,17 @@ public class Transaction {
 
   @Column
   private int destination_bank_id;
+  
+  public float getService_fee() {
+	return service_fee;
+}
+
+public void setService_fee(float service_fee) {
+	this.service_fee = service_fee;
+}
+
+@Column
+  private float service_fee;
 
 public int getId() {
 	return id;
