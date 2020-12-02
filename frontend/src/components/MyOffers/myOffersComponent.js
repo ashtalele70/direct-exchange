@@ -7,7 +7,7 @@ import { faStar, faStarHalf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { OFFER_STATUS, OFFER_STATUS_COLOR } from '../../constants/offerStatus';
 
-export function MyOffersComponent() {
+export function MyOffersComponent({ history }) {
     const [offers, setOffers] = useState([]);
     let offerList = [];
 
@@ -64,7 +64,7 @@ export function MyOffersComponent() {
                     </Card.Body>
                     {offers[key].offer_status === 1 &&
                     <Card.Footer>
-                        <Button variant="outline-primary" >Show Counter Offers</Button>
+                        <Button variant="outline-primary" onClick={() => history.push({pathname: "/MycounterOffer", state: { offerId: offers[key].id }})}>Show Counter Offers</Button>
                         <Button variant="outline-primary" className="ml-5">Show Matching Offers</Button>
                     </Card.Footer>}
                 </Card>
