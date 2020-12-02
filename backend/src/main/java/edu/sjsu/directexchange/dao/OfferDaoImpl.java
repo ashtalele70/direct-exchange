@@ -38,7 +38,7 @@ public class OfferDaoImpl implements OfferDao{
 	
 	private void checkOfferExpiry(List<Offer> offers) {
 		Date currentDate = new Date(System.currentTimeMillis());
-		offers.forEach(offer -> {
+		offers.stream().filter(x -> x.getIs_counter() != 1).forEach(offer -> {
 			if (offer.getExpiration_date().before(currentDate)) {
 				offer.setOffer_status(3);
 				entityManager.merge(offer);

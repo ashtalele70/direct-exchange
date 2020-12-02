@@ -19,15 +19,20 @@ public class CounterOfferServiceImpl implements CounterOfferService  {
 
 
 	@Override
-	public String createCounterOffer(Offer offer, int userId, int offerId) {
+	public int createCounterOffer(Offer offer, int userId, int offerId) {
 	
 		return  counterOffer.createCounterOffer(offer, userId, offerId);
 	}
 
-
 	@Override
 	public Offer getOffer(Integer id) {
 		return counterOffer.getOffer(id);
+	}
+
+	@Override
+	@Transactional
+	public void updateCounterOfferStatusToExpired(int id) {
+
 	}
 
 }

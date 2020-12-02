@@ -20,7 +20,8 @@ public class CounterOfferController {
 
 	@PostMapping("/counterOffer/{userId}/{offerId}")
 	@ResponseStatus(HttpStatus.OK)
-	  public String createUser( @RequestBody Offer offer, @PathVariable String userId, @PathVariable String offerId) {
+	  public int createUser( @RequestBody Offer offer,
+												 @PathVariable String userId, @PathVariable String offerId) {
 		int userID = Integer.parseInt(userId);
 		int offerID = Integer.parseInt(offerId);
 	
@@ -32,6 +33,13 @@ public class CounterOfferController {
 	@GetMapping("/getOffer/{id}")
 	public Offer getAllOffers(@PathVariable Integer id) {
 		return counterOfferService.getOffer(id);
+	}
+
+	@PutMapping("/updateCounterOfferStatusToExpired")
+	@ResponseStatus(HttpStatus.OK)
+	public void updateCounterOfferStatusToExpired(@RequestParam Integer id) {
+		System.out.println("Method called");
+		counterOfferService.updateCounterOfferStatusToExpired(id);
 	}
 	
 }
