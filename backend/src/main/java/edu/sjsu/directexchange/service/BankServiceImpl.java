@@ -32,6 +32,12 @@ public class BankServiceImpl implements BankService {
 		bankDao.addBank(bank);
 		
 	}
+
+	@Override
+	public List<Bank> getBank(int user_id) {
+		
+		return bankDao.getBank(user_id);
+	}
 	
 	
 

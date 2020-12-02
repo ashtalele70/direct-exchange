@@ -12,41 +12,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.sjsu.directexchange.model.Bank;
-import edu.sjsu.directexchange.service.BankService;
+import edu.sjsu.directexchange.model.Offer;
+import edu.sjsu.directexchange.model.Rates;
+import edu.sjsu.directexchange.model.Transaction;
+import edu.sjsu.directexchange.service.TransactionService;
 
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
-public class BankController {
+public class TransactionController {
 	
 	@Autowired
-	private BankService bankService;
+	private TransactionService transactionService;
 	
-	
-	@GetMapping("/getuserbank")
+	@GetMapping("/gettransactions")
 	@ResponseStatus(HttpStatus.OK)
-	public List<Bank> getUserBank(@RequestParam("user_id") int user_id,
-			@RequestParam("source_country") String country,
-			@RequestParam("source_currency") String currency,
-			@RequestParam("bank_type") int bank_type) {
-		return bankService.getUserBank(user_id,country,currency,bank_type);
+	public List<Transaction> getTransaction(@RequestParam int user_id) {
+		return transactionService.getTransaction(user_id);
 	}
 	
-	@PostMapping("/addbank")
+	@PostMapping("/posttransaction")
 	@ResponseStatus(HttpStatus.OK)
-	public void addBank(@RequestBody Bank bank) {
-		
-		bankService.addBank(bank);
-		
+	public void postTransaction(@RequestBody Transaction transaction ) {
+		transactionService.postTransaction(transaction);
 	}
-	
-	@GetMapping("/getbank")
-	@ResponseStatus(HttpStatus.OK)
-	public List<Bank> getBank(@RequestParam("user_id") int user_id) {
-		
-		return bankService.getBank(user_id); 
-	}
+
 }
-
-
-

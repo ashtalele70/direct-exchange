@@ -43,4 +43,10 @@ public class BankDaoImpl implements BankDao {
 		
 	}
 
+	@Override
+	public List<Bank> getBank(int user_id) {
+		
+		return entityManager.createQuery("from Bank where user_id=:user_id").setParameter("user_id",user_id).getResultList();
+	}
+
 }
