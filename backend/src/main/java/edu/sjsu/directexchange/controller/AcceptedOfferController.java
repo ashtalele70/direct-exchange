@@ -1,6 +1,10 @@
 package edu.sjsu.directexchange.controller;
 
+import edu.sjsu.directexchange.model.AcceptedOffer;
 import edu.sjsu.directexchange.service.AcceptedOfferService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,4 +26,10 @@ public class AcceptedOfferController {
     acceptedOfferService.createAcceptedOffers(offerId1, offerId2, offerId3);
 
   }
+	@GetMapping("/getacceptedoffers")
+	@ResponseStatus(HttpStatus.OK)
+	public List<AcceptedOffer> getAcceptedOffers(@RequestParam int user_id) {
+		return acceptedOfferService.getAcceptedOffers(user_id);
+	}
+  
 }

@@ -22,6 +22,7 @@ public class TransactionDaoImpl implements TransactionDao{
 	@Override
 	public List<Transaction> getTransaction(int user_id) {
 		return entityManager.createQuery("from Transaction where user_id=:user_id").setParameter("user_id", user_id).getResultList();
+	
 	}
 	
 
