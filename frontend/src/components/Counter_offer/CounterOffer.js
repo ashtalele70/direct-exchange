@@ -33,7 +33,7 @@ class CounterOffer extends Component {
   }
 
   componentDidMount() {
-    this.getRates();
+    //this.getRates();
     this.getOgOfferDet();
     this.submitHandler = this.submitHandler.bind(this);
   }
@@ -99,14 +99,20 @@ class CounterOffer extends Component {
   };
 
   handleChange = (event, maskedvalue, floatvalue) => {
-    console.log(maskedvalue * Number(this.state.exchange_rate));
-    this.setState({
-      amount: maskedvalue,
-      remit_amount_destination: maskedvalue * this.state.exchange_rate,
-    });
-    this.exchageRate();
-    this.sourceCountryChange();
-    this. destinationCountryChange();
+    //console.log(maskedvalue * Number(this.state.exchange_rate));
+    if(event.target.value) {
+      this.setState({
+        amount: Number(maskedvalue),
+        remit_amount_destination: parseFloat(event.target.value) * parseFloat(this.state.exchange_rate),
+      });
+    } else {
+      this.setState({
+        remit_amount_destination:  0,
+      });
+    }
+    // this.exchageRate();
+    // this.sourceCountryChange();
+    // this.destinationCountryChange();
   };
 
   getOgOfferDet= () => {
@@ -117,6 +123,7 @@ class CounterOffer extends Component {
           if (res.data) {
             console.log(res.data);
             this.setState({ Og_offer_det: res.data });
+            this.getRates();
           }
         }
       })
@@ -287,10 +294,14 @@ class CounterOffer extends Component {
             <Form.Row>
               <Form.Group as={Col} controlId="sendAmount">
                 <Form.Label> Send amount &nbsp; </Form.Label>
-                <CurrencyInput
+                {/* <CurrencyInput
                   value={this.state.amount}
                   onChangeEvent={this.handleChange}
-                />
+                /> */}
+                <Form.Control
+                  onChange={this.handleChange}
+                  type="number"
+                ></Form.Control>
               </Form.Group>
             </Form.Row>
 
