@@ -42,4 +42,9 @@ public class CounterOfferController {
 		counterOfferService.updateCounterOfferStatusToExpired(id);
 	}
 	
+	@GetMapping("/getAllCounterOffers/{id}")
+	public List<Offer> getAllCounterOffers(@PathVariable Integer id) {
+		return counterOfferService.getAllCounterOffers(id);
+	}
+	
 }
