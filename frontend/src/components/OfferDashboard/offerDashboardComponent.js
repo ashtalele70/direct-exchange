@@ -58,16 +58,6 @@ export function OfferDashboardComponent() {
         })
     }
 
-    const getOfferList = () => {
-        let list = [];
-        if ((srcCurrency == "" && destCurrency == "" && srcAmount == 0 && destAmount == 0) || offers.length == 0) {
-            allOffers.forEach(obj => list.push(obj));
-        } else {
-            offers.forEach(obj => list.push(obj));
-        }
-        return list;
-    }
-
     const [srcCurrency, setSrcCurrency] = useState("");
     const handleSrcCurrencyChange = async (e) => {
         setSrcCurrency(e);
@@ -75,9 +65,6 @@ export function OfferDashboardComponent() {
         filterCriteria["id"] = localStorage.getItem("userId");
         const response = await getFilteredOffers(filterCriteria);
         setOffers(response);
-        // setOffers(allOffers.filter(offer => {
-        //     return offer.source_currency == e;
-        // }));
     }
 
     const [destCurrency, setDestCurrency] = useState("");
@@ -87,9 +74,6 @@ export function OfferDashboardComponent() {
         filterCriteria["id"] = localStorage.getItem("userId");
         const response = await getFilteredOffers(filterCriteria);
         setOffers(response);
-        // setOffers(allOffers.filter(offer => {
-        //     return offer.destination_currency == e;
-        // }));
     }
 
     const [srcAmount, setSrcAmount] = useState(0);
@@ -99,9 +83,6 @@ export function OfferDashboardComponent() {
         filterCriteria["id"] = localStorage.getItem("userId");
         const response = await getFilteredOffers(filterCriteria);
         setOffers(response);
-        // setOffers(allOffers.filter(offer => {
-        //     return offer.remit_amount == Number(e.target.value);
-        // }));
     }
 
     const [destAmount, setDestAmount] = useState(0);
@@ -111,9 +92,6 @@ export function OfferDashboardComponent() {
         filterCriteria["id"] = localStorage.getItem("userId");
         const response = await getFilteredOffers(filterCriteria);
         setOffers(response);
-        // setOffers(allOffers.filter(offer => {
-        //     return (offer.remit_amount) * (offer.exchange_rate) == Number(e.target.value);
-        // }));
     }
 
     const handleClear = () => {
@@ -140,8 +118,59 @@ export function OfferDashboardComponent() {
             );
         }
 
-        offerList = Object.keys(offers).map(key =>
+        offerList = offers.length > 2 ? 
+        Object.keys(offers).map(key =>
             <Col xs={2} md={4} lg={6} className="mt-3">
+                <Card bg="light" border="secondary" className="mt-2">
+                    <Card.Body>
+                        <Card.Title className="text-center">OFFER {Number(key) + 1}</Card.Title>
+                        <Card.Text className="float-right">
+                            <span className="font-weight-bold">Rating: <ReactStars
+                                count={5}
+                                value={offers[key].ratings && offers[key].ratings.length > 0 ? offers[key].ratings[0].avgRating : 0}
+                                // onChange={onRatingChangeHandler}
+                                size={24}
+                                isHalf={true}
+                                emptyIcon={<FontAwesomeIcon icon={faStar} />}
+                                halfIcon={<FontAwesomeIcon icon={faStarHalf} />}
+                                fullIcon={<FontAwesomeIcon icon={faStar} />}
+                                edit={false}
+                                activeColor="#ffd700"
+                            />
+                            </span>
+                        </Card.Text>
+                        <Card.Text id="srcCountry">
+                            <span className="font-weight-bold">Source Country:</span> {offers[key].source_country}
+                        </Card.Text>
+                        <Card.Text id="srcCurrency">
+                            <span className="font-weight-bold">Source Currency:</span> {offers[key].source_currency}
+                        </Card.Text>
+                        <Card.Text id="destCountry">
+                            <span className="font-weight-bold">Destination Country:</span> {offers[key].destination_country}
+                        </Card.Text>
+                        <Card.Text id="destCurrency">
+                            <span className="font-weight-bold">Destination Currency:</span> {offers[key].destination_currency}
+                        </Card.Text>
+                        <Card.Text id="remitAmount">
+                            <span className="font-weight-bold">Remit Amount:</span> {offers[key].remit_amount}
+                        </Card.Text>
+                        <Card.Text id="exchangeRate">
+                            <span className="font-weight-bold">Exchange Rate:</span> {offers[key].exchange_rate}
+                        </Card.Text>
+                        <Card.Text id="expiryDate">
+                            <span className="font-weight-bold">Expiration Date:</span> {offers[key].expiration_date}
+                        </Card.Text>
+                    </Card.Body>
+                    <Card.Footer>
+                        <Button variant="outline-primary" onClick={(e, offer) => handleShowOfferDetailModal(e, offers[key])}>View Offer Details</Button>
+                        {offers[key].allow_counter_offer == 1 && <Button variant="outline-primary" onClick={(e,offer) => makeCounterOffer(e,offers[key])} className="ml-5">Make Counter Offer</Button>}
+                    </Card.Footer>
+                </Card>
+            </Col>
+        ) :
+
+        Object.keys(offers).map(key =>
+            <Col xs={8} md={10} lg={12} className="mt-3">
                 <Card bg="light" border="secondary" className="mt-2">
                     <Card.Body>
                         <Card.Title className="text-center">OFFER {Number(key) + 1}</Card.Title>
