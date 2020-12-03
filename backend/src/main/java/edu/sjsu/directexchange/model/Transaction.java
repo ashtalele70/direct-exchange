@@ -24,7 +24,11 @@ public class Transaction {
   private float remit_amount;
 
   @Column
-  private String transaction_currency;
+  private String source_currency;
+  
+  @Column
+  private String destination_currency;
+
 
   @Column
   private int transaction_status;
@@ -86,15 +90,25 @@ public void setRemit_amount(float remit_amount) {
 	this.remit_amount = remit_amount;
 }
 
-public String getTransaction_currency() {
-	return transaction_currency;
+
+
+
+
+public String getSource_currency() {
+	return source_currency;
 }
 
-public void setTransaction_currency(String transaction_currency) {
-	this.transaction_currency = transaction_currency;
+public void setSource_currency(String source_currency) {
+	this.source_currency = source_currency;
 }
 
+public String getDestination_currency() {
+	return destination_currency;
+}
 
+public void setDestination_currency(String destination_currency) {
+	this.destination_currency = destination_currency;
+}
 
 public int getTransaction_status() {
 	return transaction_status;

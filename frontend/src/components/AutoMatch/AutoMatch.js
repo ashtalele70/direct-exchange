@@ -35,7 +35,7 @@ class AutoMatch extends Component {
         offerId: this.props.location.state.offerId,
         remit_amount: this.props.location.state.remit_amount,
       });
-      this.getMatchingOffers();
+      this.getMatchingOffers(this.props.location.state.offerId);
     }
   }
   getUser = (user_id) => {
@@ -50,9 +50,9 @@ class AutoMatch extends Component {
       })
       .catch((err) => {});
   };
-  getMatchingOffers = () => {
+  getMatchingOffers = (offerId) => {
     let paramsSingle = new URLSearchParams();
-    paramsSingle.set("id", this.state.offerId);
+    paramsSingle.set("id", offerId);
 
     axios
       .get(
@@ -127,9 +127,10 @@ class AutoMatch extends Component {
     this.setState({ show: false });
     let paramAccept = new URLSearchParams();
     paramAccept.set("offerId1", this.state.offerId);
-    paramAccept.set("offerId2", offerId2);
-    if (offerId3 !== undefined) {
-      paramAccept.set("offerId3", offerId3);
+    paramAccept.set("offerId2", offerId2.id);
+
+    if (offerId3 !== 0) {
+      paramAccept.set("offerId3", offerId3.id);
     }
 
     axios
@@ -292,7 +293,12 @@ class AutoMatch extends Component {
             >
               Close
             </Button>
-            <Button variant="primary" onClick={this.AcceptOffer}>
+            <Button
+              variant="primary"
+              onClick={(offerId1, offerId2) =>
+                this.AcceptOffer(this.state.offerId2, this.state.offerId3)
+              }
+            >
               Proceed
             </Button>
           </Modal.Footer>
