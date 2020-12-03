@@ -33,11 +33,11 @@ public class Transaction {
   @Column
   private int transaction_status;
 
-  @Column
-  private int source_bank_id;
-
-  @Column
-  private int destination_bank_id;
+//  @Column
+//  private int source_bank_id;
+//
+//  @Column
+//  private int destination_bank_id;
   
   public float getService_fee() {
 	return service_fee;
@@ -118,19 +118,19 @@ public void setTransaction_status(int transaction_status) {
 	this.transaction_status = transaction_status;
 }
 
-public int getSource_bank_id() {
-	return source_bank_id;
-}
-
-public void setSource_bank_id(int source_bank_id) {
-	this.source_bank_id = source_bank_id;
-}
-
-public int getDestination_bank_id() {
-	return destination_bank_id;
-}
-
-public void setDestination_bank_id(int destination_bank_id) {
-	this.destination_bank_id = destination_bank_id;
-}
+//public int getSource_bank_id() {
+//	return source_bank_id;
+//}
+//
+//public void setSource_bank_id(int source_bank_id) {
+//	this.source_bank_id = source_bank_id;
+//}
+//
+//public int getDestination_bank_id() {
+//	return destination_bank_id;
+//}
+//
+//public void setDestination_bank_id(int destination_bank_id) {
+//	this.destination_bank_id = destination_bank_id;
+//}
 }

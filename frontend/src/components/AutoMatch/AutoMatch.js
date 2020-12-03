@@ -22,8 +22,8 @@ class AutoMatch extends Component {
       splitOffers: [],
       user: "",
       switch: true,
-      offerId2: "",
-      offerId3: "",
+      offerId2: 0,
+      offerId3: 0,
       show: false,
       new_remit_amount: 0,
       exchange_rate: 0,
@@ -97,7 +97,7 @@ class AutoMatch extends Component {
     this.setState({ switch: switchValue });
   };
 
-  submitHandler = (offerId2, offerId3 = 0) => {
+  submitHandler = (offer2, offer3) => {
     /*
     console.log("hmok");
     console.log(offerId2.remit_amount);
@@ -108,7 +108,7 @@ class AutoMatch extends Component {
     );
     */
     var matching_offer =
-      (offerId2.remit_amount + (offerId3 === 0 ? 0 : offerId3.remit_amount)) /
+      (offer2.remit_amount + (offer3 ? offer3.remit_amount : 0)) /
       this.state.exchange_rate;
     console.log(matching_offer);
     if (matching_offer != this.state.remit_amount) {
@@ -116,22 +116,26 @@ class AutoMatch extends Component {
       console.log(this.state.remit_amount);
       this.setState({
         show: true,
-        offerId2: offerId2,
-        offerId3: offerId3,
+        offerId2: offer2.id,
+        offerId3: offer3 ? offer3.id : null,
         new_remit_amount: matching_offer,
       });
     } else {
-      this.AcceptOffer(offerId2.id, offerId3.id);
+      if(offer3) {
+        this.AcceptOffer(offer2.id, offer3.id);
+      } else {
+        this.AcceptOffer(offer2.id);
+      }
     }
   };
 
-  AcceptOffer = (offerId2, offerId3) => {
+  AcceptOffer = (offerId2, offerId3 = null) => {
     this.setState({ show: false });
     let paramAccept = new URLSearchParams();
     paramAccept.set("offerId1", this.state.offerId);
     paramAccept.set("offerId2", offerId2);
 
-    if (offerId3 !== 0) {
+    if (offerId3) {
       paramAccept.set("offerId3", offerId3);
     }
 
@@ -251,7 +255,7 @@ class AutoMatch extends Component {
         </div>
       ));
     } else {
-      splitOffers = "";
+      splitOffers = [];
     }
 
     return (
@@ -280,10 +284,10 @@ class AutoMatch extends Component {
             <Modal.Title>Remit amount does not match </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Your current offer is {this.state.remit_amount}
-            would you like to change your offer to {
+            Your current offer is {this.state.remit_amount}. 
+            Would you like to change your offer to {
               this.state.new_remit_amount
-            }{" "}
+            }?
           </Modal.Body>
 
           <Modal.Footer>
@@ -297,7 +301,7 @@ class AutoMatch extends Component {
             </Button>
             <Button
               variant="primary"
-              onClick={(offerId1, offerId2) =>
+              onClick={() =>
                 this.AcceptOffer(this.state.offerId2, this.state.offerId3)
               }
             >

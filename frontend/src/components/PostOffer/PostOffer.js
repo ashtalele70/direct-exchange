@@ -95,6 +95,7 @@ class PostOffer extends Component {
         if (res.status === 200) {
           if (res.data) {
             this.setState({ source_country: res.data });
+            this.sourceCountryChange(res.data);
           }
         }
       })
@@ -105,10 +106,10 @@ class PostOffer extends Component {
     this.setState({ show: false });
   };
 
-  sourceCountryChange = (event) => {
-    this.setState({ source_country: event.target.value }, () => {
+  sourceCountryChange = (srcCountry) => {
+    //this.setState({ source_country: event.target.value }, () => {
       let params = new URLSearchParams();
-      params.set("source_country", this.state.source_country);
+      params.set("source_country", srcCountry);
       params.set("source_currency", this.state.source_currency);
       params.set("bank_type", 1);
       params.set("user_id", this.state.user_id);
@@ -131,7 +132,7 @@ class PostOffer extends Component {
           }
         })
         .catch((err) => {});
-    });
+    //});
   };
 
   destinationCurrencyChange = (event) => {
@@ -149,16 +150,17 @@ class PostOffer extends Component {
         if (res.status === 200) {
           if (res.data) {
             this.setState({ destination_country: res.data });
+            this.destinationCountryChange(res.data);
           }
         }
       })
       .catch((err) => {});
   };
 
-  destinationCountryChange = (event) => {
-    this.setState({ destination_country: event.target.value }, () => {
+  destinationCountryChange = (destCountry) => {
+    //this.setState({ destination_country: event.target.value }, () => {
       let params = new URLSearchParams();
-      params.set("source_country", this.state.destination_country);
+      params.set("source_country", destCountry);
       params.set("source_currency", this.state.destination_currency);
       params.set("bank_type", 2);
       params.set("user_id", this.state.user_id);
@@ -181,7 +183,7 @@ class PostOffer extends Component {
           }
         })
         .catch((err) => {});
-    });
+    //});
   };
 
   submitHandler = (event) => {
