@@ -14,3 +14,5 @@ OFFER_STATUS = {"1": "Open", "2": "Fulfilled", "3": "Expired", "4": "Counter Mad
 allow_counter_offer:[1:True, 0:False]
 
 allow_split_offer:[1:True, 0:False]
+
+transaction_status:[1: "Enter Transaction", 2:"At-fault", 3:"Completed"]
