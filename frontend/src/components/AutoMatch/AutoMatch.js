@@ -129,10 +129,10 @@ class AutoMatch extends Component {
     this.setState({ show: false });
     let paramAccept = new URLSearchParams();
     paramAccept.set("offerId1", this.state.offerId);
-    paramAccept.set("offerId2", offerId2.id);
+    paramAccept.set("offerId2", offerId2);
 
     if (offerId3 !== 0) {
-      paramAccept.set("offerId3", offerId3.id);
+      paramAccept.set("offerId3", offerId3);
     }
 
     axios
