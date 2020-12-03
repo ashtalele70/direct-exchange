@@ -29,7 +29,7 @@ class PostOffer extends Component {
       offer_status: 1,
       is_counter: 0,
       rates: "",
-      amount: "0.00",
+      amount: 0,
       remit_amount_destination: 0,
       user_id: localStorage.getItem("userId"),
       source_bank_message: "",
@@ -52,12 +52,13 @@ class PostOffer extends Component {
     //console.log(event);
     if (event.target.value) {
       this.setState({
-        amount: Number(maskedvalue),
+        amount: parseFloat(event.target.value),
         remit_amount_destination:
           parseFloat(event.target.value) * parseFloat(this.state.exchange_rate),
       });
     } else {
       this.setState({
+        amount: 0,
         remit_amount_destination: 0,
       });
     }
@@ -189,7 +190,7 @@ class PostOffer extends Component {
       user_id: this.state.user_id,
       source_country: this.state.source_country,
       source_currency: this.state.source_currency,
-      remit_amount: this.state.remit_amount_destination,
+      remit_amount: this.state.amount,
       destination_country: this.state.destination_country,
       destination_currency: this.state.destination_currency,
       exchange_rate: this.state.exchange_rate,
