@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 public class AcceptedOfferDaoImpl implements AcceptedOfferDao {
@@ -84,8 +85,13 @@ public class AcceptedOfferDaoImpl implements AcceptedOfferDao {
 	@Override
 	public List<AcceptedOffer> getAcceptedOffers(int user_id) {
 		// TODO Auto-generated method stub
-		return entityManager.createQuery("from AcceptedOffer where user_id=:user_id").setParameter("user_id", user_id)
+		List<AcceptedOffer> acceptedOffer= entityManager.createQuery("from AcceptedOffer where user_id=:user_id").setParameter("user_id", user_id)
 				.getResultList();
+		
+		
+		
+		acceptedOffer= acceptedOffer.stream().filter(acceptedOffers->acceptedOffers.getOffer().getOffer_status() == 5).collect(Collectors.toList());
+		return acceptedOffer;
 
 	}
 }

@@ -26,7 +26,28 @@ public class AcceptedOffer {
   @Column
   private String source_currency;
   
-  public String getSource_currency() {
+  @Transient
+  final float service_fee=0.05F;
+  
+  @OneToOne
+  @JoinColumn(name="offer_id", referencedColumnName="id", insertable = false, updatable = false)
+  private Offer offer ;
+  
+  
+  public float getService_fee() {
+	return service_fee;
+}
+
+
+public Offer getOffer() {
+	return offer;
+}
+
+public void setOffer(Offer offer) {
+	this.offer = offer;
+}
+
+public String getSource_currency() {
 	return source_currency;
 }
 
