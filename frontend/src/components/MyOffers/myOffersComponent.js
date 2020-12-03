@@ -95,8 +95,9 @@ export function MyOffersComponent({ history }) {
               {offers[key].expiration_date}
             </Card.Text>
           </Card.Body>
-          {offers[key].offer_status === 1 && (
+          {offers[key].offer_status == 1 && (
             <Card.Footer>
+              {offers[key].allow_counter_offer == 1 &&
               <Button
                 variant="outline-primary"
                 onClick={() =>
@@ -107,7 +108,7 @@ export function MyOffersComponent({ history }) {
                 }
               >
                 Show Counter Offers
-              </Button>
+              </Button>}
               <Button
                 variant="outline-primary"
                 className="ml-5"
