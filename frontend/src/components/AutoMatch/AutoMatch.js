@@ -52,7 +52,7 @@ class AutoMatch extends Component {
   };
   getMatchingOffers = () => {
     let paramsSingle = new URLSearchParams();
-    paramsSingle.set("id", 13);
+    paramsSingle.set("id", localStorage.getItem("userId"));
 
     axios
       .get(
@@ -71,7 +71,7 @@ class AutoMatch extends Component {
       .catch((err) => {});
 
     let paramsSplit = new URLSearchParams();
-    paramsSplit.set("id", 13);
+    paramsSplit.set("id", localStorage.getItem("userId"));
 
     axios
       .get(
