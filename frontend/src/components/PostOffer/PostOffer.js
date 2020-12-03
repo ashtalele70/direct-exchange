@@ -189,7 +189,7 @@ class PostOffer extends Component {
       user_id: this.state.user_id,
       source_country: this.state.source_country,
       source_currency: this.state.source_currency,
-      remit_amount: this.state.amount,
+      remit_amount: this.state.remit_amount_destination,
       destination_country: this.state.destination_country,
       destination_currency: this.state.destination_currency,
       exchange_rate: this.state.exchange_rate,
