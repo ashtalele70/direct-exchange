@@ -14,4 +14,15 @@ export const OFFER_STATUS_COLOR = {
   5: "info",
   6: "warning",
 };
+
+export const TRANSACTION_STATUS = {
+  1: "Enter Transaction",
+  2: "At-fault",
+  3: "Completed",
+};
+export const TRANSACTION_STATUS_COLOR = {
+  1: "primary",
+  2: "danger",
+  3: "success",
+};
 export const BANK_TYPE = { 1: "Sending", 2: "Recieving" };

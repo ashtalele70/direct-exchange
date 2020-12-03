@@ -85,6 +85,9 @@ class Navigation extends Component {
             {this.props.firebase.auth.currentUser && (
               <Nav.Link href="/Rates">Exchange Rates</Nav.Link>
             )}
+            {this.props.firebase.auth.currentUser && (
+              <Nav.Link href="/ViewTransactions">View Transactions</Nav.Link>
+            )}
           </Nav>
           <Nav className="mr-auto"></Nav>
           {localStorage.getItem("nickname") != null && (
