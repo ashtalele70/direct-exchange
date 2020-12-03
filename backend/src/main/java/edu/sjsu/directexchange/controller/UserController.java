@@ -32,10 +32,10 @@ public class UserController {
     userService.createUser(user);
   }
 
-  @PutMapping("/user/{id}")
-  public void updateUser(@RequestBody User user, @PathVariable int id) {
+  @PutMapping("/user")
+  public void updateUser(@RequestParam String nickname, @RequestParam int id) {
     User dbUser = userService.getUserById(id);
-    dbUser.setNickname(user.getNickname());
-    userService.updateUser(dbUser);
+    //dbUser.setNickname(nickname);
+    userService.updateUser(dbUser, nickname);
   }
 }
