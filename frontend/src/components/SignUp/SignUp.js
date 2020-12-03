@@ -75,7 +75,7 @@ class SignUpForm extends Component {
                         this.setState({error: null});
                         this.setState({oauth_type: 1});
                         this.setState({username: socialAuthUser.user.email});
-                        this.setState({nickname: socialAuthUser.user.email});
+                        this.setState({nickname: socialAuthUser.user.email.split("@")[0]});
                         axios.post(process.env.REACT_APP_ROOT_URL +'/user', this.state).then((res) => {
                             if (res.status === 200) {
                                 this.props.firebase.doSendEmailVerification();
@@ -104,7 +104,7 @@ class SignUpForm extends Component {
                 this.setState({ error: null });
                 this.setState({oauth_type : 2});
                 this.setState({username : socialAuthUser.user.email});
-                this.setState({nickname : socialAuthUser.user.email});
+                this.setState({nickname : socialAuthUser.user.email.split("@")[0]});
                 axios.post(process.env.REACT_APP_ROOT_URL +'/user', this.state).then((res) => {
                     if (res.status === 200) {
                         this.props.firebase.doSignOut();

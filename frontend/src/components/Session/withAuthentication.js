@@ -23,6 +23,7 @@ const withAuthentication = Component => {
                     if(authUser) {
                         var params = new URLSearchParams();
                         params.set("email", authUser.email);
+                        localStorage.setItem("email", authUser.email);
                         axios
                             .get(process.env.REACT_APP_ROOT_URL + "/user?" + params.toString())
                             .then((res) => {
