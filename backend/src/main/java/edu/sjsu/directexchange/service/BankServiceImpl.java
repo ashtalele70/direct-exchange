@@ -38,6 +38,12 @@ public class BankServiceImpl implements BankService {
 		
 		return bankDao.getBank(user_id);
 	}
+
+	@Override
+	@Transactional
+	public void deleteBank(int bank_id) {
+		 bankDao.deleteBank(bank_id); 
+	}
 	
 	
 

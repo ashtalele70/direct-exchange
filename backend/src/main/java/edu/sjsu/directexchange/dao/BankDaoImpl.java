@@ -49,4 +49,11 @@ public class BankDaoImpl implements BankDao {
 		return entityManager.createQuery("from Bank where user_id=:user_id").setParameter("user_id",user_id).getResultList();
 	}
 
+	@Override
+	public void deleteBank(int bank_id) {
+		Query query = entityManager.createQuery("delete from Bank where id=:id");
+		query.setParameter("id", bank_id);
+		query.executeUpdate();
+	}
+
 }

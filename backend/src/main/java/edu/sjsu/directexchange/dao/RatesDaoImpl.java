@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,7 +24,6 @@ public class RatesDaoImpl implements RatesDao {
 
 	@Override
 	public List<Rates> getRates() {
-
 		Query query=entityManager.createQuery("from Rates");
 		List<Rates> rates=query.getResultList();
 		return rates;
