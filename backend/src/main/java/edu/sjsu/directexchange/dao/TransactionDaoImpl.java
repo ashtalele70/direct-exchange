@@ -36,9 +36,9 @@ public class TransactionDaoImpl implements TransactionDao {
 		Transaction mergedTransaction = entityManager.merge(transaction);
 		if (mergedTransaction != null) {
 			String match_uuid = mergedTransaction.getMatch_uuid();
-			
-			AcceptedOffer transactionUpdate=(AcceptedOffer) entityManager.createQuery("from AcceptedOffer where offer_id=:offer_id")
-					.setParameter("offer_id", transaction.getOffer_id()).getSingleResult();
+
+			AcceptedOffer transactionUpdate=(AcceptedOffer) entityManager.createQuery("from AcceptedOffer where offer_id=:offer_id and match_uuid=:match_uuid")
+					.setParameter("offer_id", transaction.getOffer_id()).setParameter("match_uuid",transaction.getMatch_uuid()).getSingleResult();
 			transactionUpdate.setAccepted_offer_status(1);
 			
 			
