@@ -30,7 +30,7 @@ class AutoMatch extends Component {
   }
 
   componentDidMount() {
-    if (this.props.location.state) {
+    if (this.props.location.state && this.props.location.state.offerId) {
       this.setState({
         offerId: this.props.location.state.offerId,
         remit_amount: this.props.location.state.remit_amount,
@@ -52,7 +52,7 @@ class AutoMatch extends Component {
   };
   getMatchingOffers = () => {
     let paramsSingle = new URLSearchParams();
-    paramsSingle.set("id", localStorage.getItem("userId"));
+    paramsSingle.set("id", this.state.offerId);
 
     axios
       .get(
@@ -71,7 +71,7 @@ class AutoMatch extends Component {
       .catch((err) => {});
 
     let paramsSplit = new URLSearchParams();
-    paramsSplit.set("id", localStorage.getItem("userId"));
+    paramsSplit.set("id", this.state.offerId);
 
     axios
       .get(
