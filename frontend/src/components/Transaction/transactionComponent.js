@@ -41,9 +41,8 @@ export function TransactionComponent() {
       source_currency: transaction.source_currency,
       destination_currency: transaction.destination_currency,
       transaction_status: 1,
-      // to be changed
-      source_bank_id: 1,
-      destination_bank_id: 2,
+    //   source_bank_id: 1,
+    //   destination_bank_id: 2,
       service_fee: transaction.service_fee,
     };
     const response = await postTransaction(request);

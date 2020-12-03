@@ -22,7 +22,7 @@ public class AcceptedOfferDaoImpl implements AcceptedOfferDao {
 	public AcceptedOfferDaoImpl(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
-
+	
 	@Override
 	public void createAcceptedOffers(int offerId1, int offerId2, int offerId3) {
 
@@ -36,8 +36,6 @@ public class AcceptedOfferDaoImpl implements AcceptedOfferDao {
 		
 		Offer offer2 = entityManager.find(Offer.class, offerId2);
 		User user2 = entityManager.find(User.class, offer2.getUser_id());
-		
-		
 		
 		if (offerId3 != 0) {
 			 offer3 = entityManager.find(Offer.class, offerId3);
