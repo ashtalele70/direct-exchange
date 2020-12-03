@@ -2,16 +2,28 @@ import React, {Component} from "react";
 import Container from "react-bootstrap/Container";
 import {withAuthentication} from "../Session/AuthUserContext";
 import {Link} from "react-router-dom";
+import {Alert} from "react-bootstrap";
 
 class About extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            show_sign_up_error: true,
+        };
     }
     render() {
+        let signUpError;
+        if(this.props && this.props.location.show_sign_up_error) {
+            if(this.state.show_sign_up_error)
+                signUpError = (<Alert autohide variant='danger' onClick={setTimeout(() => this.setState( {show_sign_up_error: false}), 3000)} onClose={() => this.setState( {show_sign_up_error: false})} dismissible>
+                    Please Sign Up first then login
+                </Alert>);
+        }
         return(
 
             <div>
+                {signUpError}
                 {!this.props.firebase.auth.currentUser &&
 
 

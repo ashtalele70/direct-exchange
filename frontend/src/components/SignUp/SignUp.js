@@ -25,6 +25,7 @@ class SignUpForm extends Component {
             oauth_type: 0,
             confirm_password: "",
             show_pass_error: false,
+            show_pass_length_error: false,
             error: null,
         };
     }
@@ -41,6 +42,8 @@ class SignUpForm extends Component {
         if (data.password && data.confirm_password &&
             data.password !== data.confirm_password) {
             this.setState({show_pass_error: true})
+        } else if( data.password.length < 6){
+            this.setState({show_pass_length_error: true})
         } else {
             this.setState({oauth_type: 3});
             const data = this.state;
@@ -76,11 +79,14 @@ class SignUpForm extends Component {
                         this.setState({oauth_type: 1});
                         this.setState({username: socialAuthUser.user.email});
                         this.setState({nickname: socialAuthUser.user.email.split("@")[0]});
-                        axios.post(process.env.REACT_APP_ROOT_URL +'/user', this.state).then((res) => {
-                            if (res.status === 200) {
-                                this.props.firebase.doSendEmailVerification();
-                                this.props.history.push("/verifyemail");
-                            }
+                        if(socialAuthUser.additionalUserInfo.isNewUser) {
+                            axios.post(process.env.REACT_APP_ROOT_URL +'/user', this.state)
+                        }
+                    })
+                    .then((socialAuthUser) => {
+                            this.props.firebase.doSendEmailVerification();
+                            this.props.firebase.doSignOut();
+                            this.props.history.push("/verifyemail");
                     })
                     .catch(error => {
                         if (error.code === ERROR_CODE_ACCOUNT_EXISTS) {
@@ -88,12 +94,6 @@ class SignUpForm extends Component {
                         }
                         this.setState({ error });
                     });
-
-
-            })
-        // });
-
-
     }
 
     onSubmitFacebook = (event) => {
@@ -105,13 +105,14 @@ class SignUpForm extends Component {
                 this.setState({oauth_type : 2});
                 this.setState({username : socialAuthUser.user.email});
                 this.setState({nickname : socialAuthUser.user.email.split("@")[0]});
-                axios.post(process.env.REACT_APP_ROOT_URL +'/user', this.state).then((res) => {
-                    if (res.status === 200) {
-                        this.props.firebase.doSignOut();
-                        this.props.firebase.doSendEmailVerification();
-                        this.props.history.push("/verifyemail");
-                    }
-                });
+                if(socialAuthUser.additionalUserInfo.isNewUser) {
+                    axios.post(process.env.REACT_APP_ROOT_URL +'/user', this.state)
+                }
+            })
+            .then(socialAuthUser => {
+                    this.props.firebase.doSendEmailVerification();
+                    this.props.firebase.doSignOut();
+                    this.props.history.push("/verifyemail");
             })
             .catch(error => {
                 if (error.code === ERROR_CODE_ACCOUNT_EXISTS) {
@@ -139,11 +140,24 @@ class SignUpForm extends Component {
             Passwords do not match
         </Alert>);
         }
+        if(this.state.show_pass_length_error) {
+            password_error = (<Alert autohide variant='danger' onClick={setTimeout(() => this.setState( {show_pass_length_error: false}), 3000)} onClose={() => this.setState( {show_pass_length_error: false})} dismissible>
+                Password should be at least 6 characters
+            </Alert>);
+        }
+
+        let error;
+        if(this.state.error) {
+            error = (<Alert autohide variant='danger' onClick={setTimeout(() => this.setState( {show_error: false, error: null}), 3000)} onClose={() => this.setState( {show_error: false,  error: null})} dismissible>
+                {this.state.error.message}
+            </Alert>);
+        }
         return(
 
         <Card className="m-5 justify-content-center">
             <Card.Body>
             {password_error}
+                {error}
             <Form onSubmit={this.submitHandler}>
                 <Form.Row>
                      <Form.Group as={Col} controlId="username">

@@ -19,6 +19,8 @@ class EmailVerification extends Component {
                             Verify your E-Mail
                         </Card.Header>
                         <Card.Title>
+                            Verification E-Mail sent.
+                            <br/>
                             Check your E-Mails (Spam folder
                             included) for a confirmation E-Mail or send
                             another confirmation E-Mail.
