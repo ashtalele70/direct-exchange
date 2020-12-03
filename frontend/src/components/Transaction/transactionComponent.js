@@ -1,21 +1,28 @@
 import { useEffect, useState } from 'react';
-import { Card, CardDeck, Container, Row, Col, Button } from 'react-bootstrap';
-import { getAllTransactions, postTransaction } from './transactionService';
+import { Card, CardDeck, Container, Row, Col, Button, Form, FormControl, Modal, Alert } from 'react-bootstrap';
+import { getAcceptedOffers, postTransaction } from './transactionService';
 
 export function TransactionComponent() {
     const [transactions, setTransactions] = useState([]);
+    const [transaction, setTransaction] = useState({});
+    const [success, setSuccess] = useState(false);
     let transactionList = [];
 
     useEffect(() => {
         async function fetchData() {
-            const response = await getAllTransactions({"user_id": localStorage.getItem("userId")});
+            const response = await getAcceptedOffers({ "user_id": localStorage.getItem("userId") });
             setTransactions(response);
         }
         fetchData();
     }, []);
 
-    const onSubmitHandler = async (e, transaction) => {
+    const [show, setShow] = useState(false);
+
+    const onSubmitHandler = async () => {
         const response = await postTransaction(transaction);
+        if(response.data.message == "Success") setSuccess(true);
+        console.log(transaction);
+        setShow(false);
     }
 
     if (transactions) {
@@ -31,11 +38,11 @@ export function TransactionComponent() {
                             <span className="font-weight-bold">Remit Amount:</span> {transactions[key].remit_amount}
                         </Card.Text>
                         <Card.Text id="currency">
-                            <span className="font-weight-bold">Currency:</span> {transactions[key].transaction_currency}
+                            <span className="font-weight-bold">Currency:</span> {transactions[key].offer.destination_currency}
                         </Card.Text>
                     </Card.Body>
                     <Card.Footer>
-                        <Button variant="outline-primary" className="ml-5" onClick={(e, transaction) => onSubmitHandler(e, transactions[key])}>Pay Now</Button>
+                        <Button variant="outline-primary" onClick={(e, transaction) => { setTransaction(transactions[key]); setShow(true); }}>Pay Now</Button>
                     </Card.Footer>
                 </Card>
             </Col>
@@ -44,11 +51,41 @@ export function TransactionComponent() {
 
     return (
         <Container>
+            {success == true && <Alert>Transaction Posted Successfully</Alert>}
             <CardDeck>
                 <Row className="mt-3 mb-5">
                     {transactionList}
                 </Row>
             </CardDeck>
+            <Modal show={show} onHide={() => setShow(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Review Transaction</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group controlId="formGroupRemitAmt">
+                            <Form.Label>Remit Amount</Form.Label>
+                            <FormControl value={transaction.remit_amount} aria-label="Amount (to the nearest currency)" readOnly />
+                        </Form.Group>
+                        <Form.Group controlId="formGroupCurrency">
+                            <Form.Label>Currency</Form.Label>
+                            <FormControl value={transaction && transaction.offer && transaction.offer.destination_currency} aria-label="Currency" readOnly />
+                        </Form.Group>
+                        <Form.Group controlId="formGroupServiceFee">
+                            <Form.Label>Service Fee</Form.Label>
+                            <FormControl value={transaction.service_fee} aria-label="Service Fee" readOnly />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShow(false)}>
+                        Cancel
+                    </Button>
+                    <Button variant="primary" onClick={onSubmitHandler}>
+                        Confirm
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     )
 }
