@@ -26,6 +26,7 @@ class AutoMatch extends Component {
       offerId3: "",
       show: false,
       new_remit_amount: 0,
+      exchange_rate: 0,
     };
   }
 
@@ -34,6 +35,7 @@ class AutoMatch extends Component {
       this.setState({
         offerId: this.props.location.state.offerId,
         remit_amount: this.props.location.state.remit_amount,
+        exchange_rate: this.props.location.state.exchange_rate,
       });
       this.getMatchingOffers(this.props.location.state.offerId);
     }
@@ -106,9 +108,9 @@ class AutoMatch extends Component {
     );
     */
     var matching_offer =
-      (offerId2.remit_amount + (offerId3 === 0 ? 0 : offerId3.remit_amount)) *
-      offerId2.exchange_rate;
-
+      (offerId2.remit_amount + (offerId3 === 0 ? 0 : offerId3.remit_amount)) /
+      exchange_rates;
+    console.log(matching_offer);
     if (matching_offer != this.state.remit_amount) {
       console.log(matching_offer);
       console.log(this.state.remit_amount);
