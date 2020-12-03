@@ -102,7 +102,7 @@ class CounterOffer extends Component {
     //console.log(maskedvalue * Number(this.state.exchange_rate));
     if(event.target.value) {
       this.setState({
-        amount: Number(maskedvalue),
+        amount: parseFloat(event.target.value),
         remit_amount_destination: parseFloat(event.target.value) * parseFloat(this.state.exchange_rate),
       });
     } else {
