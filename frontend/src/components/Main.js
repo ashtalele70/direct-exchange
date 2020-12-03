@@ -18,6 +18,7 @@ import AutoMatch from "./AutoMatch/AutoMatch";
 import { TransactionComponent } from "./Transaction/transactionComponent";
 import About from "./Navbar/About";
 import ViewBanks from "./Bank/ViewBanks";
+import ViewTransactions from "./Transaction/viewTransactions";
 
 class Home extends Component {
   constructor(props) {
@@ -43,6 +44,7 @@ class Home extends Component {
             <Route path="/autoMatch" component={AutoMatch} />
             <Route path="/viewTransactions" component={TransactionComponent} />
             <Route path="/viewBanks" component={ViewBanks} />
+            <Route path="/ViewTransactions" component={ViewTransactions} />
           </div>
         )}
         {!this.props.firebase.auth.currentUser && (
