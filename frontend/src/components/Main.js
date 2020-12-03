@@ -16,6 +16,7 @@ import { MyOffersComponent } from "./MyOffers/myOffersComponent";
 import { withAuthentication } from "./Session/AuthUserContext";
 import AutoMatch from "./AutoMatch/AutoMatch";
 import { TransactionComponent } from "./Transaction/transactionComponent";
+import About from "./Navbar/About";
 
 class Home extends Component {
   constructor(props) {
@@ -29,6 +30,7 @@ class Home extends Component {
           <div>
             <Route path="/" component={Navbar} />
             <Route path="/verifyemail" component={Verify} />
+            <Route exact path="/" component={About}/>
             <Route path="/rates" component={Rates} />
             <Route path="/postoffer" component={PostOffer} />
             <Route path="/counterOffer" component={CounterOffer} />
@@ -43,7 +45,8 @@ class Home extends Component {
         )}
         {!this.props.firebase.auth.currentUser && (
           <div>
-            <Route path="/" component={Navbar} />
+             <Route path="/" component={Navbar} />
+             <Route exact path="/" component={About}/>
             <Route path="/signup" component={SignUp} />
             <Route path="/login" component={Login} />
             <Route path="/verifyemail" component={Verify} />
