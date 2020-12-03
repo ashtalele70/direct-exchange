@@ -109,7 +109,7 @@ class AutoMatch extends Component {
     */
     var matching_offer =
       (offerId2.remit_amount + (offerId3 === 0 ? 0 : offerId3.remit_amount)) /
-      exchange_rates;
+      this.state.exchange_rate;
     console.log(matching_offer);
     if (matching_offer != this.state.remit_amount) {
       console.log(matching_offer);
