@@ -31,9 +31,11 @@ public class UserDaoImpl implements UserDao {
     Query usernameQuery=entityManager.createQuery("from User where username " +
       "=: " +
       "username").setParameter("username", email);
-
-    return  ((User)usernameQuery.getSingleResult()).getId();
-
+    if(usernameQuery.getResultList() != null && usernameQuery.getResultList().size() > 0) {
+      User user = (User)usernameQuery.getResultList().get(0);
+      return user.getId();
+    }
+    return 0;
   }
 
   @Override
@@ -41,10 +43,13 @@ public class UserDaoImpl implements UserDao {
   public void createUser(User user) {
     Query usernameQuery=entityManager.createQuery("from User where username " +
       "=: " +
+
       "username").setParameter("username", user.getUsername());
 
     if(usernameQuery.getResultList() != null && usernameQuery.getResultList().size() > 0) throw new  EmailIdExistsException(
       "Email Id Already  Exists");
+
+
 
     Query nicknameQuery=entityManager.createQuery("from User where nickname " +
       "=: " +

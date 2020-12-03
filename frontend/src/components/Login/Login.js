@@ -13,6 +13,8 @@ class LoginForm extends Component {
             password: "",
             error: null,
             show_logout: true,
+            show_sign_up_error: true,
+            show_error: false,
         };
     }
 
@@ -24,14 +26,14 @@ class LoginForm extends Component {
             .doSignInWithEmailAndPassword(username, password)
             .then((authUser) => {
                 if(authUser.user.emailVerified) this.props.history.push('/');
-
                 else {
+                    this.props.firebase.doSendEmailVerification();
                     this.props.firebase.doSignOut();
                     this.props.history.push('/verifyemail');
                 }
             })
             .catch(error => {
-                this.setState({ error });
+                this.setState({ error: error, show_error: true });
             });
     };
 
@@ -40,15 +42,22 @@ class LoginForm extends Component {
         this.props.firebase
             .doSignInWithGoogle()
             .then((socialAuthUser) => {
-                if(socialAuthUser.user.emailVerified) this.props.history.push('/');
-
+                if(socialAuthUser.additionalUserInfo.isNewUser) {
+                    this.props.firebase.auth.currentUser.delete().then(
+                        this.props.history.push({
+                            pathname: "/",
+                            show_sign_up_error: true,
+                        })
+                    );
+                }else if(socialAuthUser.user.emailVerified)this.props.history.push('/');
                 else {
+                    this.props.firebase.doSendEmailVerification();
                     this.props.firebase.doSignOut();
                     this.props.history.push('/verifyemail');
                 }
             })
             .catch(error => {
-                this.setState({ error });
+                this.setState({ error: error, show_error: true });
             });
     }
 
@@ -57,15 +66,24 @@ class LoginForm extends Component {
         this.props.firebase
             .doSignInWithFacebook()
             .then((socialAuthUser) => {
-                if(socialAuthUser.user.emailVerified) this.props.history.push('/');
 
+                if(socialAuthUser.additionalUserInfo.isNewUser) {
+                    // this.setState({show_sign_up_error: true});
+                    this.props.firebase.auth.currentUser.delete().then(
+                        this.props.history.push({
+                            pathname: "/",
+                            show_sign_up_error: true,
+                        })
+                    );
+                } else if(socialAuthUser.user.emailVerified) this.props.history.push('/');
                 else {
+                    this.props.firebase.doSendEmailVerification();
                     this.props.firebase.doSignOut();
                     this.props.history.push('/verifyemail');
                 }
             })
             .catch(error => {
-                this.setState({ error });
+                this.setState({ error: error, show_error: true });
             });
     }
 
@@ -84,9 +102,19 @@ class LoginForm extends Component {
             </Alert>);
         }
 
+
+        let error;
+        if(this.state.error) {
+            error = (<Alert autohide variant='danger' onClick={setTimeout(() => this.setState( {show_error: false, error: null}), 3000)} onClose={() => this.setState( {show_error: false,  error: null})} dismissible>
+                {this.state.error.message}
+            </Alert>);
+        }
+
         return(
             <div>
             <Card className="m-5 justify-content-center">
+                {/*{signUpError}*/}
+                {error}
                 <Card.Body>
                     {logout_message}
                 <Form onSubmit={this.submitHandler}>
@@ -133,7 +161,7 @@ class LoginForm extends Component {
                 <Form onSubmit={this.onSubmitFacebook}>
                     <Button type="submit">Log In with Facebook</Button>
                 </Form>
-                    {this.state.error && <p>{this.state.error.message}</p>}
+                    {/*{this.state.error && <p>{this.state.error.message}</p>}*/}
                 </Card.Body>
             </Card>
             </div>
