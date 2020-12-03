@@ -21,12 +21,12 @@ class Navigation extends Component {
                             Home
                         </Navbar.Brand>
                         <Nav>
-                            <NavDropdown title="Offer" id="basic-nav-dropdown">
-                                {this.props.firebase.auth.currentUser && <NavDropdown.Item href="/offerDashboard">Offer Dashboard</NavDropdown.Item>}
-                                {this.props.firebase.auth.currentUser && <NavDropdown.Item href="/myOffers">My Offers</NavDropdown.Item>}
-                                {this.props.firebase.auth.currentUser && <NavDropdown.Item href="/PostOffer">Post Exchange Offer</NavDropdown.Item>}
-                                {this.props.firebase.auth.currentUser && <NavDropdown.Item href="/viewTransactions">View Transactions</NavDropdown.Item>}
-                            </NavDropdown>
+                            {this.props.firebase.auth.currentUser && <NavDropdown title="Offer" id="basic-nav-dropdown">
+                                <NavDropdown.Item href="/offerDashboard">Offer Dashboard</NavDropdown.Item>
+                                <NavDropdown.Item href="/myOffers">My Offers</NavDropdown.Item>
+                                <NavDropdown.Item href="/PostOffer">Post Exchange Offer</NavDropdown.Item>
+                                <NavDropdown.Item href="/viewTransactions">View Transactions</NavDropdown.Item>
+                            </NavDropdown>}
                             {this.props.firebase.auth.currentUser && <Nav.Link href="/AddBank">Add Bank</Nav.Link>}
                             {this.props.firebase.auth.currentUser && <Nav.Link href="/Rates">Exchange Rates</Nav.Link>}
                         </Nav>

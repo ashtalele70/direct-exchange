@@ -43,7 +43,7 @@ class Home extends Component {
         )}
         {!this.props.firebase.auth.currentUser && (
           <div>
-            {/* <Route path="/" component={Navbar} /> */}
+            <Route path="/" component={Navbar} />
             <Route path="/signup" component={SignUp} />
             <Route path="/login" component={Login} />
             <Route path="/verifyemail" component={Verify} />

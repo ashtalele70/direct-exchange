@@ -63,9 +63,6 @@ export function TransactionComponent() {
             <Card.Title className="text-center">
               TRANSACTION {Number(key) + 1}
             </Card.Title>
-            {/* <Card.Text id="offerId">
-                            <span className="font-weight-bold">Offer Id:</span> {offers[key].source_country}
-                        </Card.Text> */}
             <Card.Text id="remitAmount">
               <span className="font-weight-bold">Remit Amount:</span>{" "}
               {transactions[key].remit_amount}
