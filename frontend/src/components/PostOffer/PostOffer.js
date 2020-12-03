@@ -7,7 +7,7 @@ import {
   Form,
   Tooltip,
   OverlayTrigger,
-  Alert
+  Alert,
 } from "react-bootstrap";
 import axios from "axios";
 //import CurrencyInput from "react-currency-input";
@@ -29,12 +29,12 @@ class PostOffer extends Component {
       offer_status: 1,
       is_counter: 0,
       rates: "",
-      amount: "0.00",
+      amount: 0,
       remit_amount_destination: 0,
       user_id: localStorage.getItem("userId"),
       source_bank_message: "",
       destination_bank_message: "",
-      currencies: []
+      currencies: [],
     };
   }
 
@@ -50,17 +50,18 @@ class PostOffer extends Component {
   handleChange = (event, maskedvalue, floatvalue) => {
     // parseFloat(maskedvalue.replace(',','.').replace(' ',''));
     //console.log(event);
-    if(event.target.value) {
+    if (event.target.value) {
       this.setState({
-        amount: Number(maskedvalue),
-        remit_amount_destination:  parseFloat(event.target.value) * parseFloat(this.state.exchange_rate),
+        amount: parseFloat(event.target.value),
+        remit_amount_destination:
+          parseFloat(event.target.value) * parseFloat(this.state.exchange_rate),
       });
-    } else{
+    } else {
       this.setState({
-        remit_amount_destination:  0,
+        amount: 0,
+        remit_amount_destination: 0,
       });
     }
-
   };
 
   exchageRate() {
@@ -85,16 +86,19 @@ class PostOffer extends Component {
       this.exchageRate();
     });
     axios
-        .get(process.env.REACT_APP_ROOT_URL + "/country?currency=" + event.target.value)
-        .then((res) => {
-          if (res.status === 200) {
-            if (res.data) {
-              this.setState({ source_country: res.data });
-            }
+      .get(
+        process.env.REACT_APP_ROOT_URL +
+          "/country?currency=" +
+          event.target.value
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          if (res.data) {
+            this.setState({ source_country: res.data });
           }
-        })
-        .catch((err) => {});
-
+        }
+      })
+      .catch((err) => {});
   };
 
   hideModal = () => {
@@ -136,15 +140,19 @@ class PostOffer extends Component {
     });
 
     axios
-        .get(process.env.REACT_APP_ROOT_URL + "/country?currency=" + event.target.value)
-        .then((res) => {
-          if (res.status === 200) {
-            if (res.data) {
-              this.setState({ destination_country: res.data });
-            }
+      .get(
+        process.env.REACT_APP_ROOT_URL +
+          "/country?currency=" +
+          event.target.value
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          if (res.data) {
+            this.setState({ destination_country: res.data });
           }
-        })
-        .catch((err) => {});
+        }
+      })
+      .catch((err) => {});
   };
 
   destinationCountryChange = (event) => {
@@ -203,7 +211,7 @@ class PostOffer extends Component {
         .then((res) => {
           if (res.status === 200) {
             //this.props.history.push("/postoffer");
-            this.setState( {showSuccess: true });
+            this.setState({ showSuccess: true });
           }
         })
         .catch((err) => {});
@@ -238,29 +246,41 @@ class PostOffer extends Component {
 
   getCurrencies = () => {
     axios
-        .get(process.env.REACT_APP_ROOT_URL + "/currencies")
-        .then((res) => {
-          if (res.status === 200) {
-            if (res.data) {
-              this.setState({ currencies: res.data });
-            }
+      .get(process.env.REACT_APP_ROOT_URL + "/currencies")
+      .then((res) => {
+        if (res.status === 200) {
+          if (res.data) {
+            this.setState({ currencies: res.data });
           }
-        })
-        .catch((err) => {});
+        }
+      })
+      .catch((err) => {});
   };
   render() {
     return (
       <div style={{ paddingTop: 10 }}>
-        {this.state.showSuccess == true && <Alert variant="success" onClose={() => this.setState({ showSuccess: false })} dismissible>
-          Offer Posted Successfully
-        </Alert>}
-        {this.state.showError == true && <Alert variant="danger" onClose={() => this.setState({ showError: false })} dismissible>
-        <b>Please add bank details for</b>
+        {this.state.showSuccess == true && (
+          <Alert
+            variant="success"
+            onClose={() => this.setState({ showSuccess: false })}
+            dismissible
+          >
+            Offer Posted Successfully
+          </Alert>
+        )}
+        {this.state.showError == true && (
+          <Alert
+            variant="danger"
+            onClose={() => this.setState({ showError: false })}
+            dismissible
+          >
+            <b>Please add bank details for</b>
             {this.state.source_bank_message}
             {"\n"}
             {this.state.destination_bank_message}
-        </Alert>}
-        
+          </Alert>
+        )}
+
         <Container className="m-5 d-flex justify-content-center">
           <Form onSubmit={this.submitHandler}>
             <Form.Row>
@@ -272,11 +292,14 @@ class PostOffer extends Component {
                   onChange={this.sourceCurrencyChange}
                 >
                   <option>Choose</option>
-                  {this.state.currencies
-                  &&
+                  {this.state.currencies &&
                     this.state.currencies.map((e, key) => {
                       return (
-                        <option key={key} value={e.Key} disabled={e == this.state.destination_currency}>
+                        <option
+                          key={key}
+                          value={e.Key}
+                          disabled={e == this.state.destination_currency}
+                        >
                           {e}
                         </option>
                       );
@@ -314,15 +337,18 @@ class PostOffer extends Component {
                   onChange={this.destinationCurrencyChange}
                 >
                   <option>Choose</option>
-                  {this.state.currencies
-                  &&
-                  this.state.currencies.map((e, key) => {
-                    return (
-                        <option key={key} value={e.Key} disabled={e == this.state.source_currency}>
+                  {this.state.currencies &&
+                    this.state.currencies.map((e, key) => {
+                      return (
+                        <option
+                          key={key}
+                          value={e.Key}
+                          disabled={e == this.state.source_currency}
+                        >
                           {e}
                         </option>
-                    );
-                  })}
+                      );
+                    })}
                 </Form.Control>
               </Form.Group>
 
@@ -426,10 +452,7 @@ class PostOffer extends Component {
             <OverlayTrigger
               overlay={<Tooltip id={`tooltip-top`}>allow</Tooltip>}
             >
-              <Button
-                variant="primary"
-                type="submit"
-              >
+              <Button variant="primary" type="submit">
                 Post Offer
               </Button>
             </OverlayTrigger>

@@ -106,7 +106,7 @@ public class OfferDaoImpl implements OfferDao{
 	}
 
 	private  List<Offer>  getSingleMatches(int id, Offer offer) {
-
+               System.out.println(offer.getId());
 		Query offersQuery = entityManager.createQuery("from Offer  where " +
 			"allow_split_offer = 1 and offer_status = 1 and "+
 			"source_country =: source_country and source_currency =: " +

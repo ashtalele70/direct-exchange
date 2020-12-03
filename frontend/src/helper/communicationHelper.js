@@ -3,29 +3,16 @@ import { HTTP_GET, HTTP_POST, HTTP_PUT, HTTP_DELETE } from '../constants/httpCon
 import $ from 'jquery';
 
 function sendRequest(type, route, data) {
-    let formData = null;
-    if(data) {
-        if(data instanceof HTMLFormElement) formData = new FormData(data);
-        else {
-            formData = new FormData();
-            Object.entries(data).forEach(([key, value]) => {
-                formData.append(key, value);
-            })
-        }
-    }
-
-    if(formData) {
-        for(let value of formData.values()) {
-            console.log(value);
-        }
-    }
 
     return $.ajax({
         url: process.env.REACT_APP_ROOT_URL + route,
-        data: formData,
+        data: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        },
         type,
         processData: false,
-        contentType: false,
+        //contentType: false,
         xhrFields: {
             withCredentials: true
         },

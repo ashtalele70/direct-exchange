@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Container, Nav, Navbar} from "react-bootstrap";
+import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import logo from "./logo.png";
 import {withAuthentication} from "../Session/AuthUserContext";
 
@@ -22,11 +22,14 @@ class Navigation extends Component {
                             Home
                         </Navbar.Brand>
                         <Nav>
-                            {this.props.firebase.auth.currentUser && <Nav.Link href="/offerDashboard">Offer Dashboard</Nav.Link>}
-                            {this.props.firebase.auth.currentUser && <Nav.Link href="/myOffers">My Offers</Nav.Link>}
+                            {this.props.firebase.auth.currentUser && <NavDropdown title="Offer" id="basic-nav-dropdown">
+                                <NavDropdown.Item href="/offerDashboard">Offer Dashboard</NavDropdown.Item>
+                                <NavDropdown.Item href="/myOffers">My Offers</NavDropdown.Item>
+                                <NavDropdown.Item href="/PostOffer">Post Exchange Offer</NavDropdown.Item>
+                                <NavDropdown.Item href="/viewTransactions">View Transactions</NavDropdown.Item>
+                            </NavDropdown>}
                             {this.props.firebase.auth.currentUser && <Nav.Link href="/AddBank">Add Bank</Nav.Link>}
                             {this.props.firebase.auth.currentUser && <Nav.Link href="/Rates">Exchange Rates</Nav.Link>}
-                            {this.props.firebase.auth.currentUser && <Nav.Link href="/PostOffer">Post Exchange Offer</Nav.Link>}
                         </Nav>
                     <Nav className="mr-auto">
                     </Nav>
