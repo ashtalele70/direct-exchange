@@ -117,6 +117,7 @@ export function MyOffersComponent({ history }) {
                     state: {
                       offerId: offers[key].id,
                       remit_amount: offers[key].remit_amount,
+                      exchange_rate: offers[key].exchange_rate,
                     },
                   })
                 }
