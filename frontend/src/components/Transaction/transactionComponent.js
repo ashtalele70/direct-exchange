@@ -19,13 +19,14 @@ export function TransactionComponent() {
   const [success, setSuccess] = useState(false);
   let transactionList = [];
 
+  async function fetchData() {
+    const response = await getAcceptedOffers({
+      user_id: localStorage.getItem("userId"),
+    });
+    setTransactions(response.filter(offer => offer.accepted_offer_status == "0"));
+  }
+
   useEffect(() => {
-    async function fetchData() {
-      const response = await getAcceptedOffers({
-        user_id: localStorage.getItem("userId"),
-      });
-      setTransactions(response);
-    }
     fetchData();
   }, []);
 
@@ -45,7 +46,10 @@ export function TransactionComponent() {
       service_fee: transaction.service_fee,
     };
     const response = await postTransaction(request);
-    if (response.data == "Success") setSuccess(true);
+    if (response.data == "Success") {
+        fetchData();
+        setSuccess(true);
+    }
     console.log(request);
     setShow(false);
   };
