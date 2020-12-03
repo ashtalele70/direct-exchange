@@ -71,7 +71,7 @@ class AutoMatch extends Component {
       .catch((err) => {});
 
     let paramsSplit = new URLSearchParams();
-    paramsSplit.set("id", this.state.offerId);
+    paramsSplit.set("id", offerId);
 
     axios
       .get(

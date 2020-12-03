@@ -61,19 +61,19 @@ public class AcceptedOfferDaoImpl implements AcceptedOfferDao {
 		
 		
 		AcceptedOffer acceptedOffer1 = new AcceptedOffer(uuid.toString(), user1.getId(), offerId1,
-				offer1.getRemit_amount(), offer1.getSource_currency(),offer1.getDestination_currency());
+				offer1.getRemit_amount(), offer1.getSource_currency(),offer1.getDestination_currency(),0);
 		entityManager.merge(acceptedOffer1);
 		offer1.setOffer_status(5);
 		
 		AcceptedOffer acceptedOffer2 = new AcceptedOffer(uuid.toString(), user2.getId(), offerId2,
-				offer2.getRemit_amount(), offer2.getSource_currency(),offer2.getDestination_currency());
+				offer2.getRemit_amount(), offer2.getSource_currency(),offer2.getDestination_currency(),0);
 		entityManager.merge(acceptedOffer2);
 		offer2.setOffer_status(5);
 		System.out.print("offerId3 " + offerId3);
 		
 		if (offerId3 != 0) {
 			AcceptedOffer acceptedOffer3 = new AcceptedOffer(uuid.toString(), user3.getId(), offerId3,
-					offer3.getRemit_amount(), offer3.getSource_currency(),offer3.getDestination_currency());
+					offer3.getRemit_amount(), offer3.getSource_currency(),offer3.getDestination_currency(),0);
 			entityManager.merge(acceptedOffer3);
 			offer3.setOffer_status(5);
 		}
