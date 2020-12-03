@@ -13,4 +13,5 @@ public interface BankDao {
 	
 	public List<Bank> getBank(int user_id);
 
+	public void deleteBank(int bank_id);
 }

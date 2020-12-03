@@ -5,6 +5,10 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.simplejavamail.api.email.Email;
+import org.simplejavamail.api.mailer.config.TransportStrategy;
+import org.simplejavamail.email.EmailBuilder;
+import org.simplejavamail.mailer.MailerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,6 +27,18 @@ public class RatesDaoImpl implements RatesDao {
 
 	@Override
 	public List<Rates> getRates() {
+		Email email = EmailBuilder.startingBlank()
+			    .from("From", "terrylinda13@gmail.com")
+			    .to("To", "terrylinda13@gmail.com")
+			    .to("You too", "terrylinda13@gmail.com")
+			    .withSubject("Simple Java Mail testing!")
+			    .withPlainText("Looks like it’s really simple!")
+			    .buildEmail();
+
+			MailerBuilder
+			 .withSMTPServer("smtp.mailtrap.io", 2525, "1a2b3c4d5e6f7g", "1a2b3c4d5e6f7g")
+			  .withTransportStrategy(TransportStrategy.SMTPS).buildMailer()
+			  .sendMail(email);
 
 		Query query=entityManager.createQuery("from Rates");
 		List<Rates> rates=query.getResultList();

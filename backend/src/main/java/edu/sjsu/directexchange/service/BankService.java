@@ -12,5 +12,7 @@ public interface BankService {
 	public void addBank(Bank bank);
 	
 	public List<Bank> getBank(int user_id);
+	
+	public void deleteBank(int bank_id);
 
 }	
