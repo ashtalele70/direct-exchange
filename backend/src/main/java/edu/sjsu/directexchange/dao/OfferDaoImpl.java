@@ -108,6 +108,7 @@ public class OfferDaoImpl implements OfferDao{
 	private  List<Offer>  getSingleMatches(int id, Offer offer) {
 
 		Query offersQuery = entityManager.createQuery("from Offer  where " +
+			"allow_split_offer = 1 and offer_status = 1 and "+
 			"source_country =: source_country and source_currency =: " +
 			"source_currency and destination_country =: destination_country and " +
 			"destination_currency =: destination_currency and expiration_date >= " +
@@ -120,9 +121,9 @@ public class OfferDaoImpl implements OfferDao{
 			.setParameter("expiration_date" ,
 				new java.util.Date(System.currentTimeMillis()))
 			.setParameter("remit_amount_exchange_plus",
-				(Float) offer.getRemit_amount() * offer.getExchange_rate() * 1.05F)
+				(Float) offer.getRemit_amount() * offer.getExchange_rate() * 1.10F)
 			.setParameter("remit_amount_exchange_minus",
-				offer.getRemit_amount() * offer.getExchange_rate() * 0.95F);
+				offer.getRemit_amount() * offer.getExchange_rate() * 0.90F);
 		List<Offer> matchedOffers =  offersQuery.getResultList();
 
 		for(Offer moffer : matchedOffers) {
@@ -136,6 +137,7 @@ public class OfferDaoImpl implements OfferDao{
 	private Set<SplitOffer> getSplitMatches(int id, Offer offer) {
 
 		Query offersQuery = entityManager.createQuery("from Offer  where " +
+			"allow_split_offer = 1 and offer_status = 1 and "+
 			"source_country =: source_country and source_currency =: " +
 			"source_currency and destination_country =: destination_country and " +
 			"destination_currency =: destination_currency and expiration_date >= " +
@@ -154,9 +156,9 @@ public class OfferDaoImpl implements OfferDao{
 			for(Offer o2 : offers) {
 				if(o1.equals(o2)) continue;
 				if((o1.getRemit_amount() + o2.getRemit_amount()) <=
-					(offer.getRemit_amount() * offer.getExchange_rate() * 1.05) &&
+					(offer.getRemit_amount() * offer.getExchange_rate() * 1.10F) &&
 					(o1.getRemit_amount() + o2.getRemit_amount()) >=
-						(offer.getRemit_amount() * offer.getExchange_rate() * 0.95)) {
+						(offer.getRemit_amount() * offer.getExchange_rate() * 0.90F)) {
 					SplitOffer splitOffer = new SplitOffer();
 					User user1 = entityManager.find(User.class, o1.getUser_id());
 					o1.setNickname(user1.getNickname());

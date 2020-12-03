@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Nav, Navbar } from "react-bootstrap";
+import {Container, Nav, Navbar} from "react-bootstrap";
 import logo from "./logo.png";
 import {withAuthentication} from "../Session/AuthUserContext";
 
@@ -9,6 +9,7 @@ class Navigation extends Component {
     }
     render() {
         return (
+            <div>
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand href="/">
                              <img
@@ -36,6 +37,8 @@ class Navigation extends Component {
                         {this.props.firebase.auth.currentUser && <Nav.Link href="/logout">Log Out</Nav.Link>}
                     </Nav>
             </Navbar>
+
+            </div>
         );
     }
 }

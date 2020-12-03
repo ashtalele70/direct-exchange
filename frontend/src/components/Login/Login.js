@@ -64,9 +64,6 @@ class LoginForm extends Component {
                     this.props.history.push('/verifyemail');
                 }
             })
-            .then((socialAuthUser) => {
-                if(socialAuthUser.user.emailVerified) this.props.history.push('/');
-            })
             .catch(error => {
                 this.setState({ error });
             });
