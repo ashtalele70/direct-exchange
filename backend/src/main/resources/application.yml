@@ -7,3 +7,5 @@ server:
   error:
     include-message: always
     include-binding-errors: always
+frontend:
+  url: http://localhost:3000
