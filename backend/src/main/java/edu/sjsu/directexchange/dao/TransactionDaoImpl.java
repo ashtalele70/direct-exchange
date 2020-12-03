@@ -41,9 +41,10 @@ public class TransactionDaoImpl implements TransactionDao{
 			
 			if(acceptedOffers.size()==transactions.size()) {
 				for (AcceptedOffer accOffer : acceptedOffers) {
-					System.out.println("inside");
 					Offer offer = entityManager.find(Offer.class, accOffer.getOffer_id());
 					offer.setOffer_status(2);
+					Transaction trans= entityManager.find(Transaction.class, accOffer.getOffer_id());
+					trans.setTransaction_status(3);
 				
 		        }
 			}
