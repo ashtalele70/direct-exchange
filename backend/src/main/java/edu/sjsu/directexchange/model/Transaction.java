@@ -27,7 +27,7 @@ public class Transaction {
   private String transaction_currency;
 
   @Column
-  private String transaction_status;
+  private int transaction_status;
 
   @Column
   private int source_bank_id;
@@ -94,11 +94,13 @@ public void setTransaction_currency(String transaction_currency) {
 	this.transaction_currency = transaction_currency;
 }
 
-public String getTransaction_status() {
+
+
+public int getTransaction_status() {
 	return transaction_status;
 }
 
-public void setTransaction_status(String transaction_status) {
+public void setTransaction_status(int transaction_status) {
 	this.transaction_status = transaction_status;
 }
 
