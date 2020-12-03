@@ -17,7 +17,7 @@ import edu.sjsu.directexchange.model.Rates;
 import edu.sjsu.directexchange.model.Transaction;
 import edu.sjsu.directexchange.service.TransactionService;
 
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins ="${frontend.url}", allowCredentials = "true")
 @RestController
 public class TransactionController {
 	

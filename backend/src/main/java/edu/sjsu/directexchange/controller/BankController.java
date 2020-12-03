@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.sjsu.directexchange.model.Bank;
 import edu.sjsu.directexchange.service.BankService;
 
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = "${frontend.url}", allowCredentials = "true")
 @RestController
 public class BankController {
 	

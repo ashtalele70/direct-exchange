@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.sjsu.directexchange.model.Offer;
 import edu.sjsu.directexchange.service.OfferService;
 
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = "${frontend.url}", allowCredentials = "true")
 @RestController
 public class OfferController {
 	

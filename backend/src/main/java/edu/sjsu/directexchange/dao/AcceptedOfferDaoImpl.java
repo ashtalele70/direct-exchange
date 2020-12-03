@@ -4,14 +4,19 @@ import edu.sjsu.directexchange.model.AcceptedOffer;
 import edu.sjsu.directexchange.model.Offer;
 import edu.sjsu.directexchange.model.Transaction;
 import edu.sjsu.directexchange.model.User;
+import edu.sjsu.directexchange.util.EmailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.mail.*;
+import javax.mail.internet.*;
 
 @Repository
 public class AcceptedOfferDaoImpl implements AcceptedOfferDao {
@@ -42,41 +47,42 @@ public class AcceptedOfferDaoImpl implements AcceptedOfferDao {
 			 user3 = entityManager.find(User.class, offer3.getUser_id());
 			OfferId3_remit_amount=offer3.getRemit_amount();
 		}
-		
 		System.out.println(offer1.getRemit_amount());
 		System.out.println(offer1.getId());
 		System.out.println(offer2.getRemit_amount());
 		System.out.println(OfferId3_remit_amount);
 		System.out.println(offer1.getExchange_rate());
 		System.out.println( (offer2.getRemit_amount()+ OfferId3_remit_amount)/offer1.getExchange_rate());
-		
-		
 		if (offer1.getRemit_amount() != (offer2.getRemit_amount()+ OfferId3_remit_amount)/offer1.getExchange_rate()) {
 			offer1.setRemit_amount((offer2.getRemit_amount()+ OfferId3_remit_amount)/offer1.getExchange_rate());
-			
 			System.out.println(offer1.getRemit_amount());
 		}
-		
-		
 		AcceptedOffer acceptedOffer1 = new AcceptedOffer(uuid.toString(), user1.getId(), offerId1,
 				offer1.getRemit_amount(), offer1.getSource_currency(),offer1.getDestination_currency(),0);
 		entityManager.merge(acceptedOffer1);
 		offer1.setOffer_status(5);
-		
+
 		AcceptedOffer acceptedOffer2 = new AcceptedOffer(uuid.toString(), user2.getId(), offerId2,
 				offer2.getRemit_amount(), offer2.getSource_currency(),offer2.getDestination_currency(),0);
 		entityManager.merge(acceptedOffer2);
 		offer2.setOffer_status(5);
 		System.out.print("offerId3 " + offerId3);
-		
+
 		if (offerId3 != 0) {
 			AcceptedOffer acceptedOffer3 = new AcceptedOffer(uuid.toString(), user3.getId(), offerId3,
 					offer3.getRemit_amount(), offer3.getSource_currency(),offer3.getDestination_currency(),0);
 			entityManager.merge(acceptedOffer3);
 			offer3.setOffer_status(5);
 		}
-		
-	
+
+		if (offerId3 != 0) {
+			EmailUtil.sendEmail(user1);
+			EmailUtil.sendEmail(user2);
+			EmailUtil.sendEmail(user3);
+		}else {
+			EmailUtil.sendEmail(user1);
+			EmailUtil.sendEmail(user2);
+		}
 
 	}
 
