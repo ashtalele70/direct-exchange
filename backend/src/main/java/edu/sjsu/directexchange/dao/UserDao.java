@@ -11,5 +11,5 @@ public interface UserDao {
 
   void createUser(User user);
 
-  void updateUser(User user);
+  void updateUser(User user, String nickname);
 }

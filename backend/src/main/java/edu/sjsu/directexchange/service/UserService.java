@@ -10,5 +10,5 @@ public interface UserService {
 
   public void createUser(User user);
 
-  public void updateUser(User user);
+  public void updateUser(User user, String nickname);
 }

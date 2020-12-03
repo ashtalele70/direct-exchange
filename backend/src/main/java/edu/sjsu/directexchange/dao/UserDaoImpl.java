@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
@@ -63,7 +64,15 @@ public class UserDaoImpl implements UserDao {
 
   @Override
   @Transactional
-  public void updateUser(User user) {
-    entityManager.merge(user);
+  public void updateUser(User user, String nickname) {
+	Query query = entityManager.createQuery("from User where nickname =: nickname")
+			.setParameter("nickname", nickname);
+	
+	//User dbUser = (User) query.getResultList();
+	if(query.getResultList() != null && query.getResultList().size() > 0)
+		throw new NicknameExistsException("Nickname already exists!");
+	
+	user.setNickname(nickname);
+	entityManager.merge(user);
   }
 }

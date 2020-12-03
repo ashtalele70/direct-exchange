@@ -30,11 +30,14 @@ const withAuthentication = Component => {
                                 if (res.status === 200) {
                                     if (res.data) {
                                         localStorage.setItem("userId", res.data);
+                                        this.getNickname();
                                     }
                                 }
                             });
                     } else {
                         localStorage.removeItem("userId");
+                        localStorage.removeItem("email");
+                        localStorage.removeItem("nickname");
                     }
 
                 },
@@ -43,6 +46,19 @@ const withAuthentication = Component => {
 
         componentWillUnmount() {
             this.listener();
+        }
+
+        getNickname = () => {
+            axios
+                .get(process.env.REACT_APP_ROOT_URL + "/user/" + localStorage.getItem("userId"))
+                .then((res) => {
+                    if (res.status === 200) {
+                    if (res.data) {
+                        localStorage.setItem("nickname", res.data.nickname);
+                    }
+                    }
+                })
+            .catch((err) => {});
         }
 
         render() {

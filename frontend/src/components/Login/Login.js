@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import {Alert, Button, Card, Form} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {withFirebase} from "../Firebase/FirebaseProvider";
+import { axios } from "axios";
 
 
 class LoginForm extends Component {
@@ -25,7 +26,9 @@ class LoginForm extends Component {
         this.props.firebase
             .doSignInWithEmailAndPassword(username, password)
             .then((authUser) => {
-                if(authUser.user.emailVerified) this.props.history.push('/');
+                if(authUser.user.emailVerified){
+                    this.props.history.push('/');
+                } 
                 else {
                     this.props.firebase.doSendEmailVerification();
                     this.props.firebase.doSignOut();
@@ -49,7 +52,9 @@ class LoginForm extends Component {
                             show_sign_up_error: true,
                         })
                     );
-                }else if(socialAuthUser.user.emailVerified)this.props.history.push('/');
+                }else if(socialAuthUser.user.emailVerified) {
+                    this.props.history.push('/');
+                }
                 else {
                     this.props.firebase.doSendEmailVerification();
                     this.props.firebase.doSignOut();
@@ -75,7 +80,9 @@ class LoginForm extends Component {
                             show_sign_up_error: true,
                         })
                     );
-                } else if(socialAuthUser.user.emailVerified) this.props.history.push('/');
+                } else if(socialAuthUser.user.emailVerified) {
+                    this.props.history.push('/');
+                }
                 else {
                     this.props.firebase.doSendEmailVerification();
                     this.props.firebase.doSignOut();
