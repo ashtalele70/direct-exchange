@@ -3,11 +3,14 @@ package edu.sjsu.directexchange.dao;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
 
@@ -40,8 +43,43 @@ public class CounterOfferDaoImpl implements CounterOfferDao {
 		cof.setOther_party_id(nOffer.getUser_id());
 
 		entityManager.merge(cof);
+
+			CompletableFuture.supplyAsync(() -> checkOffer(nOffer.getId()))
+			.whenComplete((i, e) -> updateCounterOfferStatusToExpiredpri(i));
+//			.thenApply(o -> updateCounterOfferStatusToExpiredpri(o.getId()));
+
 		return nOffer.getId();
 	}
+
+	int checkOffer(int offerId) {
+		System.out.println("async method called");
+		try {
+			Thread.sleep(15000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println("sleep ended");
+		return offerId;
+	}
+
+
+	void updateCounterOfferStatusToExpiredpri(int id) {
+
+		System.out.println("when complete");
+		Offer fetchedOffer = getOffer(id);
+		Offer updated= null;
+		System.out.println("offer status" + fetchedOffer.getOffer_status());
+		if(fetchedOffer.getOffer_status() != 5 || fetchedOffer.getOffer_status() != 2) {
+			System.out.println("Entered in if");
+//			fetchedOffer.setOffer_status(3);
+			System.out.println("after changing offer status" + fetchedOffer.getOffer_status());
+//			entityManager.persist(fetchedOffer);
+			fetchedOffer.setOffer_status(3);
+//			entityManager.flush();
+			System.out.println("after merging offer status" + fetchedOffer.getOffer_status());
+		}
+	}
+
 
 
 	@Override
