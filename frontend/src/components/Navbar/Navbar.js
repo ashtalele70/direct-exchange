@@ -75,7 +75,12 @@ class Navigation extends Component {
               </NavDropdown>
             )}
             {this.props.firebase.auth.currentUser && (
-              <Nav.Link href="/AddBank">Add Bank</Nav.Link>
+              <NavDropdown title="Bank" id="basic-nav-dropdown">
+                <NavDropdown.Item href="/AddBank">Add Bank</NavDropdown.Item>
+                <NavDropdown.Item href="/ViewBanks">
+                  View Added Banks
+                </NavDropdown.Item>
+              </NavDropdown>
             )}
             {this.props.firebase.auth.currentUser && (
               <Nav.Link href="/Rates">Exchange Rates</Nav.Link>
