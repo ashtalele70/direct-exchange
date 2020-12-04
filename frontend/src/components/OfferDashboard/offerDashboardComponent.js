@@ -22,7 +22,7 @@ export function OfferDashboardComponent() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await getAllOffers({"id": localStorage.getItem("userId")});
+            const response = await getAllOffers({"id": localStorage.getItem("userId")}); 
             setOffers(response);
             setAllOffers(response);
         }
@@ -123,6 +123,9 @@ export function OfferDashboardComponent() {
                 <Card bg="light" border="secondary" className="mt-2">
                     <Card.Body>
                         <Card.Title className="text-center">OFFER {Number(key) + 1}</Card.Title>
+                        <Card.Text id="nickname">
+                            <span className="font-weight-bold">Posted By:</span> {offers[key].nickname}
+                        </Card.Text>
                         <Card.Text className="float-right">
                             <span className="font-weight-bold">Rating: <ReactStars
                                 count={5}
@@ -252,7 +255,8 @@ export function OfferDashboardComponent() {
                 <Modal.Body>
                     <Row>
                         <Col>
-                            <span className="d-block"><span className="font-weight-bold text-primary">Source Country: </span>{currentOffer.source_country}</span>
+                            <span className="d-block"><span className="font-weight-bold text-primary">Posted By: </span>{currentOffer.email}</span>
+                            <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Source Country: </span>{currentOffer.source_country}</span>
                             <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Source Currency: </span>{currentOffer.source_currency}</span>
                             <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Destination Country: </span>{currentOffer.destination_country}</span>
                             <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Destination Currency: </span>{currentOffer.destination_currency}</span>

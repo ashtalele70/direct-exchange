@@ -77,6 +77,7 @@ public class OfferDaoImpl implements OfferDao{
 					.setParameter("user_id", id);
 		
 		offers.forEach(offer -> {
+			User user = entityManager.find(User.class, offer.getUser_id());
 			Query ratingQuery = entityManager.createQuery("from Reputation where user_id =: user_id")
 					.setParameter("user_id", offer.getUser_id());
 						
@@ -85,6 +86,8 @@ public class OfferDaoImpl implements OfferDao{
 			avgRating = ratingSum / ratings.size();
 			ratings.forEach(rating -> rating.setAvgRating(avgRating));
 			offer.setRatings(ratings);
+			offer.setNickname(user.getNickname());
+			offer.setEmail(user.getUsername());
 			
 			ratingSum = 0f;
 			avgRating = 0f;
