@@ -98,7 +98,7 @@ export function TransactionComponent() {
           variant="success"
           onClose={() => setSuccess(false)}
           dismissible
-      > variant="success" dismissible>Transaction Posted Successfully</Alert>}
+      > Transaction Posted Successfully</Alert>}
       <CardDeck>
         <Row className="mt-3 mb-5">{transactionList}</Row>
       </CardDeck>
