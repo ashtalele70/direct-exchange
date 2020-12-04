@@ -7,6 +7,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
+
+import edu.sjsu.directexchange.model.User;
+import edu.sjsu.directexchange.util.EmailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -40,6 +43,13 @@ public class CounterOfferDaoImpl implements CounterOfferDao {
 		cof.setOther_party_id(nOffer.getUser_id());
 
 		entityManager.merge(cof);
+
+		User user1 = entityManager.find(User.class, userId);
+		User user2 = entityManager.find(User.class, nOffer.getUser_id());
+
+		EmailUtil.sendEmailCounterOwner(user2);
+		EmailUtil.sendEmailCounterCounter(user1);
+
 		return nOffer.getId();
 	}
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardDeck,
@@ -46,7 +46,7 @@ export function TransactionComponent() {
       service_fee: transaction.service_fee,
     };
     const response = await postTransaction(request);
-    if (response.data == "Success") {
+    if (response == "Success") {
         fetchData();
         setSuccess(true);
     }
@@ -94,7 +94,11 @@ export function TransactionComponent() {
 
   return (
     <Container>
-      {success == true && <Alert>Transaction Posted Successfully</Alert>}
+      {success == true && <Alert
+          variant="success"
+          onClose={() => setSuccess(false)}
+          dismissible
+      > variant="success" dismissible>Transaction Posted Successfully</Alert>}
       <CardDeck>
         <Row className="mt-3 mb-5">{transactionList}</Row>
       </CardDeck>

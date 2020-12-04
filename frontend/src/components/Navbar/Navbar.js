@@ -69,7 +69,7 @@ class Navigation extends Component {
                 <NavDropdown.Item href="/PostOffer">
                   Post Exchange Offer
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/viewTransactions">
+                <NavDropdown.Item href="/viewAcceptedOffers">
                   View Accepted Offers
                 </NavDropdown.Item>
               </NavDropdown>

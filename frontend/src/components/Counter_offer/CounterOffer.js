@@ -6,7 +6,7 @@ import {
   Button,
   Form,
   Tooltip,
-  OverlayTrigger,
+  OverlayTrigger, Alert,
 } from "react-bootstrap";
 import axios from "axios";
 import CurrencyInput from "react-currency-input";
@@ -29,6 +29,7 @@ class CounterOffer extends Component {
       source_bank_message: "",
       destination_bank_message: "",
       Og_offer_det: {},
+      showSuccess: false,
     };
   }
 
@@ -177,7 +178,9 @@ class CounterOffer extends Component {
           .post(process.env.REACT_APP_ROOT_URL + "/counterOffer/" + og_offer_user_id + "/" + og_offer_id, values)
           .then((res) => {
             if (res.status === 200) {
-              this.props.history.push("/postoffer");
+              this.setState({showSuccess: true});
+              // this.props.history.push("/postoffer");
+
                // setTimeout(() => {
                //   axios
                //       .get(process.env.REACT_APP_ROOT_URL + "/getOffer/" + res.data)
@@ -193,7 +196,7 @@ class CounterOffer extends Component {
                //       })
                // } , 300000);
 
-              this.props.history.push("/myOffers")
+              // this.props.history.push("/myOffers")
             }
           })
           .catch((err) => {
@@ -238,14 +241,24 @@ class CounterOffer extends Component {
     render() {
 
       let a =this.state.Og_offer_det.exchange_rate;
-     
+
       
       
  
     return (
 
       <div style={{ paddingTop: 10 }}>
+        {this.state.showSuccess == true && (
+            <Alert
+                variant="success"
+                onClose={() => this.setState({ showSuccess: false })}
+                dismissible
+            >
+              Counter Offer Posted Successfully
+            </Alert>
+        )}
         <Container className="m-5 d-flex justify-content-center">
+
           <Form>
             <Form.Row>
               <Form.Group as={Col} controlId="fromCurrency">

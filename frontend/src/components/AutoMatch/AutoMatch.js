@@ -27,6 +27,7 @@ class AutoMatch extends Component {
       show: false,
       new_remit_amount: 0,
       exchange_rate: 0,
+      showSuccess: false
     };
   }
 
@@ -147,6 +148,7 @@ class AutoMatch extends Component {
       )
       .then((res) => {
         if (res.status === 200) {
+          this.setState({showSuccess: true});
           if (res.data) {
             console.log(res.data);
             this.setState({ splitOffers: res.data });
@@ -260,6 +262,15 @@ class AutoMatch extends Component {
 
     return (
       <div style={{ paddingTop: 10 }}>
+        {this.state.showSuccess == true && (
+            <Alert
+                variant="success"
+                onClose={() => this.setState({ showSuccess: false })}
+                dismissible
+            >
+              Offer Accepted
+            </Alert>
+        )}
         <Container className="m-5 d-flex justify-content-center">
           <Form>
             <Form.Check

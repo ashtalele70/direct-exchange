@@ -42,7 +42,7 @@ class Home extends Component {
             <Route path="/addbank" component={AddBank} />
             <Route path="/logout" component={Logout} />
             <Route path="/autoMatch" component={AutoMatch} />
-            <Route path="/viewTransactions" component={TransactionComponent} />
+            <Route path="/viewAcceptedOffers" component={TransactionComponent} />
             <Route path="/viewBanks" component={ViewBanks} />
             <Route path="/ViewTransactions" component={ViewTransactions} />
           </div>

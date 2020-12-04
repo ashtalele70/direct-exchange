@@ -21,6 +21,7 @@ class GetMyCounterOffers extends Component {
     this.state = {
       show: false,
       Offers_list: [],
+      showSuccess: false,
     };
   }
 
@@ -64,6 +65,7 @@ class GetMyCounterOffers extends Component {
       )
       .then((res) => {
         if (res.status === 200) {
+          this.setState({showSuccess: true});
           if (res.data) {
             console.log(res.data);
             this.setState({ splitOffers: res.data });
@@ -159,6 +161,16 @@ class GetMyCounterOffers extends Component {
       //}
     );
     return (
+        <div>
+        {this.state.showSuccess == true && (
+              <Alert
+                  variant="success"
+                  onClose={() => this.setState({ showSuccess: false })}
+                  dismissible
+              >
+                Offer Accepted
+              </Alert>
+          )}
       <Container>
         {/*
         {offerList}
@@ -172,6 +184,7 @@ class GetMyCounterOffers extends Component {
           <Row className="mt-3 mb-5">{displayform}</Row>
         </CardDeck>
       </Container>
+        </div>
     );
   }
 }
