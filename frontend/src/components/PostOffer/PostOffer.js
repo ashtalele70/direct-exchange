@@ -108,30 +108,28 @@ class PostOffer extends Component {
 
   sourceCountryChange = (srcCountry) => {
     //this.setState({ source_country: event.target.value }, () => {
-      let params = new URLSearchParams();
-      params.set("source_country", srcCountry);
-      params.set("source_currency", this.state.source_currency);
-      params.set("bank_type", 1);
-      params.set("user_id", this.state.user_id);
-      axios
-        .get(
-          process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString()
-        )
-        .then((res) => {
-          if (res.status === 200) {
-            if (res.data.length === 0) {
-              var message =
-                " \n country: " +
-                this.state.source_currency +
-                " currency: " +
-                this.state.source_country;
-              this.setState({ source_bank_message: message });
-            } else {
-              this.setState({ source_bank_message: "" });
-            }
+    let params = new URLSearchParams();
+    params.set("source_country", srcCountry);
+    params.set("source_currency", this.state.source_currency);
+    params.set("bank_type", 1);
+    params.set("user_id", this.state.user_id);
+    axios
+      .get(process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString())
+      .then((res) => {
+        if (res.status === 200) {
+          if (res.data.length === 0) {
+            var message =
+              " \n country: " +
+              this.state.source_currency +
+              " currency: " +
+              this.state.source_country;
+            this.setState({ source_bank_message: message });
+          } else {
+            this.setState({ source_bank_message: "" });
           }
-        })
-        .catch((err) => {});
+        }
+      })
+      .catch((err) => {});
     //});
   };
 
@@ -159,30 +157,28 @@ class PostOffer extends Component {
 
   destinationCountryChange = (destCountry) => {
     //this.setState({ destination_country: event.target.value }, () => {
-      let params = new URLSearchParams();
-      params.set("source_country", destCountry);
-      params.set("source_currency", this.state.destination_currency);
-      params.set("bank_type", 2);
-      params.set("user_id", this.state.user_id);
-      axios
-        .get(
-          process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString()
-        )
-        .then((res) => {
-          if (res.status === 200) {
-            if (res.data.length === 0) {
-              var message =
-                " \n country: " +
-                this.state.destination_currency +
-                " currency: " +
-                this.state.destination_country;
-              this.setState({ destination_bank_message: message });
-            } else {
-              this.setState({ destination_bank_message: "" });
-            }
+    let params = new URLSearchParams();
+    params.set("source_country", destCountry);
+    params.set("source_currency", this.state.destination_currency);
+    params.set("bank_type", 2);
+    params.set("user_id", this.state.user_id);
+    axios
+      .get(process.env.REACT_APP_ROOT_URL + "/getuserbank?" + params.toString())
+      .then((res) => {
+        if (res.status === 200) {
+          if (res.data.length === 0) {
+            var message =
+              " \n country: " +
+              this.state.destination_currency +
+              " currency: " +
+              this.state.destination_country;
+            this.setState({ destination_bank_message: message });
+          } else {
+            this.setState({ destination_bank_message: "" });
           }
-        })
-        .catch((err) => {});
+        }
+      })
+      .catch((err) => {});
     //});
   };
 
@@ -423,7 +419,12 @@ class PostOffer extends Component {
 
             <Form.Row>
               <OverlayTrigger
-                overlay={<Tooltip id={`tooltip-top`}>Allows</Tooltip>}
+                overlay={
+                  <Tooltip id={`tooltip-top`}>
+                    Enabling this will allow users to post counter offers based
+                    on your offer
+                  </Tooltip>
+                }
               >
                 <Form.Group as={Col} id="allowCounterOffer">
                   <Form.Check
@@ -437,7 +438,12 @@ class PostOffer extends Component {
               </OverlayTrigger>
 
               <OverlayTrigger
-                overlay={<Tooltip id={`tooltip-top`}>allow</Tooltip>}
+                overlay={
+                  <Tooltip id={`tooltip-top`}>
+                    Enabling this will allow directExchage to find matching
+                    offers which are a combination of two offers
+                  </Tooltip>
+                }
               >
                 <Form.Group as={Col} id="allowSplitOffer">
                   <Form.Check
@@ -452,7 +458,12 @@ class PostOffer extends Component {
             </Form.Row>
 
             <OverlayTrigger
-              overlay={<Tooltip id={`tooltip-top`}>allow</Tooltip>}
+              overlay={
+                <Tooltip id={`tooltip-top`}>
+                  Your offer will be posted on directExchange and visible to
+                  others
+                </Tooltip>
+              }
             >
               <Button variant="primary" type="submit">
                 Post Offer
