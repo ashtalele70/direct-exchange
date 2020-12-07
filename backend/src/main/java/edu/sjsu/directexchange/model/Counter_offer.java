@@ -31,6 +31,17 @@ public class Counter_offer {
 	@Column
 	private int other_party_id;
 	
+	@Column
+	private float original_remit_amount;
+	
+	public float getOriginal_remit_amount() {
+		return original_remit_amount;
+	}
+
+	public void setOriginal_remit_amount(float original_remit_amount) {
+		this.original_remit_amount = original_remit_amount;
+	}
+
 	public int getId() {
 		return id;
 	}

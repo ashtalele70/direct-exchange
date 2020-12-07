@@ -51,13 +51,6 @@ export function OfferDashboardComponent() {
         setCurrentOffer(fullOffer);
     }
 
-    const makeCounterOffer = (e, offer) => {
-        history.push({
-            pathname: '/counterOffer',
-            parentOfferId: offer.id
-        })
-    }
-
     const [srcCurrency, setSrcCurrency] = useState("");
     const handleSrcCurrencyChange = async (e) => {
         setSrcCurrency(e);
@@ -165,7 +158,6 @@ export function OfferDashboardComponent() {
                     </Card.Body>
                     <Card.Footer>
                         <Button variant="outline-primary" onClick={(e, offer) => handleShowOfferDetailModal(e, offers[key])}>View Offer Details</Button>
-                        {offers[key].allow_counter_offer == 1 && <Button variant="outline-primary" onClick={(e,offer) => makeCounterOffer(e,offers[key])} className="ml-5">Make Counter Offer</Button>}
                     </Card.Footer>
                 </Card>
             </Col>

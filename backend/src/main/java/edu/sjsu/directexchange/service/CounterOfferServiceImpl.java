@@ -19,9 +19,9 @@ public class CounterOfferServiceImpl implements CounterOfferService  {
 
 
 	@Override
-	public int createCounterOffer(Offer offer, int userId, int offerId) {
+	public int createCounterOffer(Offer offer, int userId, int offerId, float amount) {
 	
-		return  counterOffer.createCounterOffer(offer, userId, offerId);
+		return  counterOffer.createCounterOffer(offer, userId, offerId, amount);
 	}
 
 	@Override

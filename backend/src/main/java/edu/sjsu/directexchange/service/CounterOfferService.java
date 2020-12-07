@@ -8,7 +8,7 @@ import edu.sjsu.directexchange.model.Offer;
 public interface CounterOfferService {
 	
 	
-	public int createCounterOffer(Offer offer , int userId, int offerId);
+	public int createCounterOffer(Offer offer , int userId, int offerId, float amount);
 
 	public Offer getOffer(Integer id);
 

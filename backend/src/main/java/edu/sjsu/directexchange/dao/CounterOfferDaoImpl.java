@@ -32,17 +32,25 @@ public class CounterOfferDaoImpl implements CounterOfferDao {
 
 	@Override
 	@Transactional
-	public int createCounterOffer(Offer offer, int userId, int offerId) {
-
-		Offer nOffer= entityManager.merge(offer);
+	public int createCounterOffer(Offer offer, int userId, int offerId, float amount) {
+//		Offer nOffer= entityManager.merge(offer);
 		Counter_offer cof = new Counter_offer();
 
-		cof.setCounter_Offer_id(nOffer.getId());
-		cof.setOffer_id(offerId);
-		cof.setUser_id(userId);
-		cof.setOther_party_id(nOffer.getUser_id());
+//		cof.setCounter_Offer_id(nOffer.getId());
+//		cof.setOffer_id(offerId);
+//		cof.setUser_id(userId);
+//		cof.setOther_party_id(nOffer.getUser_id());
+		cof.setUser_id(offer.getUser_id());
+		cof.setOffer_id(offer.getId());
+		cof.setOther_party_id(userId);
+		cof.setCounter_Offer_id(offerId);
+		cof.setOriginal_remit_amount(offer.getRemit_amount());
 
 		entityManager.merge(cof);
+		
+		offer.setOffer_status(4);
+		offer.setRemit_amount(amount);
+		Offer nOffer= entityManager.merge(offer);
 
 		User user1 = entityManager.find(User.class, userId);
 		User user2 = entityManager.find(User.class, nOffer.getUser_id());

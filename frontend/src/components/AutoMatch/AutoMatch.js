@@ -158,6 +158,13 @@ class AutoMatch extends Component {
       .catch((err) => {});
   };
 
+  makeCounterOffer = (offer) => {
+    this.props.history.push({
+        pathname: '/counterOffer',
+        parentOfferId: offer.id,
+    })
+  };
+
   render() {
     {
       this.state.singleOffers.length == 0 &&
@@ -187,6 +194,9 @@ class AutoMatch extends Component {
             <Button variant="primary" onClick={() => this.submitHandler(offer)}>
               Accept
             </Button>
+            {offer.allow_counter_offer == 1 && 
+            <Button variant="outline-primary" onClick={() => this.makeCounterOffer(offer)} className="ml-5">
+              Make Counter Offer</Button>}
           </Card.Body>
         </Card>
         <br />
