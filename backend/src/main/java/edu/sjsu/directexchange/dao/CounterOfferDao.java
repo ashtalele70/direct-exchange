@@ -15,4 +15,6 @@ public interface CounterOfferDao {
 	
 	public void updateCounterOfferStatusToExpired(int id);
 	
+	public void rejectCounterOffer(Integer id);
+	
 }

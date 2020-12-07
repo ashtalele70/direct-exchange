@@ -16,6 +16,8 @@ public interface CounterOfferService {
 
 	public void updateCounterOfferStatusToExpired(int id);
 
+	public void rejectCounterOffer(Integer id);
+
 }
 
 

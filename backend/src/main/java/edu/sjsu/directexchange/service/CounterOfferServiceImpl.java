@@ -41,4 +41,9 @@ public class CounterOfferServiceImpl implements CounterOfferService  {
 
 	}
 
+	@Override
+	public void rejectCounterOffer(Integer id) {
+		counterOffer.rejectCounterOffer(id);
+	}
+
 }
