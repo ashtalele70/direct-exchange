@@ -52,8 +52,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>edu.sjsu.directexchange
-                        .DirectExchangeApplication</mainClass>
+                    <mainClass>edu.sjsu.directexchange.DirectExchangeApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
