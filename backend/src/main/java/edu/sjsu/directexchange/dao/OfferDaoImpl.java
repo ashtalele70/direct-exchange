@@ -158,10 +158,18 @@ public class OfferDaoImpl implements OfferDao{
 		for(Offer o1 : offers) {
 			for(Offer o2 : offers) {
 				if(o1.equals(o2)) continue;
-				if((o1.getRemit_amount() + o2.getRemit_amount()) <=
+				if(((o1.getRemit_amount() + o2.getRemit_amount()) <=
 					(offer.getRemit_amount() * offer.getExchange_rate() * 1.10F) &&
 					(o1.getRemit_amount() + o2.getRemit_amount()) >=
-						(offer.getRemit_amount() * offer.getExchange_rate() * 0.90F)) {
+						(offer.getRemit_amount() * offer.getExchange_rate() * 0.90F)) ||
+				((offer.getRemit_amount() * offer.getExchange_rate() + o2.getRemit_amount()) <=
+					(o1.getRemit_amount() * 1.10F) &&
+					(offer.getRemit_amount() * offer.getExchange_rate() + o2.getRemit_amount()) >=
+						(o1.getRemit_amount() * 0.90F)) ||
+					((o1.getRemit_amount() + offer.getRemit_amount() * offer.getExchange_rate()) <=
+						(o2.getRemit_amount() * 1.10F) &&
+						(o1.getRemit_amount() + offer.getRemit_amount() * offer.getExchange_rate()) >=
+							(o2.getRemit_amount() * 0.90F))){
 					SplitOffer splitOffer = new SplitOffer();
 					User user1 = entityManager.find(User.class, o1.getUser_id());
 					o1.setNickname(user1.getNickname());
