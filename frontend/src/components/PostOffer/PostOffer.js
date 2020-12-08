@@ -260,6 +260,7 @@ class PostOffer extends Component {
         {this.state.showSuccess == true && (
           <Alert
             variant="success"
+            onLoad={setTimeout(() =>  this.setState({ showSuccess: false }) , 5000)}
             onClose={() => this.setState({ showSuccess: false })}
             dismissible
           >
@@ -269,6 +270,7 @@ class PostOffer extends Component {
         {this.state.showError == true && (
           <Alert
             variant="danger"
+            onLoad={setTimeout(() =>  this.setState({ showError: false }) , 5000)}
             onClose={() => this.setState({ showError: false })}
             dismissible
           >

@@ -100,7 +100,8 @@ class AddBank extends Component {
   render() {
     return (
       <div>
-        {this.state.show == true && <Alert variant="success" onClose={() => this.setState({ show: false })} dismissible>
+        {this.state.show == true && <Alert variant="success" onLoad={setTimeout(() =>  this.setState({ show: false }), 3000)}
+        onClose={() => this.setState({ show: false })} dismissible>
           Bank Added Successfully
         </Alert>}
         <Container className="m-5 d-flex justify-content-center">

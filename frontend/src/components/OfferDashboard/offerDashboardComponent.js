@@ -5,7 +5,6 @@ import { Card, CardDeck, Container, Row, Col, Modal, Button, Dropdown, FormContr
 import ReactStars from "react-rating-stars-component";
 import { faStar, faStarHalf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useHistory } from 'react-router-dom';
 
 export function OfferDashboardComponent() {
     const [offers, setOffers] = useState([]);
@@ -18,7 +17,6 @@ export function OfferDashboardComponent() {
     let items = [];
     let reviews = [];
     let filterCriteria = {};
-    const history = useHistory();
 
     useEffect(() => {
         async function fetchData() {
@@ -49,13 +47,6 @@ export function OfferDashboardComponent() {
         let fullOffer = JSON.parse(JSON.stringify(offer));
         fullOffer.reviews = reviews;
         setCurrentOffer(fullOffer);
-    }
-
-    const makeCounterOffer = (e, offer) => {
-        history.push({
-            pathname: '/counterOffer',
-            parentOfferId: offer.id
-        })
     }
 
     const [srcCurrency, setSrcCurrency] = useState("");
@@ -164,8 +155,7 @@ export function OfferDashboardComponent() {
                         </Card.Text>
                     </Card.Body>
                     <Card.Footer>
-                        <Button variant="outline-primary" onClick={(e, offer) => handleShowOfferDetailModal(e, offers[key])}>View Offer Details</Button>
-                        {offers[key].allow_counter_offer == 1 && <Button variant="outline-primary" onClick={(e,offer) => makeCounterOffer(e,offers[key])} className="ml-5">Make Counter Offer</Button>}
+                        <Button variant="outline-primary" onClick={() => handleShowOfferDetailModal(offers[key])}>View Offer Details</Button>
                     </Card.Footer>
                 </Card>
             </Col>

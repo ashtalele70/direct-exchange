@@ -32,13 +32,13 @@ class AutoMatch extends Component {
   }
 
   componentDidMount() {
-    if (this.props.location.state && this.props.location.state.offerId) {
+    if (this.props.location.state) {
       this.setState({
-        offerId: this.props.location.state.offerId,
+        offerId: this.props.location.state.offer.id,
         remit_amount: this.props.location.state.remit_amount,
         exchange_rate: this.props.location.state.exchange_rate,
       });
-      this.getMatchingOffers(this.props.location.state.offerId);
+      this.getMatchingOffers(this.props.location.state.offer.id);
     }
   }
   getUser = (user_id) => {
@@ -158,6 +158,15 @@ class AutoMatch extends Component {
       .catch((err) => {});
   };
 
+  makeCounterOffer = (offer) => {
+    this.props.history.push({
+        pathname: '/counterOffer',
+        offer: this.props.location.state.offer,
+        otherPartyOfferId: offer.id,
+        otherPartyUserId: offer.user_id
+    })
+  };
+
   render() {
     {
       this.state.singleOffers.length == 0 &&
@@ -169,7 +178,7 @@ class AutoMatch extends Component {
     }
     const singleOffers = this.state.singleOffers.map((offer, index) => (
       <div>
-        <Card border="primary" style={{ width: "18rem" }}>
+        <Card border="primary" >
           <Card.Header>
             <b>{offer.nickname}'s Offer</b>
           </Card.Header>
@@ -190,6 +199,9 @@ class AutoMatch extends Component {
             <Button variant="primary" onClick={() => this.submitHandler(offer)}>
               Accept
             </Button>
+            {offer.allow_counter_offer == 1 && 
+            <Button variant="outline-primary" onClick={() => this.makeCounterOffer(offer)}>
+              Make Counter Offer</Button>}
           </Card.Body>
         </Card>
         <br />
@@ -274,6 +286,7 @@ class AutoMatch extends Component {
         {this.state.showSuccess == true && (
             <Alert
                 variant="success"
+                onLoad={setTimeout(() =>  this.setState({ showSuccess: false }), 3000)}
                 onClose={() => this.setState({ showSuccess: false })}
                 dismissible
             >

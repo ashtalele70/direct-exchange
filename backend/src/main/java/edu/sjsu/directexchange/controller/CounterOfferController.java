@@ -18,17 +18,15 @@ public class CounterOfferController {
 	@Autowired
 	  private CounterOfferService counterOfferService;
 
-	@PostMapping("/counterOffer/{userId}/{offerId}")
+	@PostMapping("/counterOffer/{userId}/{offerId}/{new_remit_amount}")
 	@ResponseStatus(HttpStatus.OK)
 	  public int createUser( @RequestBody Offer offer,
-												 @PathVariable String userId, @PathVariable String offerId) {
+												 @PathVariable String userId, @PathVariable String offerId, @PathVariable Float new_remit_amount) {
 		int userID = Integer.parseInt(userId);
 		int offerID = Integer.parseInt(offerId);
 	
-	
-		 return counterOfferService.createCounterOffer( offer,  userID , offerID);
-	  }
-	
+		 return counterOfferService.createCounterOffer( offer,  userID , offerID, new_remit_amount.floatValue());
+	  }	
 
 	@GetMapping("/getOffer/{id}")
 	public Offer getAllOffers(@PathVariable Integer id) {
@@ -45,6 +43,11 @@ public class CounterOfferController {
 	@GetMapping("/getAllCounterOffers/{id}")
 	public List<Offer> getAllCounterOffers(@PathVariable Integer id) {
 		return counterOfferService.getAllCounterOffers(id);
+	}
+	
+	@PutMapping("/rejectCounterOffer")
+	public void rejectCounterOffer(@RequestParam Integer id) {
+		counterOfferService.rejectCounterOffer(id);
 	}
 	
 }
