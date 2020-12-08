@@ -99,12 +99,12 @@ class CounterOffer extends Component {
     
   };
 
-  handleChange = (event, maskedvalue, floatvalue) => {
+  handleChange = (event) => {
     //console.log(maskedvalue * Number(this.state.exchange_rate));
     if(event.target.value) {
       this.setState({
         amount: parseFloat(event.target.value),
-        remit_amount_destination: parseFloat(event.target.value) * parseFloat(this.state.exchange_rate),
+        remit_amount_destination: parseFloat(event.target.value) * parseFloat(this.state.Og_offer_det.exchange_rate),
       });
     } else {
       this.setState({
@@ -117,18 +117,19 @@ class CounterOffer extends Component {
   };
 
   getOgOfferDet= () => {
-    axios
-      .get(process.env.REACT_APP_ROOT_URL + "/getOffer/" + this.props.location.parentOfferId )
-      .then((res) => {
-        if (res.status === 200) {
-          if (res.data) {
-            console.log(res.data);
-            this.setState({ Og_offer_det: res.data });
-            this.getRates();
-          }
-        }
-      })
-      .catch((err) => {});
+    // axios
+    //   .get(process.env.REACT_APP_ROOT_URL + "/getOffer/" + this.props.location.parentOfferId )
+    //   .then((res) => {
+    //     if (res.status === 200) {
+    //       if (res.data) {
+    //         console.log(res.data);
+    //         this.setState({ Og_offer_det: res.data });
+    //         this.getRates();
+    //       }
+    //     }
+    //   })
+    //   .catch((err) => {});
+    this.setState({ Og_offer_det: this.props.location.offer });
   };
   getInitialState() {
     return { amount: "0.00" };
@@ -158,49 +159,24 @@ class CounterOffer extends Component {
       is_counter: 1,
     };
     console.log(values.expiration_date);
-    let og_offer_user_id = this.state.Og_offer_det.user_id;
-    let og_offer_id = this.state.Og_offer_det.id;
+    let og_offer_user_id = this.props.location.otherPartyUserId;
+    let og_offer_id = this.props.location.otherPartyOfferId;
 
     let money = this.state.Og_offer_det.remit_amount;
-    let myMon = this.state.remit_amount_destination;
+    let myMon = this.state.amount;
 
-
-    if (myMon < 0.9 * money || myMon > 1.1 * money) {
-      event.preventDefault();
-      this.setState({showMon: true});
-    } else if (this.state.source_bank_message !== "" ||
-        this.state.destination_bank_message !== "") {
-      event.preventDefault();
-      this.setState({showbank: true});
-    } else {
-      console.log(values.expiration_date);
+    if (myMon > 0.9 * money && myMon < 1.1 * money) {
       axios
-          .post(process.env.REACT_APP_ROOT_URL + "/counterOffer/" + og_offer_user_id + "/" + og_offer_id, values)
+          .post(process.env.REACT_APP_ROOT_URL + "/counterOffer/" + og_offer_user_id + "/" + og_offer_id + "/" + this.state.amount, this.state.Og_offer_det)
           .then((res) => {
             if (res.status === 200) {
               this.setState({showSuccess: true});
-              // this.props.history.push("/postoffer");
-
-               // setTimeout(() => {
-               //   axios
-               //       .get(process.env.REACT_APP_ROOT_URL + "/getOffer/" + res.data)
-               //       .then(res => {
-               //         if(res.status === 200) {
-               //           if(res.data.offer_status === 3) {
-               //             var params = new URLSearchParams();
-               //             params.set("id", res.data.id);
-               //             axios
-               //                 .put(process.env.REACT_APP_ROOT_URL + "/updateCounterOfferStatusToExpired?" + params.toString())
-               //           }
-               //         }
-               //       })
-               // } , 300000);
-
-              // this.props.history.push("/myOffers")
             }
           })
           .catch((err) => {
           });
+    } else {
+      this.setState({showMon: true});
     }
   }
 
@@ -240,7 +216,7 @@ class CounterOffer extends Component {
    
     render() {
 
-      let a =this.state.Og_offer_det.exchange_rate;
+      //let a =this.state.Og_offer_det.exchange_rate;
 
       
       
@@ -251,6 +227,7 @@ class CounterOffer extends Component {
         {this.state.showSuccess == true && (
             <Alert
                 variant="success"
+                onLoad={setTimeout(() =>  this.setState({ showSuccess: false }) , 3000)}
                 onClose={() => this.setState({ showSuccess: false })}
                 dismissible
             >
@@ -264,7 +241,7 @@ class CounterOffer extends Component {
               <Form.Group as={Col} controlId="fromCurrency">
                 <Form.Label>From (Currency) </Form.Label>
                 <Form.Control
-                   value={this.state.Og_offer_det.destination_currency}
+                   value={this.state.Og_offer_det.source_currency}
                    aria-describedby="basic-addon2"
                    readOnly="true"
                   // onChange={this.exchageRate()}
@@ -275,7 +252,7 @@ class CounterOffer extends Component {
               <Form.Group as={Col} controlId="fromCountry">
                 <Form.Label>From (Country) </Form.Label>
                 <Form.Control
-                   value={this.state.Og_offer_det.destination_country}
+                   value={this.state.Og_offer_det.source_country}
                    aria-describedby="basic-addon2"
                    readOnly="true"
                 >
@@ -286,7 +263,7 @@ class CounterOffer extends Component {
               <Form.Group as={Col} controlId="toCurrency">
                 <Form.Label>To (Currency)</Form.Label>
                 <Form.Control
-                   value={this.state.Og_offer_det.source_currency}
+                   value={this.state.Og_offer_det.destination_currency}
                    aria-describedby="basic-addon2"
                    readOnly="true"
                 >
@@ -296,7 +273,7 @@ class CounterOffer extends Component {
               <Form.Group as={Col} controlId="toCountry">
                 <Form.Label>To (Country)</Form.Label>
                 <Form.Control
-                   value={this.state.Og_offer_det.source_country}
+                   value={this.state.Og_offer_det.destination_country}
                    aria-describedby="basic-addon2"
                    readOnly="true"
                 >
@@ -324,7 +301,7 @@ class CounterOffer extends Component {
                 <Form.Control
                   type="name"
                   readOnly="readOnly"
-                  value={this.state.exchange_rate}
+                  value={this.state.Og_offer_det.exchange_rate}
     
                 />
               </Form.Group>
@@ -349,9 +326,9 @@ class CounterOffer extends Component {
             {/*  </Form.Group>*/}
             {/*</Form.Row>*/}
               
-            <OverlayTrigger
+            {/* <OverlayTrigger
               overlay={<Tooltip id={`tooltip-top`}>allow</Tooltip>}
-            >
+            > */}
               <Button
                 variant="primary"
                 type="submit"
@@ -359,12 +336,12 @@ class CounterOffer extends Component {
               >
                 Post Counter Offer
               </Button>
-            </OverlayTrigger>
+            {/* </OverlayTrigger> */}
           </Form>
         </Container>
 
 
-        <Modal show={this.state.showbank} onHide={this.hideBankModal} animation={false}>
+        {/* <Modal show={this.state.showbank} onHide={this.hideBankModal} animation={false}>
           <Modal.Header>
             <Modal.Title>Error</Modal.Title>
           </Modal.Header>
@@ -378,7 +355,7 @@ class CounterOffer extends Component {
               Close
             </Button>
           </Modal.Footer>
-        </Modal>
+        </Modal> */}
 
         <Modal show={this.state.showMon} onHide={this.hideMonModal} animation={false}>
           <Modal.Header>

@@ -116,7 +116,7 @@ export function MyOffersComponent({ history }) {
                   history.push({
                     pathname: "/autoMatch",
                     state: {
-                      offerId: offers[key].id,
+                      offer: offers[key],
                       remit_amount: offers[key].remit_amount,
                       exchange_rate: offers[key].exchange_rate,
                     },

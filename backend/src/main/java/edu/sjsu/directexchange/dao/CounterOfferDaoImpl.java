@@ -2,6 +2,7 @@ package edu.sjsu.directexchange.dao;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -32,17 +33,25 @@ public class CounterOfferDaoImpl implements CounterOfferDao {
 
 	@Override
 	@Transactional
-	public int createCounterOffer(Offer offer, int userId, int offerId) {
-
-		Offer nOffer= entityManager.merge(offer);
+	public int createCounterOffer(Offer offer, int userId, int offerId, float new_amount) {
+//		Offer nOffer= entityManager.merge(offer);
 		Counter_offer cof = new Counter_offer();
 
-		cof.setCounter_Offer_id(nOffer.getId());
-		cof.setOffer_id(offerId);
-		cof.setUser_id(userId);
-		cof.setOther_party_id(nOffer.getUser_id());
+//		cof.setCounter_Offer_id(nOffer.getId());
+//		cof.setOffer_id(offerId);
+//		cof.setUser_id(userId);
+//		cof.setOther_party_id(nOffer.getUser_id());
+		cof.setUser_id(offer.getUser_id());
+		cof.setOffer_id(offer.getId());
+		cof.setOther_party_id(userId);
+		cof.setCounter_Offer_id(offerId);
+		cof.setOriginal_remit_amount(offer.getRemit_amount());
 
 		entityManager.merge(cof);
+		
+		offer.setOffer_status(4);
+		offer.setRemit_amount(new_amount);
+		Offer nOffer= entityManager.merge(offer);
 
 		User user1 = entityManager.find(User.class, userId);
 		User user2 = entityManager.find(User.class, nOffer.getUser_id());
@@ -66,19 +75,47 @@ public class CounterOfferDaoImpl implements CounterOfferDao {
 	@Override
 	public List<Offer> getAllCounterOffers(Integer id) {
 		
-		Query query2 = entityManager.createQuery("from Offer where is_counter=1 and id in (select counter_offer_id from Counter_offer where offer_id=:id)")
+//		Query query2 = entityManager.createQuery("from Offer where is_counter=1 and id in (select counter_offer_id from Counter_offer where offer_id=:id)")
+//				.setParameter("id", id);
+//			
+//		List<Offer> offee = query2.getResultList();
+//		
+//		
+//		return offee;
+		
+		Query query = entityManager.createQuery("from Counter_offer where counter_offer_id = :id")
 				.setParameter("id", id);
-			
-		List<Offer> offee = query2.getResultList();
+		List<Counter_offer> cofList = query.getResultList();
+		List<Offer> offers = new ArrayList<Offer>();
+		cofList.forEach(cof -> {
+			Offer offer = entityManager.find(Offer.class, cof.getOffer_id());
+			offers.add(offer);
+		});
 		
-		
-		return offee;
+		return offers;
 	}
 
 	@Override
 	public void updateCounterOfferStatusToExpired(int id) {
 		Offer offer = entityManager.find(Offer.class, id);
 		offer.setOffer_status(3);
+		entityManager.merge(offer);
+	}
+
+
+	@Override
+	@Transactional
+	public void rejectCounterOffer(Integer id) {		
+		Query query = entityManager.createQuery("from Counter_offer where offer_id = :id")
+				.setParameter("id", id);
+		Counter_offer cof = (Counter_offer) query.getSingleResult();
+		
+		Offer offer = entityManager.find(Offer.class, id);
+		//offer.setOffer_status(6);
+		offer.setOffer_status(1);
+		
+		// comment below line if setting offer status to rejected
+		offer.setRemit_amount(cof.getOriginal_remit_amount());
 		entityManager.merge(offer);
 	}
 

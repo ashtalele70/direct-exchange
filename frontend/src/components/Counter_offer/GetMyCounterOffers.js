@@ -22,6 +22,7 @@ class GetMyCounterOffers extends Component {
       show: false,
       Offers_list: [],
       showSuccess: false,
+      showReject: false
     };
   }
 
@@ -68,12 +69,31 @@ class GetMyCounterOffers extends Component {
           this.setState({showSuccess: true});
           if (res.data) {
             console.log(res.data);
-            this.setState({ splitOffers: res.data });
+            this.setState({ Offers_list: this.state.Offers_list.filter(cof => cof.id != offerId2) });
           }
         }
       })
       .catch((err) => {});
   };
+
+  rejectOffer = (offerId) => {
+    axios
+      .put(
+        process.env.REACT_APP_ROOT_URL +
+          "/rejectCounterOffer?id=" +
+          offerId
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          this.setState({showReject: true});
+          this.setState({ Offers_list: this.state.Offers_list.filter(cof => cof.id != offerId) });
+          if (res.data) {
+            console.log(res.data);
+          }
+        }
+      })
+      .catch((err) => {});
+  }
 
   render() {
     console.log(this.state.Offers_list);
@@ -150,6 +170,13 @@ class GetMyCounterOffers extends Component {
               >
                 Accept
               </Button>
+              <Button
+                variant="danger"
+                onClick={() => this.rejectOffer(item.id)}
+                className="ml-3"
+              >
+                Reject
+              </Button>
             </Card.Body>
           </Card>
         </Col>
@@ -165,10 +192,21 @@ class GetMyCounterOffers extends Component {
         {this.state.showSuccess == true && (
               <Alert
                   variant="success"
+                  onLoad={setTimeout(() =>  this.setState( {showSuccess: false}) , 3000)}
                   onClose={() => this.setState({ showSuccess: false })}
                   dismissible
               >
                 Offer Accepted
+              </Alert>
+          )}
+          {this.state.showReject == true && (
+              <Alert
+                  variant="success"
+                  onLoad={setTimeout(() =>  this.setState( {showReject: false}) , 3000)}
+                  onClose={() => this.setState({ showReject: false })}
+                  dismissible
+              >
+                Offer Rejected
               </Alert>
           )}
       <Container>

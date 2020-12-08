@@ -96,6 +96,7 @@ export function TransactionComponent() {
     <Container>
       {success == true && <Alert
           variant="success"
+          onLoad={setTimeout(() =>  setSuccess(false) , 3000)}
           onClose={() => setSuccess(false)}
           dismissible
       > Transaction Posted Successfully</Alert>}

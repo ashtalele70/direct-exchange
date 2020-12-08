@@ -19,9 +19,9 @@ public class CounterOfferServiceImpl implements CounterOfferService  {
 
 
 	@Override
-	public int createCounterOffer(Offer offer, int userId, int offerId) {
+	public int createCounterOffer(Offer offer, int userId, int offerId, float amount) {
 	
-		return  counterOffer.createCounterOffer(offer, userId, offerId);
+		return  counterOffer.createCounterOffer(offer, userId, offerId, amount);
 	}
 
 	@Override
@@ -39,6 +39,11 @@ public class CounterOfferServiceImpl implements CounterOfferService  {
 	@Transactional
 	public void updateCounterOfferStatusToExpired(int id) {
 
+	}
+
+	@Override
+	public void rejectCounterOffer(Integer id) {
+		counterOffer.rejectCounterOffer(id);
 	}
 
 }
