@@ -175,6 +175,9 @@ class AutoMatch extends Component {
           </Card.Header>
           <Card.Body>
             <Card.Text>
+              <b>Offer Currency: </b>
+              {offer.source_currency}
+              <br />
               <b>Offer Amount: </b>
               {offer.remit_amount}
               <br />
@@ -210,6 +213,9 @@ class AutoMatch extends Component {
                         </Card.Header>
                         <Card.Body>
                           <Card.Text>
+                            <b>Offer Currency: </b>
+                            {offer.offers[0].source_currency}
+                            <br />
                             <b>Offer Amount: </b>
                             {offer.offers[0].remit_amount}
                             <br />
@@ -228,6 +234,9 @@ class AutoMatch extends Component {
                         </Card.Header>
                         <Card.Body>
                           <Card.Text>
+                            <b>Offer Currency: </b>
+                            {offer.offers[1].source_currency}
+                            <br />
                             <b>Offer Amount: </b>
                             {offer.offers[1].remit_amount}
                             <br />
