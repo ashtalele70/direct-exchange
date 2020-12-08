@@ -92,10 +92,10 @@ class ViewTransactions extends Component {
           </Badge>
         </td>
         <td>
-          {this.state.transactions[key].listOfOtherParties.length > 0  && <Button variant="outline-primary"
+          {this.state.transactions[key].listOfOtherParties.length > 0  && <Button className="ml-1" variant="outline-primary"
                                                                  onClick={() => this.handleShowMessageModal(this.state.transactions[key].listOfOtherParties[0])}>
             Send Message to {this.state.transactions[key].listOfOtherParties[0].nickname}</Button>}
-          {this.state.transactions[key].listOfOtherParties.length > 1 && <Button variant="outline-secondary"
+          {this.state.transactions[key].listOfOtherParties.length > 1 && <Button  className="ml-1" variant="outline-primary"
                                                                 onClick={() => this.handleShowMessageModal(this.state.transactions[key].listOfOtherParties[1])}>
             Send Message to {this.state.transactions[key].listOfOtherParties[1].nickname} </Button>}
        </td>
@@ -120,18 +120,18 @@ class ViewTransactions extends Component {
         <Modal show={this.state.showMessageModel} onHide={this.handleCloseShowMessageModal}>
           <Modal.Header closeButton>
             <Modal.Title>Send Message to {this.state.nickname}</Modal.Title>
-              <Modal.Body>
-                  <Form onSubmit={this.submitMessageHandler}>
-                      <Form.Group controlId="message">
-                          <Form.Label>Email Text</Form.Label>
-                          <Form.Control as="textarea" rows={5} onChange={this.messageChange}/>
-                      </Form.Group>
-                      <Button variant="primary" type="submit">
-                          Send Message
-                      </Button>
-                  </Form>
-              </Modal.Body>
           </Modal.Header>
+            <Modal.Body>
+                <Form onSubmit={this.submitMessageHandler}>
+                    <Form.Group controlId="message">
+                        <Form.Label>Email Text</Form.Label>
+                        <Form.Control as="textarea" rows={5} onChange={this.messageChange}/>
+                    </Form.Group>
+                    <Button variant="primary" type="submit">
+                        Send Message
+                    </Button>
+                </Form>
+            </Modal.Body>
         </Modal>
       </Container>
     );
