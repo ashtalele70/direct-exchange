@@ -27,7 +27,8 @@ class AutoMatch extends Component {
       show: false,
       new_remit_amount: 0,
       exchange_rate: 0,
-      showSuccess: false
+      showSuccess: false,
+      source_currency: ""
     };
   }
 
@@ -37,6 +38,7 @@ class AutoMatch extends Component {
         offerId: this.props.location.state.offer.id,
         remit_amount: this.props.location.state.remit_amount,
         exchange_rate: this.props.location.state.exchange_rate,
+        source_currency: this.props.location.state.offer.source_currency,
       });
       this.getMatchingOffers(this.props.location.state.offer.id);
     }
@@ -108,26 +110,54 @@ class AutoMatch extends Component {
       (offerId2.remit_amount + offerId3.remit_amount) / offerId2.exchange_rate
     );
     */
-    var matching_offer =
-      (offer2.remit_amount + (offer3 ? offer3.remit_amount : 0)) /
-      this.state.exchange_rate;
-    console.log(matching_offer);
-    if (matching_offer != this.state.remit_amount) {
-      console.log(matching_offer);
-      console.log(this.state.remit_amount);
-      this.setState({
-        show: true,
-        offerId2: offer2.id,
-        offerId3: offer3 ? offer3.id : null,
-        new_remit_amount: matching_offer,
-      });
-    } else {
-      if(offer3) {
-        this.AcceptOffer(offer2.id, offer3.id);
+    if(offer3  && offer2.destination_currency != offer3.destination_currency) {
+      var matching_offer;
+      if(this.state.source_currency == offer3.destination_currency) {
+        matching_offer =  Math.abs(offer2.remit_amount -  offer3.remit_amount/this.state.exchange_rate);
       } else {
-        this.AcceptOffer(offer2.id);
+        matching_offer =  Math.abs(offer2.remit_amount/this.state.exchange_rate -  offer3.remit_amount);
+      }
+
+      console.log(matching_offer);
+      if (matching_offer != this.state.remit_amount) {
+        console.log(matching_offer);
+        console.log(this.state.remit_amount);
+        this.setState({
+          show: true,
+          offerId2: offer2.id,
+          offerId3: offer3 ? offer3.id : null,
+          new_remit_amount: matching_offer,
+        });
+      } else {
+        if(offer3) {
+          this.AcceptOffer(offer2.id, offer3.id);
+        } else {
+          this.AcceptOffer(offer2.id);
+        }
+      }
+    } else {
+      var matching_offer =
+          (offer2.remit_amount + (offer3 ? offer3.remit_amount : 0)) /
+          this.state.exchange_rate;
+      console.log(matching_offer);
+      if (matching_offer != this.state.remit_amount) {
+        console.log(matching_offer);
+        console.log(this.state.remit_amount);
+        this.setState({
+          show: true,
+          offerId2: offer2.id,
+          offerId3: offer3 ? offer3.id : null,
+          new_remit_amount: matching_offer,
+        });
+      } else {
+        if(offer3) {
+          this.AcceptOffer(offer2.id, offer3.id);
+        } else {
+          this.AcceptOffer(offer2.id);
+        }
       }
     }
+
   };
 
   AcceptOffer = (offerId2, offerId3 = null) => {

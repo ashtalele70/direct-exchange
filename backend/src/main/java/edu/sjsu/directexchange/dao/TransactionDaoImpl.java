@@ -1,5 +1,6 @@
 package edu.sjsu.directexchange.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -25,9 +26,30 @@ public class TransactionDaoImpl implements TransactionDao {
 
 	@Override
 	public List<Transaction> getTransaction(int user_id) {
-		return entityManager.createQuery("from Transaction where user_id=:user_id").setParameter("user_id", user_id)
+		List<Transaction> transactions = entityManager.createQuery("from " +
+			"Transaction where " +
+			"user_id=:user_id").setParameter("user_id", user_id)
 				.getResultList();
 
+		if(transactions != null || transactions.size() > 0) {
+			transactions.forEach(x -> {
+				List<User> users = new ArrayList<>();
+				Query transactionQuery=entityManager.createQuery("from AcceptedOffer " +
+					"where match_uuid =: match_uuid")
+					.setParameter("match_uuid", x.getMatch_uuid());
+
+				if(transactionQuery.getResultList() != null
+					&& transactionQuery.getResultList().size() > 0) {
+					List<AcceptedOffer> acceptedOffers = transactionQuery.getResultList();
+					acceptedOffers.forEach(y -> {
+						if(y.getUser_id() != user_id)
+							users.add(entityManager.find(User.class, y.getUser_id()));
+					});
+				}
+				x.setListOfOtherParties(users);
+			});
+		}
+		return transactions;
 	}
 
 	@Override

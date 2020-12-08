@@ -191,11 +191,12 @@ public class OfferDaoImpl implements OfferDao{
 
 		List<SplitOffer> result = new ArrayList<>();
 		Query offersQuery = entityManager.createQuery("from Offer  where " +
-			"allow_split_offer = 1 and offer_status = 1 and "+
+			"allow_split_offer = 1 and offer_status = 1  and id != :id and "+
 			"source_country =: source_country and source_currency =: " +
 			"source_currency and destination_country =: destination_country and " +
 			"destination_currency =: destination_currency and expiration_date >= " +
 			":expiration_date")
+			.setParameter("id", offer.getId())
 			.setParameter("source_country", offer.getSource_country())
 			.setParameter("source_currency", offer.getSource_currency())
 			.setParameter("destination_country", offer.getDestination_country())
@@ -207,10 +208,10 @@ public class OfferDaoImpl implements OfferDao{
 
 		for(Offer o1 : sameCurrencyOffers) {
 			for (Offer o2 : offers) {
-				if((offer.getRemit_amount() + o1.getRemit_amount()) <=
-					(o2.getRemit_amount() * o2.getExchange_rate() * 1.10F) &&
-					(offer.getRemit_amount() + o1.getRemit_amount()) >=
-						(o2.getRemit_amount() * o2.getExchange_rate() * 0.90F)){
+				if(((Math.abs((o1.getRemit_amount() * offer.getExchange_rate()) - o2.getRemit_amount()) <=
+					(offer.getRemit_amount() * offer.getExchange_rate() * 1.10F)) &&
+					(Math.abs((o1.getRemit_amount() *  offer.getExchange_rate()) - o2.getRemit_amount())) >=
+						(offer.getRemit_amount() * offer.getExchange_rate() * 0.90F))){
 					SplitOffer splitOffer = new SplitOffer();
 					User user1 = entityManager.find(User.class, o1.getUser_id());
 					o1.setNickname(user1.getNickname());

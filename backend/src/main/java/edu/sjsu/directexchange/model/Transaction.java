@@ -1,6 +1,10 @@
 package edu.sjsu.directexchange.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "transaction")
@@ -25,7 +29,7 @@ public class Transaction {
 
   @Column
   private String source_currency;
-  
+
   @Column
   private String destination_currency;
 
@@ -38,7 +42,13 @@ public class Transaction {
 //
 //  @Column
 //  private int destination_bank_id;
-  
+
+  //This is a transient field used for send
+  @Transient
+  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "user",
+    "ratings"})
+  private List<User> listOfOtherParties;
+
   public float getService_fee() {
 	return service_fee;
 }
@@ -118,6 +128,14 @@ public void setTransaction_status(int transaction_status) {
 	this.transaction_status = transaction_status;
 }
 
+  public List<User> getListOfOtherParties() {
+    return listOfOtherParties;
+  }
+
+  public void setListOfOtherParties(List<User> user) {
+      this.listOfOtherParties = new ArrayList<>(user);
+  }
+
 //public int getSource_bank_id() {
 //	return source_bank_id;
 //}
@@ -133,4 +151,25 @@ public void setTransaction_status(int transaction_status) {
 //public void setDestination_bank_id(int destination_bank_id) {
 //	this.destination_bank_id = destination_bank_id;
 //}
+public static class Message{
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  String username;
+  String message;
+
+  }
 }
