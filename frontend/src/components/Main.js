@@ -19,6 +19,7 @@ import { TransactionComponent } from "./Transaction/transactionComponent";
 import About from "./Navbar/About";
 import ViewBanks from "./Bank/ViewBanks";
 import ViewTransactions from "./Transaction/viewTransactions";
+import TransactionHistory from "./Reporting/transactionHistory";
 
 class Home extends Component {
   constructor(props) {
@@ -42,9 +43,13 @@ class Home extends Component {
             <Route path="/addbank" component={AddBank} />
             <Route path="/logout" component={Logout} />
             <Route path="/autoMatch" component={AutoMatch} />
-            <Route path="/viewAcceptedOffers" component={TransactionComponent} />
+            <Route
+              path="/viewAcceptedOffers"
+              component={TransactionComponent}
+            />
             <Route path="/viewBanks" component={ViewBanks} />
             <Route path="/ViewTransactions" component={ViewTransactions} />
+            <Route path="/transactionHistory" component={TransactionHistory} />
           </div>
         )}
         {!this.props.firebase.auth.currentUser && (
