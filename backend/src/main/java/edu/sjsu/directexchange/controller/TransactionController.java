@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.sjsu.directexchange.model.Offer;
 import edu.sjsu.directexchange.model.Rates;
 import edu.sjsu.directexchange.model.Transaction;
+import edu.sjsu.directexchange.model.TransactionHistory;
 import edu.sjsu.directexchange.service.TransactionService;
 
 @CrossOrigin(origins ="${frontend.url}", allowCredentials = "true")
@@ -33,7 +34,20 @@ public class TransactionController {
 	@PostMapping("/posttransaction")
 	@ResponseStatus(HttpStatus.OK)
 	public String postTransaction(@RequestBody Transaction transaction ) {
-		return transactionService.postTransaction(transaction);
+		return transactionService.postTransaction(transaction);	
 	}
 
+	@GetMapping("/historytransactions")
+	@ResponseStatus(HttpStatus.OK)
+	public List<TransactionHistory> getHistory(@RequestParam int user_id) {
+		return transactionService.getHistory(user_id);
+	}
+	
+	
+	@GetMapping("/totaltransactions")
+	@ResponseStatus(HttpStatus.OK)
+	public List<Float> getTotal(@RequestParam int user_id) {
+		return transactionService.getTotal(user_id);
+	}
+	
 }

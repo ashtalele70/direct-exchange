@@ -1,6 +1,12 @@
 package edu.sjsu.directexchange.model;
 
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.persistence.*;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "transaction")
@@ -23,7 +29,8 @@ public class Transaction {
   @Column
   private float remit_amount;
 
-  @Column
+
+@Column
   private String source_currency;
   
   @Column
@@ -32,14 +39,25 @@ public class Transaction {
 
   @Column
   private int transaction_status;
+  
+  @Column
+  private String transaction_date= new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").format(new Date());
 
-//  @Column
-//  private int source_bank_id;
-//
+
 //  @Column
 //  private int destination_bank_id;
   
-  public float getService_fee() {
+  public String getTransaction_date() {
+	return transaction_date;
+}
+
+
+
+public void setTransaction_date(String transaction_date) {
+	this.transaction_date = transaction_date;
+}
+
+public float getService_fee() {
 	return service_fee;
 }
 
@@ -89,10 +107,6 @@ public float getRemit_amount() {
 public void setRemit_amount(float remit_amount) {
 	this.remit_amount = remit_amount;
 }
-
-
-
-
 
 public String getSource_currency() {
 	return source_currency;
