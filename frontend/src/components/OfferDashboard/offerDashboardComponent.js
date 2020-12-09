@@ -38,7 +38,7 @@ export function OfferDashboardComponent() {
     const handleShow = () => setShow(true);
 
     const handleCloseOfferDetailModal = () => setShowOfferDetailModal(false);
-    const handleShowOfferDetailModal = (e, offer) => {
+    const handleShowOfferDetailModal = (offer) => {
         setShowOfferDetailModal(true);
         let reviews = [];
         offer.ratings.forEach(rating => {

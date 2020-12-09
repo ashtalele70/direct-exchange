@@ -2,6 +2,7 @@ package edu.sjsu.directexchange.controller;
 
 import java.util.List;
 
+import edu.sjsu.directexchange.util.EmailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -37,6 +38,14 @@ public class TransactionController {
 		return transactionService.postTransaction(transaction);	
 	}
 
+	@PostMapping("/sendMessage")
+	@ResponseStatus(HttpStatus.OK)
+	public void sendMessage(@RequestBody Transaction.Message message) {
+		System.out.println(message.getMessage());
+		System.out.println(message.getUsername());
+		EmailUtil.sendMessage(message.getUsername(), message.getMessage());
+	}
+
 	@GetMapping("/historytransactions")
 	@ResponseStatus(HttpStatus.OK)
 	public List<TransactionHistory> getHistory(@RequestParam int user_id) {
@@ -49,5 +58,5 @@ public class TransactionController {
 	public List<Float> getTotal(@RequestParam int user_id) {
 		return transactionService.getTotal(user_id);
 	}
-	
+
 }

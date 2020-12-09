@@ -1,10 +1,6 @@
 package edu.sjsu.directexchange.dao;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -134,6 +130,19 @@ public class OfferDaoImpl implements OfferDao{
 			moffer.setNickname(user.getNickname());
 		}
 
+
+//		matchedOffers.sort(new Comparator<Offer>() {
+//			@Override
+//			public int compare(Offer o1, Offer o2) {
+//				float diff1 =
+//					(o1.getRemit_amount() - offer.getRemit_amount() * offer.getExchange_rate())/offer.getRemit_amount() * offer.getExchange_rate();
+//				float diff2 =
+//					(o2.getRemit_amount() - offer.getRemit_amount() * offer.getExchange_rate())/offer.getRemit_amount() * offer.getExchange_rate();
+//				return Math.abs((int) (diff1 * 100 - diff2 * 100));
+//			}
+//		});
+		matchedOffers.sort(Comparator.comparing((Offer o) -> Math.abs(o.getRemit_amount() - offer.getRemit_amount() * offer.getExchange_rate()))
+			.thenComparing(o -> o.getRemit_amount() - offer.getRemit_amount() * offer.getExchange_rate()));
 		return matchedOffers;
 	}
 
@@ -158,18 +167,10 @@ public class OfferDaoImpl implements OfferDao{
 		for(Offer o1 : offers) {
 			for(Offer o2 : offers) {
 				if(o1.equals(o2)) continue;
-				if(((o1.getRemit_amount() + o2.getRemit_amount()) <=
+				if((o1.getRemit_amount() + o2.getRemit_amount()) <=
 					(offer.getRemit_amount() * offer.getExchange_rate() * 1.10F) &&
 					(o1.getRemit_amount() + o2.getRemit_amount()) >=
-						(offer.getRemit_amount() * offer.getExchange_rate() * 0.90F)) ||
-				((offer.getRemit_amount() * offer.getExchange_rate() + o2.getRemit_amount()) <=
-					(o1.getRemit_amount() * 1.10F) &&
-					(offer.getRemit_amount() * offer.getExchange_rate() + o2.getRemit_amount()) >=
-						(o1.getRemit_amount() * 0.90F)) ||
-					((o1.getRemit_amount() + offer.getRemit_amount() * offer.getExchange_rate()) <=
-						(o2.getRemit_amount() * 1.10F) &&
-						(o1.getRemit_amount() + offer.getRemit_amount() * offer.getExchange_rate()) >=
-							(o2.getRemit_amount() * 0.90F))){
+						(offer.getRemit_amount() * offer.getExchange_rate() * 0.90F)){
 					SplitOffer splitOffer = new SplitOffer();
 					User user1 = entityManager.find(User.class, o1.getUser_id());
 					o1.setNickname(user1.getNickname());
@@ -191,7 +192,64 @@ public class OfferDaoImpl implements OfferDao{
 			}
 		}
 
+		matchedSplitOffers.stream().sorted(Comparator.comparing((SplitOffer o) -> Math.abs((o.getOffers().get(0).getRemit_amount() + o.getOffers().get(1).getRemit_amount()) - offer.getRemit_amount() * offer.getExchange_rate()))
+			.thenComparing(o -> (o.getOffers().get(0).getRemit_amount() + o.getOffers().get(1).getRemit_amount()) - offer.getRemit_amount() * offer.getExchange_rate()));
+
+		//A = B - C
+		matchedSplitOffers.addAll(getOtherSpiltMatches(offer, offers));
+
+
 		return matchedSplitOffers;
+	}
+
+	private List<SplitOffer> getOtherSpiltMatches(Offer offer,
+																								List<Offer> offers) {
+
+		List<SplitOffer> result = new ArrayList<>();
+		Query offersQuery = entityManager.createQuery("from Offer  where " +
+			"allow_split_offer = 1 and offer_status = 1  and id != :id and "+
+			"source_country =: source_country and source_currency =: " +
+			"source_currency and destination_country =: destination_country and " +
+			"destination_currency =: destination_currency and expiration_date >= " +
+			":expiration_date")
+			.setParameter("id", offer.getId())
+			.setParameter("source_country", offer.getSource_country())
+			.setParameter("source_currency", offer.getSource_currency())
+			.setParameter("destination_country", offer.getDestination_country())
+			.setParameter("destination_currency", offer.getDestination_currency())
+			.setParameter("expiration_date" ,
+				new java.util.Date(System.currentTimeMillis()));
+
+		List<Offer> sameCurrencyOffers = offersQuery.getResultList();
+
+		for(Offer o1 : sameCurrencyOffers) {
+			for (Offer o2 : offers) {
+				if(((Math.abs((o1.getRemit_amount() * offer.getExchange_rate()) - o2.getRemit_amount()) <=
+					(offer.getRemit_amount() * offer.getExchange_rate() * 1.10F)) &&
+					(Math.abs((o1.getRemit_amount() *  offer.getExchange_rate()) - o2.getRemit_amount())) >=
+						(offer.getRemit_amount() * offer.getExchange_rate() * 0.90F))){
+					SplitOffer splitOffer = new SplitOffer();
+					User user1 = entityManager.find(User.class, o1.getUser_id());
+					o1.setNickname(user1.getNickname());
+					User user2 = entityManager.find(User.class, o2.getUser_id());
+					o2.setNickname(user2.getNickname());
+
+					if(o1.getId() < o2.getId()){
+						splitOffer.addOffer(o1);
+						splitOffer.addOffer(o2);
+					}
+					else {
+						splitOffer.addOffer(o2);
+						splitOffer.addOffer(o1);
+					}
+
+					if(!result.contains(splitOffer))
+						result.add(splitOffer);
+				}
+
+			}
+		}
+		return result;
 	}
 
 
