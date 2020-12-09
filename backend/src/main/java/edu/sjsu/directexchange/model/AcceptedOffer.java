@@ -34,8 +34,11 @@ public class AcceptedOffer {
 	@Column
 	private String source_currency;
 
-	@Transient
-	final float service_fee = 0.05F;
+	@Column
+	private float service_fee ; 
+	
+	@Column
+	private float final_remit_amt;
 
 	@OneToOne
 	@JoinColumn(name = "offer_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -79,7 +82,7 @@ public class AcceptedOffer {
 	}
 
 	public AcceptedOffer(String match_uuid, int user_id, int offer_id, float remit_amount, String source_currency,
-			String destination_currency,int accepted_offer_status) {
+			String destination_currency,int accepted_offer_status,float service_fee, float final_remit_amt) {
 		this.match_uuid = match_uuid;
 		this.user_id = user_id;
 		this.offer_id = offer_id;
@@ -87,6 +90,8 @@ public class AcceptedOffer {
 		this.source_currency = source_currency;
 		this.destination_currency = destination_currency;
 		this.accepted_offer_status=accepted_offer_status;
+		this.service_fee = service_fee;
+		this.final_remit_amt = final_remit_amt;
 	}
 
 	public int getId() {
@@ -129,4 +134,19 @@ public class AcceptedOffer {
 		this.remit_amount = remit_amount;
 	}
 
+	public float getService_Fee() {
+		return service_fee;
+	}
+
+	public void setService_fee(float service_fee) {
+		this.service_fee = service_fee;
+	}
+	
+	public float getFinal_remit_amt() {
+		return final_remit_amt;
+	}
+
+	public void setFinal_remit_amt(float final_remit_amt) {
+		this.final_remit_amt = final_remit_amt;
+	}
 }
