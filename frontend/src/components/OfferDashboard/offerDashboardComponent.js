@@ -38,7 +38,7 @@ export function OfferDashboardComponent() {
     const handleShow = () => setShow(true);
 
     const handleCloseOfferDetailModal = () => setShowOfferDetailModal(false);
-    const handleShowOfferDetailModal = (e, offer) => {
+    const handleShowOfferDetailModal = (offer) => {
         setShowOfferDetailModal(true);
         let reviews = [];
         offer.ratings.forEach(rating => {
@@ -155,7 +155,7 @@ export function OfferDashboardComponent() {
                         </Card.Text>
                     </Card.Body>
                     <Card.Footer>
-                        <Button variant="outline-primary" onClick={(e) => handleShowOfferDetailModal(e, offers[key])}>View Offer Details</Button>
+                        <Button variant="outline-primary" onClick={() => handleShowOfferDetailModal(offers[key])}>View Offer Details</Button>
                     </Card.Footer>
                 </Card>
             </Col>

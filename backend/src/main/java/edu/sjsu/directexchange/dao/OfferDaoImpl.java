@@ -130,6 +130,19 @@ public class OfferDaoImpl implements OfferDao{
 			moffer.setNickname(user.getNickname());
 		}
 
+
+//		matchedOffers.sort(new Comparator<Offer>() {
+//			@Override
+//			public int compare(Offer o1, Offer o2) {
+//				float diff1 =
+//					(o1.getRemit_amount() - offer.getRemit_amount() * offer.getExchange_rate())/offer.getRemit_amount() * offer.getExchange_rate();
+//				float diff2 =
+//					(o2.getRemit_amount() - offer.getRemit_amount() * offer.getExchange_rate())/offer.getRemit_amount() * offer.getExchange_rate();
+//				return Math.abs((int) (diff1 * 100 - diff2 * 100));
+//			}
+//		});
+		matchedOffers.sort(Comparator.comparing((Offer o) -> Math.abs(o.getRemit_amount() - offer.getRemit_amount() * offer.getExchange_rate()))
+			.thenComparing(o -> o.getRemit_amount() - offer.getRemit_amount() * offer.getExchange_rate()));
 		return matchedOffers;
 	}
 
@@ -178,6 +191,9 @@ public class OfferDaoImpl implements OfferDao{
 				}
 			}
 		}
+
+		matchedSplitOffers.stream().sorted(Comparator.comparing((SplitOffer o) -> Math.abs((o.getOffers().get(0).getRemit_amount() + o.getOffers().get(1).getRemit_amount()) - offer.getRemit_amount() * offer.getExchange_rate()))
+			.thenComparing(o -> (o.getOffers().get(0).getRemit_amount() + o.getOffers().get(1).getRemit_amount()) - offer.getRemit_amount() * offer.getExchange_rate()));
 
 		//A = B - C
 		matchedSplitOffers.addAll(getOtherSpiltMatches(offer, offers));
