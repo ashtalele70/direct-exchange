@@ -40,7 +40,14 @@ export function OfferDashboardComponent() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const handleCloseHistoryModal = () => {
+        setShowHistoryModal(false);
+        setOfferDetailClicked(false);
+        if(offerDetailClicked) setShowOfferDetailModal(true);
+    }
+
     const handleCloseOfferDetailModal = () => setShowOfferDetailModal(false);
+
     const handleShowOfferDetailModal = (offer) => {
         setShowOfferDetailModal(true);
         let reviews = [];
@@ -103,9 +110,14 @@ export function OfferDashboardComponent() {
     }
 
     const [showHistoryModal, setShowHistoryModal] = useState(false);
-    const showTransactionHistory = async (userId) => {
+    const [offerDetailClicked, setOfferDetailClicked] = useState(false);
+    const showTransactionHistory = async (userId, isOfferDetailClicked = false) => {
         const response = await getAllTransactions({ "user_id": userId });
         setTransactions(response);
+        if(isOfferDetailClicked) {
+            setShowOfferDetailModal(false);
+            setOfferDetailClicked(true);
+        }
         setShowHistoryModal(true);
     }
 
@@ -180,8 +192,9 @@ export function OfferDashboardComponent() {
     }
 
     if(transactions) {
-        transactionHistory =  Object.keys(transactions).filter(item => item.transaction_status).map(key => (
+        transactionHistory =  Object.keys(transactions).map(key => (
             <tr>
+              <td>{transactions[key].listOfOtherParties.map(party => <abbr title={party.username}>{party.username.substring(0, 2)}{transactions[key].listOfOtherParties.length > 1 ? ", " : ""}</abbr>)}</td>
               <td>{transactions[key].offer_id}</td>
               <td>{transactions[key].remit_amount}</td>
               <td>{transactions[key].source_currency}</td>
@@ -283,7 +296,7 @@ export function OfferDashboardComponent() {
                             <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Expiration Date: </span>{currentOffer.expiration_date}</span>
                         </Col>
                         <Col>
-                            <span className="font-weight-bold text-primary">Rating: <ReactStars
+                            <span className="font-weight-bold text-primary" onClick={() => showTransactionHistory(currentOffer.user_id, true)}>Rating: <ReactStars
                                 count={5}
                                 value={currentOffer.ratings && currentOffer.ratings.length > 0 ? currentOffer.ratings[0].avgRating : 0}
                                 size={24}
@@ -299,7 +312,7 @@ export function OfferDashboardComponent() {
                         </Col></Row>
                 </Modal.Body>
             </Modal>
-            <Modal show={showHistoryModal} onHide={() => setShowHistoryModal(false)}>
+            <Modal show={showHistoryModal} onHide={handleCloseHistoryModal} backdrop="static" size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>Transaction History</Modal.Title>
                 </Modal.Header>
@@ -307,6 +320,7 @@ export function OfferDashboardComponent() {
                     <Table striped bordered hover size="sm">
                         <thead>
                             <tr>
+                                <th>Username</th>
                                 <th>Offer ID</th>
                                 <th>Remit Amount</th>
                                 <th>Source Currency</th>
