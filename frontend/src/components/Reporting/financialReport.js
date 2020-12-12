@@ -9,8 +9,8 @@ class FinancialReport extends Component {
     this.display = [
       "Number of Completed Transaction",
       "Number of uncompleted Trasaction",
-      "Total Remit Amount ($)",
-      "Total Service Fee($)",
+      "Total Remit Amount (completed Transactions) ($)",
+      "Total Service Fee(completed Transactions) ($)",
     ];
 
     this.state = { monthYear: "Choose" };
@@ -92,7 +92,7 @@ class FinancialReport extends Component {
       <Container className="m-5 d-flex justify-content-center">
         <Form>
           <Form.Group controlId="formBasicEmail">
-            <Form.Label>Enter the month of report needed</Form.Label>
+            <Form.Label>Enter the month & Year of report </Form.Label>
             <Form.Control
               as="select"
               defaultValue={this.state.monthYear}
