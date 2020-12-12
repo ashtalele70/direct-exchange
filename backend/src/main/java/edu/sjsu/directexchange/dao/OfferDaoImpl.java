@@ -1,18 +1,18 @@
 package edu.sjsu.directexchange.dao;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
-import edu.sjsu.directexchange.model.SplitOffer;
+import edu.sjsu.directexchange.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import edu.sjsu.directexchange.model.Offer;
-import edu.sjsu.directexchange.model.Reputation;
-import edu.sjsu.directexchange.model.User;
 
 @Repository
 public class OfferDaoImpl implements OfferDao{
@@ -44,6 +44,8 @@ public class OfferDaoImpl implements OfferDao{
 	
 	@Override
 	public List<Offer> getMyOffers(Integer id) {
+		expireCounterOffer();
+		checkExpiredTransaction();
 		List<Offer> offers = new ArrayList<>();
 		User user = entityManager.find(User.class, id);
 		if(user != null) {
@@ -59,6 +61,8 @@ public class OfferDaoImpl implements OfferDao{
 
 	@Override
 	public List<Offer> getAllOffers(Integer id) {
+		expireCounterOffer();
+		checkExpiredTransaction();
 		Query query1 = entityManager.createQuery("from Offer where offer_status = 1 and user_id != :user_id")
 					.setParameter("user_id", id);
 		
@@ -105,7 +109,6 @@ public class OfferDaoImpl implements OfferDao{
 	}
 
 	private  List<Offer>  getSingleMatches(int id, Offer offer) {
-               System.out.println(offer.getId());
 		Query offersQuery = entityManager.createQuery("from Offer  where " +
 			"allow_split_offer = 1 and offer_status = 1 and "+
 			"source_country =: source_country and source_currency =: " +
@@ -298,5 +301,112 @@ public class OfferDaoImpl implements OfferDao{
 		});
 
 		return offers;
+	}
+
+	private void checkExpiredTransaction() {
+
+		Query acceptedOfferQuery = entityManager.createQuery(" from " +
+			"AcceptedOffer where accepted_offer_status in (0, 1)");
+
+		List<AcceptedOffer> acceptedOffers = acceptedOfferQuery.getResultList();
+		acceptedOffers.forEach(x -> {
+			try {
+				if(x.getAccepted_offer_date() != null) {
+					Date startDate =
+						new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").parse(x.getAccepted_offer_date());
+					long minutes = System.currentTimeMillis() - startDate.getTime();
+					long diff = TimeUnit.MINUTES.convert(minutes, TimeUnit.MILLISECONDS);
+					if(diff >= 10) {
+						Query transactionCheckQuery =  entityManager.createQuery(" from " +
+							"Transaction where offer_id =:offer_id and transaction_status = " +
+							"1").setParameter("offer_id",
+							x.getOffer_id());
+						List<Transaction> transactions =
+							transactionCheckQuery.getResultList();
+						if(transactions != null && transactions.size() > 0) {
+							transactions.forEach(transaction -> {
+								transaction.setTransaction_status(4);
+								entityManager.merge(transaction);
+								x.setAccepted_offer_status(2);
+							});
+						} else {
+							Transaction transaction = new Transaction();
+							transaction.setMatch_uuid(x.getMatch_uuid());
+							transaction.setOffer_id(x.getOffer_id());
+							transaction.setUser_id(x.getUser_id());
+							transaction.setRemit_amount(x.getRemit_amount());
+							transaction.setSource_currency(x.getSource_currency());
+							transaction.setTransaction_status(2);
+							transaction.setService_fee(x.getService_fee());
+							transaction.setDestination_currency(x.getDestination_currency());
+							entityManager.merge(transaction);
+							x.setAccepted_offer_status(2);
+						}
+
+						if(x.getOffer().getIs_counter() == 1  && x.getOffer().getOffer_status() == 5) {
+							Query query = entityManager.createQuery("from Counter_offer where offer_id = :id")
+								.setParameter("id", x.getOffer().getId());
+							Counter_offer cof = (Counter_offer) query.getSingleResult();
+
+							Offer offer = entityManager.find(Offer.class, x.getOffer().getId());
+							Offer expiredOffer = new Offer(offer);
+							expiredOffer.setOffer_status(3);
+							entityManager.merge(expiredOffer);
+							offer.setOffer_status(1);
+
+							// comment below line if setting offer status to rejected
+							offer.setIs_counter(0);
+							offer.setRemit_amount(cof.getOriginal_remit_amount());
+							entityManager.merge(offer);
+							entityManager.remove(cof);
+						} else if(x.getOffer().getIs_counter() == 0){
+							Offer offer = entityManager.find(Offer.class, x.getOffer().getId());
+							offer.setOffer_status(1);
+							entityManager.merge(offer);
+						}
+					}
+				}
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+
+	@Transactional
+	public void expireCounterOffer() {
+		Query query = entityManager.createQuery("from Counter_offer c where " +
+			"c.offer_id in (select id from Offer where id = c.offer_id and " +
+			"offer_status = 4)");
+		List<Counter_offer> counterOffers = query.getResultList();
+
+		counterOffers.forEach(x -> {
+			try {
+				if (x.getCounter_offer_date() != null) {
+					Date startDate =
+						new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").parse(x.getCounter_offer_date());
+					long minutes = System.currentTimeMillis() - startDate.getTime();
+					long diff = TimeUnit.MINUTES.convert(minutes, TimeUnit.MILLISECONDS);
+					if (diff >= 5) {
+						Offer offer = x.getOffer();
+						Offer expiredOffer = new Offer(offer);
+						expiredOffer.setOffer_status(3);
+						entityManager.merge(expiredOffer);
+
+						offer.setOffer_status(1);
+
+						// comment below line if setting offer status to rejected
+						offer.setIs_counter(0);
+						offer.setRemit_amount(x.getOriginal_remit_amount());
+						entityManager.merge(offer);
+
+						entityManager.remove(x);
+					}
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 }

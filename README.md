@@ -9,7 +9,7 @@ oauth_type[1:Google,2:Facebook, 3:Normal]
 
 is_counter  [1:True, 0:False]
 
-OFFER_STATUS = {"1": "Open", "2": "Fulfilled", "3": "Expired", "4": "Counter Made", "5": "In Transaction"}
+OFFER_STATUS = {"1": "Open", "2": "Fulfilled", "3": "Expired", "4": "Counter Made", "5": "In Transaction","6":"Rejected"}
 
 allow_counter_offer:[1:True, 0:False]
 

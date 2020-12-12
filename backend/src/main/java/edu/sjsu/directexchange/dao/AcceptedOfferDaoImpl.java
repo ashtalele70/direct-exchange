@@ -124,7 +124,8 @@ public class AcceptedOfferDaoImpl implements AcceptedOfferDao {
 			 frm3 = (float) (offerId3_remit_amount*0.9995);
 		}
 
-		if (offer1.getRemit_amount() != (offer2.getRemit_amount()+ offerId3_remit_amount)/offer1.getExchange_rate()) {
+		if (offer1.getOffer_status() != 4 &&
+			offer1.getRemit_amount() != (offer2.getRemit_amount()+ offerId3_remit_amount)/offer1.getExchange_rate()) {
 			offer1.setRemit_amount((offer2.getRemit_amount()+ offerId3_remit_amount)/offer1.getExchange_rate());
 			 sf1 = (float) (offer1.getRemit_amount()*0.0005);
 			 frm1 = (float) (offer1.getRemit_amount()*0.9995);
