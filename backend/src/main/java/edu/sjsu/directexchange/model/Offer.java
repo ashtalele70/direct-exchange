@@ -30,7 +30,26 @@ public class Offer {
 	@Transient
 	private String email;
 
-	public String getEmail() {
+	public Offer (){
+
+	}
+
+  public Offer(Offer offer) {
+  	this.user_id = offer.getUser_id();
+  	this.source_country = offer.getSource_country();
+  	this.source_currency = offer.getSource_currency();
+  	this.remit_amount = offer.getRemit_amount();
+  	this.destination_country = offer.getDestination_country();
+  	this.destination_currency = offer.getDestination_currency();
+  	this.exchange_rate = offer.getExchange_rate();
+  	this.expiration_date = offer.getExpiration_date();
+  	this.allow_counter_offer = offer.getAllow_counter_offer();
+  	this.allow_split_offer = offer.getAllow_split_offer();
+  	this.offer_status = offer.getOffer_status();
+  	this.is_counter = offer.getIs_counter();
+  }
+
+  public String getEmail() {
 		return email;
 	}
 

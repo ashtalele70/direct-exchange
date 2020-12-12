@@ -66,12 +66,15 @@ public class TransactionDaoImpl implements TransactionDao {
 							x.setAccepted_offer_status(2);
 						}
 
-						if(x.getOffer().getIs_counter() == 1) {
+						if(x.getOffer().getIs_counter() == 1  && x.getOffer().getOffer_status() == 5) {
 							Query query = entityManager.createQuery("from Counter_offer where offer_id = :id")
 								.setParameter("id", x.getOffer().getId());
 							Counter_offer cof = (Counter_offer) query.getSingleResult();
 
 							Offer offer = entityManager.find(Offer.class, x.getOffer().getId());
+							Offer expiredOffer = new Offer(offer);
+							expiredOffer.setOffer_status(3);
+							entityManager.merge(expiredOffer);
 							offer.setOffer_status(1);
 
 							// comment below line if setting offer status to rejected
@@ -79,7 +82,7 @@ public class TransactionDaoImpl implements TransactionDao {
 							offer.setRemit_amount(cof.getOriginal_remit_amount());
 							entityManager.merge(offer);
 							entityManager.remove(cof);
-						} else {
+						} else if(x.getOffer().getIs_counter() == 0){
 							Offer offer = entityManager.find(Offer.class, x.getOffer().getId());
 							offer.setOffer_status(1);
 							entityManager.merge(offer);
@@ -147,8 +150,11 @@ public class TransactionDaoImpl implements TransactionDao {
 				for (AcceptedOffer accOffer : acceptedOffers) {
 					Offer offer = entityManager.find(Offer.class, accOffer.getOffer_id());
 					offer.setOffer_status(2);
-					Transaction trans = (Transaction) entityManager.createQuery("from Transaction where offer_id=:offer_id")
-							.setParameter("offer_id", accOffer.getOffer_id()).getSingleResult();
+					Transaction trans = (Transaction) entityManager.createQuery("from " +
+						"Transaction where offer_id=:offer_id and match_uuid =: match_uuid")
+							.setParameter("offer_id", accOffer.getOffer_id())
+							.setParameter("match_uuid", accOffer.getMatch_uuid())
+							.getSingleResult();
 					trans.setTransaction_status(3);
 				}
 			}

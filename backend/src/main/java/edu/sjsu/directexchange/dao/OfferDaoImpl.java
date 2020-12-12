@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import edu.sjsu.directexchange.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ public class OfferDaoImpl implements OfferDao{
 	
 	@Override
 	public List<Offer> getMyOffers(Integer id) {
+		expireCounterOffer();
 		checkExpiredTransaction();
 		List<Offer> offers = new ArrayList<>();
 		User user = entityManager.find(User.class, id);
@@ -59,6 +61,7 @@ public class OfferDaoImpl implements OfferDao{
 
 	@Override
 	public List<Offer> getAllOffers(Integer id) {
+		expireCounterOffer();
 		checkExpiredTransaction();
 		Query query1 = entityManager.createQuery("from Offer where offer_status = 1 and user_id != :user_id")
 					.setParameter("user_id", id);
@@ -340,12 +343,15 @@ public class OfferDaoImpl implements OfferDao{
 							x.setAccepted_offer_status(2);
 						}
 
-						if(x.getOffer().getIs_counter() == 1) {
+						if(x.getOffer().getIs_counter() == 1  && x.getOffer().getOffer_status() == 5) {
 							Query query = entityManager.createQuery("from Counter_offer where offer_id = :id")
 								.setParameter("id", x.getOffer().getId());
 							Counter_offer cof = (Counter_offer) query.getSingleResult();
 
 							Offer offer = entityManager.find(Offer.class, x.getOffer().getId());
+							Offer expiredOffer = new Offer(offer);
+							expiredOffer.setOffer_status(3);
+							entityManager.merge(expiredOffer);
 							offer.setOffer_status(1);
 
 							// comment below line if setting offer status to rejected
@@ -353,7 +359,7 @@ public class OfferDaoImpl implements OfferDao{
 							offer.setRemit_amount(cof.getOriginal_remit_amount());
 							entityManager.merge(offer);
 							entityManager.remove(cof);
-						} else {
+						} else if(x.getOffer().getIs_counter() == 0){
 							Offer offer = entityManager.find(Offer.class, x.getOffer().getId());
 							offer.setOffer_status(1);
 							entityManager.merge(offer);
@@ -361,6 +367,43 @@ public class OfferDaoImpl implements OfferDao{
 					}
 				}
 
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+
+	@Transactional
+	public void expireCounterOffer() {
+		Query query = entityManager.createQuery("from Counter_offer c where " +
+			"c.offer_id in (select id from Offer where id = c.offer_id and " +
+			"offer_status = 4)");
+		List<Counter_offer> counterOffers = query.getResultList();
+
+		counterOffers.forEach(x -> {
+			try {
+				if (x.getCounter_offer_date() != null) {
+					Date startDate =
+						new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").parse(x.getCounter_offer_date());
+					long minutes = System.currentTimeMillis() - startDate.getTime();
+					long diff = TimeUnit.MINUTES.convert(minutes, TimeUnit.MILLISECONDS);
+					if (diff >= 5) {
+						Offer offer = x.getOffer();
+						Offer expiredOffer = new Offer(offer);
+						expiredOffer.setOffer_status(3);
+						entityManager.merge(expiredOffer);
+
+						offer.setOffer_status(1);
+
+						// comment below line if setting offer status to rejected
+						offer.setIs_counter(0);
+						offer.setRemit_amount(x.getOriginal_remit_amount());
+						entityManager.merge(offer);
+
+						entityManager.remove(x);
+					}
+				}
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
