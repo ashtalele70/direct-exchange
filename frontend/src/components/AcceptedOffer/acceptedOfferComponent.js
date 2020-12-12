@@ -11,9 +11,9 @@ import {
   Modal,
   Alert,
 } from "react-bootstrap";
-import { getAcceptedOffers, postTransaction } from "./transactionService";
+import { getAcceptedOffers, postTransaction } from "./acceptedOfferService";
 
-export function TransactionComponent() {
+export function AcceptedOfferComponent() {
   const [transactions, setTransactions] = useState([]);
   const [transaction, setTransaction] = useState({});
   const [success, setSuccess] = useState(false);
