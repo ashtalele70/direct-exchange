@@ -55,8 +55,8 @@ class GetMyCounterOffers extends Component {
     console.log(this.offerId);
     this.setState({ show: false });
     let paramAccept = new URLSearchParams();
-    paramAccept.set("offerId1", this.offerId);
-    paramAccept.set("offerId2", offerId2);
+    paramAccept.set("offerId1", offerId2);
+    paramAccept.set("offerId2", this.offerId);
 
     axios
       .post(

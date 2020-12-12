@@ -54,7 +54,12 @@ public class Transaction {
     "ratings"})
   private List<User> listOfOtherParties;
 
-  
+
+  @OneToOne
+  @JoinColumn(name = "offer_id", referencedColumnName = "id", insertable = false, updatable = false)
+  private Offer offer;
+
+
   public String getTransaction_date() {
 	  return transaction_date;
   }
@@ -144,6 +149,14 @@ public class Transaction {
 
   public void setListOfOtherParties(List<User> user) {
       this.listOfOtherParties = new ArrayList<>(user);
+  }
+
+  public Offer getOffer() {
+    return offer;
+  }
+
+  public void setOffer(Offer offer) {
+    this.offer = offer;
   }
 
 //public int getSource_bank_id() {
