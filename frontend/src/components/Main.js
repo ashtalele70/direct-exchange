@@ -20,6 +20,7 @@ import About from "./Navbar/About";
 import ViewBanks from "./Bank/ViewBanks";
 import ViewTransactions from "./Transaction/viewTransactions";
 import TransactionHistory from "./Reporting/transactionHistory";
+import FinancialReport from "./Reporting/financialReport";
 
 class Home extends Component {
   constructor(props) {
@@ -50,6 +51,7 @@ class Home extends Component {
             <Route path="/viewBanks" component={ViewBanks} />
             <Route path="/ViewTransactions" component={ViewTransactions} />
             <Route path="/transactionHistory" component={TransactionHistory} />
+            <Route path="/financialReport" component={FinancialReport} />
           </div>
         )}
         {!this.props.firebase.auth.currentUser && (

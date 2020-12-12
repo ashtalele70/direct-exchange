@@ -95,7 +95,7 @@ class Navigation extends Component {
                 <NavDropdown.Item href="/transactionHistory">
                   Transaction History
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/Financial Report">
+                <NavDropdown.Item href="/financialReport">
                   Financial Report
                 </NavDropdown.Item>
               </NavDropdown>
