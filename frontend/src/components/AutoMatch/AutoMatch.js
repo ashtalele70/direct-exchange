@@ -118,6 +118,8 @@ class AutoMatch extends Component {
         matching_offer =  Math.abs(offer2.remit_amount/this.state.exchange_rate -  offer3.remit_amount);
       }
 
+      matching_offer = parseFloat(matching_offer.toFixed(2));
+
       console.log(matching_offer);
       if (matching_offer != this.state.remit_amount) {
         console.log(matching_offer);
@@ -140,6 +142,7 @@ class AutoMatch extends Component {
           (offer2.remit_amount + (offer3 ? offer3.remit_amount : 0)) /
           this.state.exchange_rate;
       console.log(matching_offer);
+      matching_offer = parseFloat(matching_offer.toFixed(2));
       if (matching_offer != this.state.remit_amount) {
         console.log(matching_offer);
         console.log(this.state.remit_amount);
