@@ -19,10 +19,12 @@ export const TRANSACTION_STATUS = {
   1: "In Transaction",
   2: "At-fault",
   3: "Completed",
+  4: "Cancelled",
 };
 export const TRANSACTION_STATUS_COLOR = {
   1: "primary",
   2: "danger",
   3: "success",
+  4: "info"
 };
-export const BANK_TYPE = { 1: "Sending", 2: "Recieving" };
+export const BANK_TYPE = { 1: "Sending", 2: "Receiving" };
