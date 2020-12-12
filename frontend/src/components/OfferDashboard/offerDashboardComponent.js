@@ -180,7 +180,7 @@ export function OfferDashboardComponent() {
     }
 
     if(transactions) {
-        transactionHistory =  Object.keys(transactions).map(key => (
+        transactionHistory =  Object.keys(transactions).filter(item => item.transaction_status).map(key => (
             <tr>
               <td>{transactions[key].offer_id}</td>
               <td>{transactions[key].remit_amount}</td>
