@@ -1,18 +1,15 @@
 package edu.sjsu.directexchange.model;
-import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "counter_offer")
 public class Counter_offer {
+
+	public Counter_offer() {}
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -33,6 +30,18 @@ public class Counter_offer {
 	
 	@Column
 	private float original_remit_amount;
+
+	@Column
+	private String counter_offer_date=
+		new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").format(new Date());
+
+	@OneToOne
+	@JoinColumn(name = "offer_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Offer offer;
+
+	@OneToOne
+	@JoinColumn(name = "counter_offer_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Offer counterOffer;
 	
 	public float getOriginal_remit_amount() {
 		return original_remit_amount;
@@ -80,6 +89,30 @@ public class Counter_offer {
 
 	public void setOther_party_id(int other_party_id) {
 		this.other_party_id = other_party_id;
+	}
+
+	public String getCounter_offer_date() {
+		return counter_offer_date;
+	}
+
+	public void setCounter_offer_date(String counter_offer_date) {
+		this.counter_offer_date = counter_offer_date;
+	}
+
+	public Offer getOffer() {
+		return offer;
+	}
+
+	public void setOffer(Offer offer) {
+		this.offer = offer;
+	}
+
+	public Offer getCounterOffer() {
+		return counterOffer;
+	}
+
+	public void setCounterOffer(Offer counterOffer) {
+		this.counterOffer = counterOffer;
 	}
 
 }

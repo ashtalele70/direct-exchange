@@ -110,14 +110,15 @@ public class CounterOfferDaoImpl implements CounterOfferDao {
 		Counter_offer cof = (Counter_offer) query.getSingleResult();
 		
 		Offer offer = entityManager.find(Offer.class, id);
-		//offer.setOffer_status(6);
+		Offer expiredOffer = new Offer(offer);
+		expiredOffer.setOffer_status(6);
+		entityManager.merge(expiredOffer);
 		offer.setOffer_status(1);
 		
 		// comment below line if setting offer status to rejected
 		offer.setIs_counter(0);
 		offer.setRemit_amount(cof.getOriginal_remit_amount());
 		entityManager.merge(offer);
-
 		entityManager.remove(cof);
 	}
 
