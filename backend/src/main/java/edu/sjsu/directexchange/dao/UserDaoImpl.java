@@ -2,17 +2,22 @@ package edu.sjsu.directexchange.dao;
 
 import edu.sjsu.directexchange.exception.EmailIdExistsException;
 import edu.sjsu.directexchange.exception.NicknameExistsException;
+import edu.sjsu.directexchange.exception.NicknameShouldOnlyHaveAlphaNumericException;
 import edu.sjsu.directexchange.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Repository
 public class UserDaoImpl implements UserDao {
+
+  String regex = "^[a-zA-Z0-9]+$";
+  Pattern pattern = Pattern.compile(regex);
 
   private EntityManager entityManager;
 
@@ -42,6 +47,9 @@ public class UserDaoImpl implements UserDao {
   @Override
   @Transactional
   public void createUser(User user) {
+    Matcher matcher = pattern.matcher(user.getNickname());
+    if(!matcher.matches()) throw new NicknameShouldOnlyHaveAlphaNumericException("Nickname should" +
+      " only have alphanumeric values");
     Query usernameQuery=entityManager.createQuery("from User where username " +
       "=: " +
 
