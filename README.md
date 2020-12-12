@@ -17,4 +17,4 @@ allow_split_offer:[1:True, 0:False]
 
 transaction_status:[1: "Enter Transaction", 2:"At-fault", 3:"Completed", 4: "Cancelled"]
 
-accepted_offer_status:["0": "Accepted", "1":"Paid", "2":"Transaction At-fault"]
+accepted_offer_status:["0": "Accepted", "1":"Paid", "2":"Transaction Not completed"]
