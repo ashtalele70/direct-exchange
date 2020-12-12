@@ -41,8 +41,6 @@ public class TransactionController {
 	@PostMapping("/sendMessage")
 	@ResponseStatus(HttpStatus.OK)
 	public void sendMessage(@RequestBody Transaction.Message message) {
-		System.out.println(message.getMessage());
-		System.out.println(message.getUsername());
 		EmailUtil.sendMessage(message.getUsername(), message.getMessage());
 	}
 
