@@ -229,7 +229,7 @@ class AutoMatch extends Component {
               <b>Exchange Rate: </b>
               {offer.exchange_rate}
             </Card.Text>
-            <Button variant="primary" onClick={() => this.submitHandler(offer)}>
+            <Button variant="primary" onClick={() => this.submitHandler(offer)} className="mr-3">
               Accept
             </Button>
             {offer.allow_counter_offer == 1 && 
@@ -337,7 +337,9 @@ class AutoMatch extends Component {
             />
 
             <Row className="mt-3 mb-5">
-              <Col xs={2} md={4} lg={6} className="mt-3">
+              <Col xs={singleOffers.length > 2 ? 2 : 8}
+                  md={singleOffers.length > 2 ? 4 : 10}
+                  lg={singleOffers.length > 2 ? 6 : 12} className="mt-3">
                 {singleOffers}
                 <br />
                 {splitOffers}

@@ -1,10 +1,15 @@
 
 import { useEffect, useState } from 'react';
 import { getAllOffers, getFilteredOffers } from './offerDashboardService';
-import { Card, CardDeck, Container, Row, Col, Modal, Button, Dropdown, FormControl, Pagination, Form } from 'react-bootstrap';
+import { Card, CardDeck, Container, Row, Col, Modal, Button, Dropdown, FormControl, Pagination, Form, Table, Badge } from 'react-bootstrap';
 import ReactStars from "react-rating-stars-component";
 import { faStar, faStarHalf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getAllTransactions } from './offerDashboardService';
+import {
+    TRANSACTION_STATUS,
+    TRANSACTION_STATUS_COLOR,
+  } from "../../constants/offerStatus";
 
 export function OfferDashboardComponent() {
     const [offers, setOffers] = useState([]);
@@ -12,24 +17,22 @@ export function OfferDashboardComponent() {
     const [startIndex, setStartIndex] = useState(0);
     const [active, setActivePage] = useState(1);
     const [currentOffer, setCurrentOffer] = useState({});
+    const [transactions, setTransactions] = useState([]);
     let offerList = [];
     let itemsPerPage = 10;
     let items = [];
     let reviews = [];
     let filterCriteria = {};
+    let transactionHistory = [];
 
     useEffect(() => {
         async function fetchData() {
-            const response = await getAllOffers({"id": localStorage.getItem("userId")}); 
+            const response = await getAllOffers({ "id": localStorage.getItem("userId") });
             setOffers(response);
             setAllOffers(response);
         }
         fetchData();
     }, []);
-
-    // const onRatingChangeHandler = (newRating) => {
-    //     console.log(newRating);
-    // };
 
     const [show, setShow] = useState(false);
     const [showOfferDetailModal, setShowOfferDetailModal] = useState(false);
@@ -99,8 +102,15 @@ export function OfferDashboardComponent() {
         setActivePage(page);
     }
 
+    const [showHistoryModal, setShowHistoryModal] = useState(false);
+    const showTransactionHistory = async (userId) => {
+        const response = await getAllTransactions({ "user_id": userId });
+        setTransactions(response);
+        setShowHistoryModal(true);
+    }
+
     if (offers) {
-        let pageCount = ((offers.length-1) / itemsPerPage) + 1;
+        let pageCount = ((offers.length - 1) / itemsPerPage) + 1;
         for (let number = 1; number <= pageCount; number++) {
             items.push(
                 <Pagination.Item key={number} active={number === active}>
@@ -117,11 +127,10 @@ export function OfferDashboardComponent() {
                         <Card.Text id="nickname">
                             <span className="font-weight-bold">Posted By:</span> {offers[key].nickname}
                         </Card.Text>
-                        <Card.Text className="float-right">
+                        <Card.Text className="float-right" onClick={() => showTransactionHistory(offers[key].user_id)}>
                             <span className="font-weight-bold">Rating: <ReactStars
                                 count={5}
                                 value={offers[key].ratings && offers[key].ratings.length > 0 ? offers[key].ratings[0].avgRating : 0}
-                                // onChange={onRatingChangeHandler}
                                 size={24}
                                 isHalf={true}
                                 emptyIcon={<FontAwesomeIcon icon={faStar} />}
@@ -168,6 +177,25 @@ export function OfferDashboardComponent() {
         reviews = currentOffer.reviews.map(comment =>
             <p className="font-italic">"{comment}"</p>
         );
+    }
+
+    if(transactions) {
+        transactionHistory =  Object.keys(transactions).map(key => (
+            <tr>
+              <td>{transactions[key].offer_id}</td>
+              <td>{transactions[key].remit_amount}</td>
+              <td>{transactions[key].source_currency}</td>
+              <td>{transactions[key].destination_currency}</td>
+              <td>
+                <Badge
+                  variant={TRANSACTION_STATUS_COLOR[transactions[key].transaction_status]}
+                >
+                  {TRANSACTION_STATUS[transactions[key].transaction_status]}
+                </Badge>
+              </td>
+      
+            </tr>
+        ));
     }
 
     return (
@@ -269,6 +297,25 @@ export function OfferDashboardComponent() {
                             </span>
                             {reviews.length > 0 && <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Reviews: </span>{reviews}</span>}
                         </Col></Row>
+                </Modal.Body>
+            </Modal>
+            <Modal show={showHistoryModal} onHide={() => setShowHistoryModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Transaction History</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Table striped bordered hover size="sm">
+                        <thead>
+                            <tr>
+                                <th>Offer ID</th>
+                                <th>Remit Amount</th>
+                                <th>Source Currency</th>
+                                <th>Destination Currency</th>
+                                <th>Transaction Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>{transactionHistory}</tbody>
+                    </Table>
                 </Modal.Body>
             </Modal>
             <CardDeck>

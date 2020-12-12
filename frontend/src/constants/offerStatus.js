@@ -16,7 +16,7 @@ export const OFFER_STATUS_COLOR = {
 };
 
 export const TRANSACTION_STATUS = {
-  1: "Enter Transaction",
+  1: "In Transaction",
   2: "At-fault",
   3: "Completed",
   4: "Cancelled",

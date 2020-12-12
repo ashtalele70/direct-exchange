@@ -15,7 +15,7 @@ import { OfferDashboardComponent } from "./OfferDashboard/offerDashboardComponen
 import { MyOffersComponent } from "./MyOffers/myOffersComponent";
 import { withAuthentication } from "./Session/AuthUserContext";
 import AutoMatch from "./AutoMatch/AutoMatch";
-import { TransactionComponent } from "./Transaction/transactionComponent";
+import { AcceptedOfferComponent } from "./AcceptedOffer/acceptedOfferComponent";
 import About from "./Navbar/About";
 import ViewBanks from "./Bank/ViewBanks";
 import ViewTransactions from "./Transaction/viewTransactions";
@@ -45,7 +45,7 @@ class Home extends Component {
             <Route path="/autoMatch" component={AutoMatch} />
             <Route
               path="/viewAcceptedOffers"
-              component={TransactionComponent}
+              component={AcceptedOfferComponent}
             />
             <Route path="/viewBanks" component={ViewBanks} />
             <Route path="/ViewTransactions" component={ViewTransactions} />
