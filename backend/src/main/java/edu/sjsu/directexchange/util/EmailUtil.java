@@ -86,7 +86,6 @@ public class EmailUtil {
 
         // Send message
         Transport.send(message);
-        System.out.println("Sent message successfully....");
       } catch (MessagingException mex) {
         mex.printStackTrace();
       }
@@ -132,7 +131,6 @@ public class EmailUtil {
 
       // Send message
       Transport.send(message);
-      System.out.println("Sent message successfully....");
     } catch (MessagingException mex) {
       mex.printStackTrace();
     }
@@ -177,7 +175,6 @@ public class EmailUtil {
 
       // Send message
       Transport.send(message);
-      System.out.println("Sent message successfully....");
     } catch (MessagingException mex) {
       mex.printStackTrace();
     }
@@ -221,7 +218,6 @@ public class EmailUtil {
 
       // Send message
       Transport.send(message);
-      System.out.println("Sent message successfully....");
     } catch (MessagingException mex) {
       mex.printStackTrace();
     }

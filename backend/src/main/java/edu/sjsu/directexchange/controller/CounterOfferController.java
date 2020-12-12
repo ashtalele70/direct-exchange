@@ -36,7 +36,6 @@ public class CounterOfferController {
 	@PutMapping("/updateCounterOfferStatusToExpired")
 	@ResponseStatus(HttpStatus.OK)
 	public void updateCounterOfferStatusToExpired(@RequestParam Integer id) {
-		System.out.println("Method called");
 		counterOfferService.updateCounterOfferStatusToExpired(id);
 	}
 	
