@@ -43,16 +43,37 @@ public class AcceptedOfferDaoImpl implements AcceptedOfferDao {
 					long diff = TimeUnit.MINUTES.convert(minutes, TimeUnit.MILLISECONDS);
 					if(diff >= 10) {
 						Query transactionCheckQuery =  entityManager.createQuery(" from " +
-							"Transaction where offer_id =:offer_id and transaction_status = " +
-							"1").setParameter("offer_id",
+							"Transaction where offer_id =:offer_id").setParameter("offer_id",
 							x.getOffer_id());
 						List<Transaction> transactions =
 							transactionCheckQuery.getResultList();
 						if(transactions != null && transactions.size() > 0) {
-							transactions.forEach(transaction -> {
+							transactions.stream().filter(txn -> txn.getTransaction_status() == 1).forEach(transaction -> {
 								transaction.setTransaction_status(4);
 								entityManager.merge(transaction);
 								x.setAccepted_offer_status(2);
+
+								if(x.getOffer().getIs_counter() == 1  && x.getOffer().getOffer_status() == 5) {
+									Query query = entityManager.createQuery("from Counter_offer where offer_id = :id")
+										.setParameter("id", x.getOffer().getId());
+									Counter_offer cof = (Counter_offer) query.getSingleResult();
+
+									Offer offer = entityManager.find(Offer.class, x.getOffer().getId());
+									Offer expiredOffer = new Offer(offer);
+									expiredOffer.setOffer_status(3);
+									entityManager.merge(expiredOffer);
+									offer.setOffer_status(1);
+
+									// comment below line if setting offer status to rejected
+									offer.setIs_counter(0);
+									offer.setRemit_amount(cof.getOriginal_remit_amount());
+									entityManager.merge(offer);
+									entityManager.remove(cof);
+								} else if(x.getOffer().getIs_counter() == 0 && x.getOffer().getOffer_status() == 5){
+									Offer offer = entityManager.find(Offer.class, x.getOffer().getId());
+									offer.setOffer_status(1);
+									entityManager.merge(offer);
+								}
 							});
 						} else {
 							Transaction transaction = new Transaction();
@@ -66,25 +87,28 @@ public class AcceptedOfferDaoImpl implements AcceptedOfferDao {
 							transaction.setDestination_currency(x.getDestination_currency());
 							entityManager.merge(transaction);
 							x.setAccepted_offer_status(2);
-						}
 
-						if(x.getOffer().getIs_counter() == 1) {
-							Query query = entityManager.createQuery("from Counter_offer where offer_id = :id")
-								.setParameter("id", x.getOffer().getId());
-							Counter_offer cof = (Counter_offer) query.getSingleResult();
+							if(x.getOffer().getIs_counter() == 1) {
+								Query query = entityManager.createQuery("from Counter_offer where offer_id = :id")
+									.setParameter("id", x.getOffer().getId());
+								Counter_offer cof = (Counter_offer) query.getSingleResult();
 
-							Offer offer = entityManager.find(Offer.class, x.getOffer().getId());
-							offer.setOffer_status(1);
+								Offer offer = entityManager.find(Offer.class, x.getOffer().getId());
+								Offer expiredOffer = new Offer(offer);
+								expiredOffer.setOffer_status(3);
+								entityManager.merge(expiredOffer);
+								offer.setOffer_status(1);
 
-							// comment below line if setting offer status to rejected
-							offer.setIs_counter(0);
-							offer.setRemit_amount(cof.getOriginal_remit_amount());
-							entityManager.merge(offer);
-							entityManager.remove(cof);
-						} else {
-							Offer offer = entityManager.find(Offer.class, x.getOffer().getId());
-							offer.setOffer_status(1);
-							entityManager.merge(offer);
+								// comment below line if setting offer status to rejected
+								offer.setIs_counter(0);
+								offer.setRemit_amount(cof.getOriginal_remit_amount());
+								entityManager.merge(offer);
+								entityManager.remove(cof);
+							} else if(x.getOffer().getIs_counter() == 0){
+								Offer offer = entityManager.find(Offer.class, x.getOffer().getId());
+								offer.setOffer_status(1);
+								entityManager.merge(offer);
+							}
 						}
 					}
 				}

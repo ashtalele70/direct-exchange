@@ -59,6 +59,9 @@ public class Transaction {
   @JoinColumn(name = "offer_id", referencedColumnName = "id", insertable = false, updatable = false)
   private Offer offer;
 
+  @OneToOne
+  @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+  private User user;
 
   public String getTransaction_date() {
 	  return transaction_date;
@@ -157,6 +160,14 @@ public class Transaction {
 
   public void setOffer(Offer offer) {
     this.offer = offer;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
   }
 
 //public int getSource_bank_id() {

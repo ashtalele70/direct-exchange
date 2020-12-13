@@ -225,11 +225,11 @@ class SignUpForm extends Component {
 
             </Form>
             <Form onSubmit={this.onSubmitGoogle}>
-                <Button type="submit" variant="danger" >Sign In with Google</Button>
+                <Button type="submit" variant="danger" >Sign Up with Google</Button>
             </Form>
                 <p></p>
             <Form onSubmit={this.onSubmitFacebook}>
-                <Button type="submit">Sign In with Facebook</Button>
+                <Button type="submit">Sign Up with Facebook</Button>
             </Form>
                 {this.state.error && <p>{this.state.error.message}</p>}
             </Card.Body>
