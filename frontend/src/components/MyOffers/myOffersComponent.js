@@ -41,6 +41,20 @@ export function MyOffersComponent({ history }) {
             <Card.Title className="text-center">
               OFFER {Number(key) + 1}
             </Card.Title>
+            <Card.Subtitle className="text-center">
+              {offers[key].offer_status == 1
+              && <Button
+                  variant="outline-primary"
+                  onClick={() =>
+                      history.push({
+                        pathname: "/postoffer",
+                        state: { offer: offers[key] },
+                      })
+                  }
+              >
+                Edit offer
+              </Button>}
+            </Card.Subtitle>
             <Card.Text>
               <Badge variant={OFFER_STATUS_COLOR[offers[key].offer_status]}>
                 {OFFER_STATUS[offers[key].offer_status]}
