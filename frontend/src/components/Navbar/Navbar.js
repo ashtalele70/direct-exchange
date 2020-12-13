@@ -25,6 +25,13 @@ class Navigation extends Component {
     };
   }
 
+  nicknameChangeHandler = (nickname) => {
+    if(nickname.match("^[a-zA-Z0-9]+$")) {
+      this.setState({ nickname, errorMsg: "" });
+    } else
+      this.setState({ errorMsg: "Nickname cannot contain special characters." });
+  }
+
   handleSubmit = () => {
     axios
       .put(
@@ -136,7 +143,7 @@ class Navigation extends Component {
               <Form.Group controlId="formGroupNickname">
                 <Form.Label>Enter New Nickname</Form.Label>
                 <FormControl
-                  onChange={(e) => this.setState({ nickname: e.target.value })}
+                  onChange={(e) => this.nicknameChangeHandler(e.target.value)}
                 />
                 <p className="text-danger">{this.state.errorMsg}</p>
               </Form.Group>
