@@ -49,7 +49,13 @@ public class OfferDaoImpl implements OfferDao{
 		List<Offer> offers = new ArrayList<>();
 		User user = entityManager.find(User.class, id);
 		if(user != null) {
-			Query query = entityManager.createQuery("from Offer where user_id =: id order by offer_status")
+			Query query = entityManager.createQuery("from Offer where user_id =: id order by " +
+				"case when offer_status=1 then 1 " +
+							"when offer_status=4 then 2 " +
+							"when offer_status=5 then 3 " +
+							"when offer_status=2 then 4 " +
+							"when offer_status=6 then 5 " +
+							"when offer_status=3 then 6 end")
 					.setParameter("id", id);
 			
 			offers = query.getResultList();

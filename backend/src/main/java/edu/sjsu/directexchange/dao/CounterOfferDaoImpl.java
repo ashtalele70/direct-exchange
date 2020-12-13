@@ -2,6 +2,7 @@ package edu.sjsu.directexchange.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -54,8 +55,10 @@ public class CounterOfferDaoImpl implements CounterOfferDao {
 		User user1 = entityManager.find(User.class, userId);
 		User user2 = entityManager.find(User.class, nOffer.getUser_id());
 
-		EmailUtil.sendEmailCounterOwner(user2);
-		EmailUtil.sendEmailCounterCounter(user1);
+		CompletableFuture.runAsync(() -> {
+			EmailUtil.sendEmailCounterOwner(user2);
+			EmailUtil.sendEmailCounterCounter(user1);
+		});
 
 		return nOffer.getId();
 	}

@@ -3,6 +3,7 @@ package edu.sjsu.directexchange.dao;
 import edu.sjsu.directexchange.model.*;
 import edu.sjsu.directexchange.util.EmailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -13,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -147,15 +149,18 @@ public class AcceptedOfferDaoImpl implements AcceptedOfferDao {
 			offer3.setOffer_status(5);
 		}
 
-		if (offerId3 != 0) {
-			EmailUtil.sendEmail(user1);
-			EmailUtil.sendEmail(user2);
-			EmailUtil.sendEmail(user3);
-		}else {
-			EmailUtil.sendEmail(user1);
-			EmailUtil.sendEmail(user2);
-		}
 
+		User finalUser = user3;
+		CompletableFuture.runAsync(() -> {
+			if (offerId3 != 0) {
+				EmailUtil.sendEmail(user1);
+				EmailUtil.sendEmail(user2);
+				EmailUtil.sendEmail(finalUser);
+			}else {
+				EmailUtil.sendEmail(user1);
+				EmailUtil.sendEmail(user2);
+			}
+		});
 	}
 
 	@Override
