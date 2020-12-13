@@ -57,4 +57,9 @@ public class TransactionController {
 		return transactionService.getTotal(user_id);
 	}
 
+	@GetMapping("/financialreport")
+	@ResponseStatus(HttpStatus.OK) 
+	public List<Number> getFinancialreport(@RequestParam String month, @RequestParam String year) {
+		return transactionService.getReport(month,year);
+	}
 }

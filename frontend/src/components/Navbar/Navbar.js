@@ -25,6 +25,13 @@ class Navigation extends Component {
     };
   }
 
+  nicknameChangeHandler = (nickname) => {
+    if(nickname.match("^[a-zA-Z0-9]+$")) {
+      this.setState({ nickname, errorMsg: "" });
+    } else
+      this.setState({ errorMsg: "Nickname cannot contain special characters." });
+  }
+
   handleSubmit = () => {
     axios
       .put(
@@ -86,7 +93,19 @@ class Navigation extends Component {
               <Nav.Link href="/Rates">Exchange Rates</Nav.Link>
             )}
             {this.props.firebase.auth.currentUser && (
-              <Nav.Link href="/ViewTransactions">View Transactions & Messaging</Nav.Link>
+              <Nav.Link href="/ViewTransactions">
+                View Transactions & Messaging
+              </Nav.Link>
+            )}
+            {this.props.firebase.auth.currentUser && (
+              <NavDropdown title="Reporting" id="basic-nav-dropdown">
+                <NavDropdown.Item href="/transactionHistory">
+                  Transaction History
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/financialReport">
+                  Financial Report
+                </NavDropdown.Item>
+              </NavDropdown>
             )}
           </Nav>
           <Nav className="mr-auto"></Nav>
@@ -124,7 +143,7 @@ class Navigation extends Component {
               <Form.Group controlId="formGroupNickname">
                 <Form.Label>Enter New Nickname</Form.Label>
                 <FormControl
-                  onChange={(e) => this.setState({ nickname: e.target.value })}
+                  onChange={(e) => this.nicknameChangeHandler(e.target.value)}
                 />
                 <p className="text-danger">{this.state.errorMsg}</p>
               </Form.Group>

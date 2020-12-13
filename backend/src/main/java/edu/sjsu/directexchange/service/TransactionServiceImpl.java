@@ -35,4 +35,9 @@ public class TransactionServiceImpl implements TransactionService {
 		return transactionDao.getTotal(user_id);
 	}
 
+	@Override
+	public List<Number> getReport(String month, String year) {
+		return transactionDao.getReport(month,year);
+	}
+
 }

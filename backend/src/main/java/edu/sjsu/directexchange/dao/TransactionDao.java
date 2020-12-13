@@ -11,5 +11,6 @@ public interface TransactionDao {
 	public String postTransaction(Transaction transaction);
 	public List<TransactionHistory> getHistory(int user_id);
 	public List<Float> getTotal(int user_id);
+	public List<Number> getReport(String month,String year);
 
 }

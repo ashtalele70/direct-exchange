@@ -43,7 +43,7 @@ public class TransactionDaoImpl implements TransactionDao {
 						new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").parse(x.getAccepted_offer_date());
 					long minutes = System.currentTimeMillis() - startDate.getTime();
 					long diff = TimeUnit.MINUTES.convert(minutes, TimeUnit.MILLISECONDS);
-					if(diff >=10) {
+					if(diff >= 10) {
 						Query transactionCheckQuery =  entityManager.createQuery(" from " +
 							"Transaction where offer_id =:offer_id").setParameter("offer_id",
 							x.getOffer_id());
@@ -318,4 +318,57 @@ public class TransactionDaoImpl implements TransactionDao {
 		return totals;
 	
 	}
+
+	@Override
+	public List<Number> getReport(String month, String year) {
+		
+		System.out.println(month.trim());
+		System.out.println(year.trim());
+		int completedTransactions= ((Number) entityManager.createNativeQuery("select count(a.match_uuid) from (\r\n" + 
+				"select match_uuid, max(transaction_status) from transaction            \r\n" + 
+				"where MONTHNAME(STR_TO_DATE(transaction_date, '%Y-%m-%d'))=:month " + 
+				"and  Year(STR_TO_DATE(transaction_date, '%m-%d-%Y'))=:year and transaction_status=3\r\n" + 
+				"group by match_uuid)a\r\n" + 
+				"").setParameter("month", month.trim()).setParameter("year", year.trim()).getSingleResult()).intValue();
+		
+		
+		int uncompletedTransactions= ((Number) entityManager.createNativeQuery("select count(a.match_uuid) from (\r\n" + 
+				"				select match_uuid, max(transaction_status) from transaction            \r\n" + 
+				"				where MONTHNAME(STR_TO_DATE(transaction_date, '%Y-%m-%d'))=:month " + 
+				"				and  Year(STR_TO_DATE(transaction_date, '%m-%d-%Y'))=:year and transaction_status !=3\r\n" + 
+				"				group by match_uuid)a" + 
+				"").setParameter("month", month.trim()).setParameter("year", year.trim()).getSingleResult()).intValue();
+		
+		
+		Double interm_remit_amount=(Double)entityManager.createNativeQuery("select round(sum(t.remit_amount*o.exchange_value),2) from transaction t , \r\n" + 
+				"exchange_rates o where t.source_currency=o.source_currency \r\n" + 
+				"and o.destination_currency='USD' and   transaction_status=3  and MONTHNAME(STR_TO_DATE(transaction_date, '%Y-%m-%d'))=:month " + 
+				"and  Year(STR_TO_DATE(transaction_date, '%m-%d-%Y'))=:year \r\n" + 
+				"" + 
+				"").setParameter("month", month.trim()).setParameter("year", year.trim()).getSingleResult();
+
+		double remit_amount = interm_remit_amount == null ? 0 : interm_remit_amount.doubleValue();
+		
+		Double interm_service_fee=(Double)entityManager.createNativeQuery("select round(sum(t.service_fee*o.exchange_value),2) from transaction t , \r\n" + 
+				"exchange_rates o where t.source_currency=o.source_currency \r\n" + 
+				"and o.destination_currency='USD' and   transaction_status=3 and MONTHNAME(STR_TO_DATE(transaction_date, '%Y-%m-%d'))=:month " + 
+				"and  Year(STR_TO_DATE(transaction_date, '%m-%d-%Y'))=:year \r\n" + 
+				"" + 
+				"").setParameter("month", month.trim()).setParameter("year", year.trim()).getSingleResult();
+		
+		double service_fee = interm_service_fee == null ? 0 : interm_service_fee.doubleValue();
+		
+		
+		
+		
+		
+		List<Number> totals=new ArrayList<Number>();
+		totals.add(completedTransactions);
+		totals.add(uncompletedTransactions);
+		totals.add(remit_amount);
+		totals.add(service_fee);
+		
+		return totals;
+	}
+	
 }
