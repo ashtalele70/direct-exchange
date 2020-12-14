@@ -42,7 +42,8 @@ public class Transaction {
   private int transaction_status;
   
   @Column
-  private String transaction_date= new SimpleDateFormat("MM-dd-yyyy HH:mm:SS").format(new Date());
+  private String transaction_date=
+    new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").format(new Date());
 
 
 //  @Column
