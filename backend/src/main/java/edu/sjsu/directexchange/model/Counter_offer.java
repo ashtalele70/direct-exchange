@@ -33,7 +33,7 @@ public class Counter_offer {
 
 	@Column
 	private String counter_offer_date=
-		new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").format(new Date());
+		new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").format(new Date());
 
 	@OneToOne
 	@JoinColumn(name = "offer_id", referencedColumnName = "id", insertable = false, updatable = false)
