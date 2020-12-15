@@ -10,7 +10,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+
+import edu.sjsu.directexchange.model.SplitOffer;
+import edu.sjsu.directexchange.model.Transaction;
+
 import edu.sjsu.directexchange.model.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -55,6 +60,45 @@ public class OfferDaoImpl implements OfferDao{
 				entityManager.merge(offer);
 			}
 		});
+	}
+	
+	
+	private float updateRating(int user_id) {
+		
+		float finalRating;
+		
+		Query query2 = entityManager.createQuery("from Transaction where user_id=:id")
+				.setParameter("id", user_id);
+		
+		 List<Transaction> totalOffers = query2.getResultList();
+		 float totOfers = totalOffers.size();
+		 
+		 if(totOfers==0) { 
+			
+			 
+			return 0.0f;
+		 }
+		 else {
+		
+		Query query3 = entityManager.createQuery("from Transaction where transaction_status=2 AND user_id=:id")
+				.setParameter("id", user_id);
+		
+		List<Transaction> faultedOffers = query3.getResultList();
+		float faultOffers = faultedOffers.size();
+		
+		float a = faultOffers/totOfers;
+		System.out.println(a);
+		
+		
+	   finalRating = (1 - (a))*4 + 1;
+		
+		//System.out.println(finalRating);
+		
+	}
+	
+
+		return finalRating;  
+		
 	}
 	
 	@Override
@@ -105,7 +149,7 @@ public class OfferDaoImpl implements OfferDao{
 		
 		offers.forEach(offer -> {
 			User user = entityManager.find(User.class, offer.getUser_id());
-			offer.setRatings(setUserRatings(offer));
+			offer.setRating(updateRating(user.getId()));
 			offer.setNickname(user.getNickname());
 			offer.setEmail(user.getUsername());
 		});
