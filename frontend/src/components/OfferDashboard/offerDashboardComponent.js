@@ -50,10 +50,10 @@ export function OfferDashboardComponent() {
 
     const handleShowOfferDetailModal = (offer) => {
         setShowOfferDetailModal(true);
-        let reviews = [];
-        offer.ratings.forEach(rating => {
-            reviews.push(rating.reviewComment);
-        });
+        // let reviews = [];
+        // offer.ratings.forEach(rating => {
+        //     reviews.push(rating.reviewComment);
+        // });
         let fullOffer = JSON.parse(JSON.stringify(offer));
         fullOffer.reviews = reviews;
         setCurrentOffer(fullOffer);
@@ -142,7 +142,7 @@ export function OfferDashboardComponent() {
                         <Card.Text className="float-right" onClick={() => showTransactionHistory(offers[key].user_id)}>
                             <span className="font-weight-bold">Rating: <ReactStars
                                 count={5}
-                                value={offers[key].ratings && offers[key].ratings.length > 0 ? offers[key].ratings[0].avgRating : 0}
+                                value={offers[key].rating}
                                 size={24}
                                 isHalf={true}
                                 emptyIcon={<FontAwesomeIcon icon={faStar} />}
@@ -298,7 +298,7 @@ export function OfferDashboardComponent() {
                         <Col>
                             <span className="font-weight-bold text-primary" onClick={() => showTransactionHistory(currentOffer.user_id, true)}>Rating: <ReactStars
                                 count={5}
-                                value={currentOffer.ratings && currentOffer.ratings.length > 0 ? currentOffer.ratings[0].avgRating : 0}
+                                value={currentOffer.rating}
                                 size={24}
                                 isHalf={true}
                                 emptyIcon={<FontAwesomeIcon icon={faStar} />}

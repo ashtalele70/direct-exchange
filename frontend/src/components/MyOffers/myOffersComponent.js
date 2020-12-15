@@ -66,10 +66,7 @@ export function MyOffersComponent({ history }) {
                 <ReactStars
                   count={5}
                   value={
-                    offers[key].ratings && offers[key].ratings.length > 0
-                      ? offers[key].ratings[0].avgRating
-                      : 0
-                  }
+                    offers[key].rating }
                   size={24}
                   isHalf={true}
                   emptyIcon={<FontAwesomeIcon icon={faStar} />}

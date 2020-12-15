@@ -121,7 +121,7 @@ public class OfferDaoImpl implements OfferDao{
 			checkOfferExpiry(offers);
 			
 			offers.forEach(offer -> {
-				offer.setRatings(setUserRatings(offer));
+				offer.setRating(updateRating(id));
 				offer.setNickname(user.getNickname());
 				offer.setEmail(user.getUsername());
 			});
