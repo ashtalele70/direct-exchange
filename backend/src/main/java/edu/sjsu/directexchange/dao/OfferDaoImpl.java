@@ -97,7 +97,7 @@ public class OfferDaoImpl implements OfferDao{
 	}
 	
 
-		return finalRating;  
+		return Math.round(finalRating);
 		
 	}
 	
