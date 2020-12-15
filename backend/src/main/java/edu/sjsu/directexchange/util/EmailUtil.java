@@ -35,6 +35,9 @@ public class EmailUtil {
     "is " +
     "notified";
 
+  static String notification = "DirectExchange: Message regarding your offer";
+  static String transactionCompletion = "DirectExchange: Money Transfer " +
+    "Successful";
   static String transactionSubject = "Your transfer offer is accepted";
 
   static String senderEmailId = "directexchange275@gmail.com";
@@ -85,7 +88,6 @@ public class EmailUtil {
 
         // Send message
         Transport.send(message);
-        System.out.println("Sent message successfully....");
       } catch (MessagingException mex) {
         mex.printStackTrace();
       }
@@ -131,7 +133,6 @@ public class EmailUtil {
 
       // Send message
       Transport.send(message);
-      System.out.println("Sent message successfully....");
     } catch (MessagingException mex) {
       mex.printStackTrace();
     }
@@ -176,10 +177,93 @@ public class EmailUtil {
 
       // Send message
       Transport.send(message);
-      System.out.println("Sent message successfully....");
     } catch (MessagingException mex) {
       mex.printStackTrace();
     }
 
+  }
+
+  public static void sendMessage(String username, String message1) {
+
+    Properties properties = new Properties();
+    // Setup mail server
+    properties.put("mail.smtp.auth", emailAuth);
+    properties.put("mail.smtp.host", host);
+    properties.put("mail.smtp.port", port);
+    properties.put("mail.smtp.starttls.enable", emailAuth);
+    // Get the default Session object.
+    Session session = Session.getDefaultInstance(properties, new Authenticator() {
+      @Override
+      protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication(senderEmailId, password);
+      }
+    });
+
+    try {
+      // Create a default MimeMessage object.
+      MimeMessage message = new MimeMessage(session);
+
+      // Set From: header field of the header.
+      message.setFrom(new InternetAddress(senderEmailId));
+
+      // Set To: header field of the header.
+      message.addRecipient(Message.RecipientType.TO,
+        new InternetAddress(username));
+      message.addRecipient(Message.RecipientType.CC,
+        new InternetAddress(cc));
+
+      // Set Subject: header field
+      message.setSubject(notification);
+
+      // Send the actual HTML message, as big as you like
+      message.setContent("<p>" + message1 + "</p>", "text/html");
+
+      // Send message
+      Transport.send(message);
+    } catch (MessagingException mex) {
+      mex.printStackTrace();
+    }
+  }
+
+  public static void sendCompleteTransaction(String username, String message1) {
+    System.out.println("Called for username : " + username);
+    Properties properties = new Properties();
+    // Setup mail server
+    properties.put("mail.smtp.auth", emailAuth);
+    properties.put("mail.smtp.host", host);
+    properties.put("mail.smtp.port", port);
+    properties.put("mail.smtp.starttls.enable", emailAuth);
+    // Get the default Session object.
+    Session session = Session.getDefaultInstance(properties, new Authenticator() {
+      @Override
+      protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication(senderEmailId, password);
+      }
+    });
+
+    try {
+      // Create a default MimeMessage object.
+      MimeMessage message = new MimeMessage(session);
+
+      // Set From: header field of the header.
+      message.setFrom(new InternetAddress(senderEmailId));
+
+      // Set To: header field of the header.
+      message.addRecipient(Message.RecipientType.TO,
+        new InternetAddress(username));
+      message.addRecipient(Message.RecipientType.CC,
+        new InternetAddress(cc));
+
+      // Set Subject: header field
+      message.setSubject(transactionCompletion);
+
+      // Send the actual HTML message, as big as you like
+      message.setContent(message1, "text/html");
+
+      // Send message
+      Transport.send(message);
+    } catch (MessagingException mex) {
+      mex.printStackTrace();
+    }
   }
 }

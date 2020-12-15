@@ -1,9 +1,8 @@
 package edu.sjsu.directexchange.dao;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -46,18 +45,20 @@ public class CounterOfferDaoImpl implements CounterOfferDao {
 		cof.setOther_party_id(userId);
 		cof.setCounter_Offer_id(offerId);
 		cof.setOriginal_remit_amount(offer.getRemit_amount());
-
 		entityManager.merge(cof);
 		
 		offer.setOffer_status(4);
 		offer.setRemit_amount(new_amount);
+		offer.setIs_counter(1);
 		Offer nOffer= entityManager.merge(offer);
 
 		User user1 = entityManager.find(User.class, userId);
 		User user2 = entityManager.find(User.class, nOffer.getUser_id());
 
-		EmailUtil.sendEmailCounterOwner(user2);
-		EmailUtil.sendEmailCounterCounter(user1);
+		CompletableFuture.runAsync(() -> {
+			EmailUtil.sendEmailCounterOwner(user2);
+			EmailUtil.sendEmailCounterCounter(user1);
+		});
 
 		return nOffer.getId();
 	}
@@ -89,7 +90,8 @@ public class CounterOfferDaoImpl implements CounterOfferDao {
 		List<Offer> offers = new ArrayList<Offer>();
 		cofList.forEach(cof -> {
 			Offer offer = entityManager.find(Offer.class, cof.getOffer_id());
-			offers.add(offer);
+			if(offer.getOffer_status() == 4)
+				offers.add(offer);
 		});
 		
 		return offers;
@@ -105,18 +107,22 @@ public class CounterOfferDaoImpl implements CounterOfferDao {
 
 	@Override
 	@Transactional
-	public void rejectCounterOffer(Integer id) {		
+	public void rejectCounterOffer(Integer id) {
 		Query query = entityManager.createQuery("from Counter_offer where offer_id = :id")
 				.setParameter("id", id);
 		Counter_offer cof = (Counter_offer) query.getSingleResult();
 		
 		Offer offer = entityManager.find(Offer.class, id);
-		//offer.setOffer_status(6);
+		Offer expiredOffer = new Offer(offer);
+		expiredOffer.setOffer_status(6);
+		entityManager.merge(expiredOffer);
 		offer.setOffer_status(1);
 		
 		// comment below line if setting offer status to rejected
+		offer.setIs_counter(0);
 		offer.setRemit_amount(cof.getOriginal_remit_amount());
 		entityManager.merge(offer);
+		entityManager.remove(cof);
 	}
 
 }

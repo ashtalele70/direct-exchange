@@ -35,12 +35,31 @@ class PostOffer extends Component {
       source_bank_message: "",
       destination_bank_message: "",
       currencies: [],
+      editOfferData: {},
     };
   }
 
   componentDidMount() {
     this.getRates();
     this.getCurrencies();
+    if(this.props.location.state && this.props.location.state.offer)
+      this.setState({
+        editOfferData: this.props.location.state.offer,
+        source_country: this.props.location.state.offer.source_country,
+        source_currency: this.props.location.state.offer.source_currency,
+        remit_amount: this.props.location.state.offer.remit_amount,
+        amount: this.props.location.state.offer.remit_amount,
+        destination_country: this.props.location.state.offer.destination_country,
+        destination_currency: this.props.location.state.offer.destination_currency,
+        exchange_rate: this.props.location.state.offer.exchange_rate,
+        expiration_date: this.props.location.state.offer.expiration_date,
+        allow_counter_offer: this.props.location.state.offer.allow_counter_offer,
+        allow_split_offer: this.props.location.state.offer.allow_split_offer,
+        offer_status: this.props.location.state.offer.offer_status,
+        is_counter: this.props.location.state.offer.is_counter,
+        remit_amount_destination: parseFloat(this.props.location.state.offer.remit_amount) * parseFloat(this.props.location.state.offer.exchange_rate),
+      })
+
   }
 
   getInitialState() {
@@ -198,6 +217,7 @@ class PostOffer extends Component {
       offer_status: this.state.offer_status,
       is_counter: 0,
     };
+    if(this.state.editOfferData) values.id = this.state.editOfferData.id;
     console.log(this.state.source_bank_message);
     console.log(this.state.destination_bank_message);
     if (
@@ -291,7 +311,7 @@ class PostOffer extends Component {
                   defaultValue="Choose..."
                   onChange={this.sourceCurrencyChange}
                 >
-                  <option>Choose</option>
+                  {!this.state.source_currency && <option>Choose</option>}
                   {this.state.currencies &&
                     this.state.currencies.map((e, key) => {
                       return (
@@ -336,7 +356,7 @@ class PostOffer extends Component {
                   defaultValue="Choose..."
                   onChange={this.destinationCurrencyChange}
                 >
-                  <option>Choose</option>
+                  {!this.state.destination_currency && <option>Choose</option>}
                   {this.state.currencies &&
                     this.state.currencies.map((e, key) => {
                       return (
@@ -382,7 +402,7 @@ class PostOffer extends Component {
                   onChangeEvent={this.handleChange}
                 /> */}
                 <Form.Control
-                  // defaultValue={this.state.amount}
+                  defaultValue={this.state.remit_amount}
                   onChange={this.handleChange}
                   type="number"
                 ></Form.Control>
@@ -412,6 +432,7 @@ class PostOffer extends Component {
                 <Form.Control
                   type="date"
                   placeholder="Expiry Date for the offer"
+                  defaultValue={this.state.editOfferData? this.state.editOfferData.expiration_date : ""}
                   onChange={(event) =>
                     this.setState({ expiration_date: event.target.value })
                   }

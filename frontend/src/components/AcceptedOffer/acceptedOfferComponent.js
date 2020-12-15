@@ -11,9 +11,9 @@ import {
   Modal,
   Alert,
 } from "react-bootstrap";
-import { getAcceptedOffers, postTransaction } from "./transactionService";
+import { getAcceptedOffers, postTransaction } from "./acceptedOfferService";
 
-export function TransactionComponent() {
+export function AcceptedOfferComponent() {
   const [transactions, setTransactions] = useState([]);
   const [transaction, setTransaction] = useState({});
   const [success, setSuccess] = useState(false);
@@ -73,7 +73,7 @@ export function TransactionComponent() {
             </Card.Text>
             <Card.Text id="currency">
               <span className="font-weight-bold">Currency:</span>{" "}
-              {transactions[key].offer.destination_currency}
+              {transactions[key].offer.source_currency}
             </Card.Text>
           </Card.Body>
           <Card.Footer>
@@ -123,7 +123,7 @@ export function TransactionComponent() {
                 value={
                   transaction &&
                   transaction.offer &&
-                  transaction.offer.destination_currency
+                  transaction.offer.source_currency
                 }
                 aria-label="Currency"
                 readOnly

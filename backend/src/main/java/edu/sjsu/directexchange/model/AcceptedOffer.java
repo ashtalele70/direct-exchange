@@ -1,6 +1,8 @@
 package edu.sjsu.directexchange.model;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Entity
 @Table(name = "accepted_offers")
@@ -39,6 +41,10 @@ public class AcceptedOffer {
 	
 	@Column
 	private float final_remit_amt;
+
+	@Column
+	private String accepted_offer_date=
+		new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").format(new Date());
 
 	@OneToOne
 	@JoinColumn(name = "offer_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -149,4 +155,14 @@ public class AcceptedOffer {
 	public void setFinal_remit_amt(float final_remit_amt) {
 		this.final_remit_amt = final_remit_amt;
 	}
+
+	public String getAccepted_offer_date() {
+		return accepted_offer_date;
+	}
+
+	public void setAccepted_offer_date(String accepted_offer_date) {
+		this.accepted_offer_date = accepted_offer_date;
+	}
+
+
 }
