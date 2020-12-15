@@ -37,21 +37,6 @@ public class OfferDaoImpl implements OfferDao{
 		entityManager.merge(offer);
 	}
 	
-	private List<Reputation> setUserRatings(Offer offer) {
-		Query ratingQuery = entityManager.createQuery("from Reputation where user_id =: user_id")
-				.setParameter("user_id", offer.getUser_id());
-					
-		List<Reputation> ratings = ratingQuery.getResultList();
-		ratings.forEach(rating -> ratingSum += rating.getRating());
-		avgRating = ratingSum / ratings.size();
-		ratings.forEach(rating -> rating.setAvgRating(avgRating));
-		offer.setRatings(ratings);
-		ratingSum = 0f;
-		avgRating = 0f;
-		
-		return ratings;
-	}
-	
 	private void checkOfferExpiry(List<Offer> offers) {
 		Date currentDate = new Date(System.currentTimeMillis());
 		offers.stream().filter(x -> x.getIs_counter() != 1).forEach(offer -> {
@@ -91,8 +76,6 @@ public class OfferDaoImpl implements OfferDao{
 		
 		
 	   finalRating = (1 - (a))*4 + 1;
-		
-		//System.out.println(finalRating);
 		
 	}
 	
@@ -348,17 +331,10 @@ public class OfferDaoImpl implements OfferDao{
 			).collect(Collectors.toList());
 
 		offers.forEach(offer -> {
-			Query ratingQuery = entityManager.createQuery("from Reputation where user_id =: user_id")
-				.setParameter("user_id", offer.getUser_id());
-
-			List<Reputation> ratings = ratingQuery.getResultList();
-			ratings.forEach(rating -> ratingSum += rating.getRating());
-			avgRating = ratingSum / ratings.size();
-			ratings.forEach(rating -> rating.setAvgRating(avgRating));
-			offer.setRatings(ratings);
-
-			ratingSum = 0f;
-			avgRating = 0f;
+			User user = entityManager.find(User.class, offer.getUser_id());
+			offer.setRating(updateRating(user.getId()));
+			offer.setNickname(user.getNickname());
+			offer.setEmail(user.getUsername());
 		});
 
 		return offers;

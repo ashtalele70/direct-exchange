@@ -50,12 +50,7 @@ export function OfferDashboardComponent() {
 
     const handleShowOfferDetailModal = (offer) => {
         setShowOfferDetailModal(true);
-        // let reviews = [];
-        // offer.ratings.forEach(rating => {
-        //     reviews.push(rating.reviewComment);
-        // });
         let fullOffer = JSON.parse(JSON.stringify(offer));
-        fullOffer.reviews = reviews;
         setCurrentOffer(fullOffer);
     }
 
@@ -140,7 +135,7 @@ export function OfferDashboardComponent() {
                             <span className="font-weight-bold">Posted By:</span> {offers[key].nickname}
                         </Card.Text>
                         <Card.Text className="float-right" onClick={() => showTransactionHistory(offers[key].user_id)}>
-                            <span className="font-weight-bold">Rating: <ReactStars
+                            <span className="font-weight-bold">Rating: {offers[key].rating == "0" ? "N/A" : <ReactStars
                                 count={5}
                                 value={offers[key].rating}
                                 size={24}
@@ -150,7 +145,7 @@ export function OfferDashboardComponent() {
                                 fullIcon={<FontAwesomeIcon icon={faStar} />}
                                 edit={false}
                                 activeColor="#ffd700"
-                            />
+                            />}
                             </span>
                         </Card.Text>
                         <Card.Text id="srcCountry">
@@ -183,12 +178,6 @@ export function OfferDashboardComponent() {
         );
 
         offerList = ((startIndex + 10) < offerList.length) ? offerList.slice(startIndex, startIndex + 10) : offerList.slice(startIndex);
-    }
-
-    if (currentOffer && currentOffer.reviews) {
-        reviews = currentOffer.reviews.map(comment =>
-            <p className="font-italic">"{comment}"</p>
-        );
     }
 
     if(transactions) {
@@ -296,7 +285,7 @@ export function OfferDashboardComponent() {
                             <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Expiration Date: </span>{currentOffer.expiration_date}</span>
                         </Col>
                         <Col>
-                            <span className="font-weight-bold text-primary" onClick={() => showTransactionHistory(currentOffer.user_id, true)}>Rating: <ReactStars
+                            <span className="font-weight-bold text-primary" onClick={() => showTransactionHistory(currentOffer.user_id, true)}>Rating: {currentOffer.rating == "0" ? "N/A" : <ReactStars
                                 count={5}
                                 value={currentOffer.rating}
                                 size={24}
@@ -306,9 +295,8 @@ export function OfferDashboardComponent() {
                                 fullIcon={<FontAwesomeIcon icon={faStar} />}
                                 edit={false}
                                 activeColor="#ffd700"
-                            />
+                            />}
                             </span>
-                            {reviews.length > 0 && <span className="mt-2 d-block"><span className="font-weight-bold text-primary">Reviews: </span>{reviews}</span>}
                         </Col></Row>
                 </Modal.Body>
             </Modal>

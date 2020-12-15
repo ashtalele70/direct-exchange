@@ -92,9 +92,6 @@ public class Offer {
 	private	int is_counter;
 	
 	@Transient
-	private List<Reputation> ratings;
-	
-	@Transient
 	private float rating;
 
 	public float getRating() {
@@ -207,14 +204,6 @@ public class Offer {
 
 	public void setAllow_split_offer(int allow_split_offer) {
 		this.allow_split_offer = allow_split_offer;
-	}
-
-	public List<Reputation> getRatings() {
-		return ratings;
-	}
-
-	public void setRatings(List<Reputation> ratings) {
-		this.ratings = ratings;
 	}
 
 	public String getNickname() {
