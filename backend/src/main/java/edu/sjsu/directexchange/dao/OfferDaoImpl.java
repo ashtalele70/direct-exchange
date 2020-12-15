@@ -63,7 +63,7 @@ public class OfferDaoImpl implements OfferDao{
 	}
 	
 	
-	private String updateRating(int user_id) {
+	private float updateRating(int user_id) {
 		
 		float finalRating;
 		
@@ -74,9 +74,9 @@ public class OfferDaoImpl implements OfferDao{
 		 float totOfers = totalOffers.size();
 		 
 		 if(totOfers==0) { 
-			 String rat = "N/A";
+			
 			 
-			return rat;
+			return 0.0f;
 		 }
 		 else {
 		
@@ -97,7 +97,7 @@ public class OfferDaoImpl implements OfferDao{
 	}
 	
 
-		return String.valueOf(finalRating);  
+		return finalRating;  
 		
 	}
 	
@@ -149,7 +149,7 @@ public class OfferDaoImpl implements OfferDao{
 		
 		offers.forEach(offer -> {
 			User user = entityManager.find(User.class, offer.getUser_id());
-			offer.setRatings(setUserRatings(offer));
+			offer.setRating(updateRating(user.getId()));
 			offer.setNickname(user.getNickname());
 			offer.setEmail(user.getUsername());
 		});

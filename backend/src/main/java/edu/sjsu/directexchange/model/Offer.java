@@ -93,6 +93,17 @@ public class Offer {
 	
 	@Transient
 	private List<Reputation> ratings;
+	
+	@Transient
+	private float rating;
+
+	public float getRating() {
+		return rating;
+	}
+
+	public void setRating(float rating) {
+		this.rating = rating;
+	}
 
 	public int getId() {
 		return id;
