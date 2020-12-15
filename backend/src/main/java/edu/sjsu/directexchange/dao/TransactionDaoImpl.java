@@ -334,7 +334,7 @@ public class TransactionDaoImpl implements TransactionDao {
 		
 		int uncompletedTransactions= ((Number) entityManager.createNativeQuery("select count(a.match_uuid) from (\r\n" + 
 				"				select match_uuid, max(transaction_status) from transaction            \r\n" + 
-				"				where MONTHNAME(STR_TO_DATE(transaction_date, '%Y-%m-%d'))=:month " + 
+				"				where MONTHNAME(STR_TO_DATE(transaction_date, '%m-%d-%Y'))=:month " + 
 				"				and  Year(STR_TO_DATE(transaction_date, '%m-%d-%Y'))=:year and transaction_status !=3\r\n" + 
 				"				group by match_uuid)a" + 
 				"").setParameter("month", month.trim()).setParameter("year", year.trim()).getSingleResult()).intValue();
@@ -342,7 +342,7 @@ public class TransactionDaoImpl implements TransactionDao {
 		
 		Double interm_remit_amount=(Double)entityManager.createNativeQuery("select round(sum(t.remit_amount*o.exchange_value),2) from transaction t , \r\n" + 
 				"exchange_rates o where t.source_currency=o.source_currency \r\n" + 
-				"and o.destination_currency='USD' and   transaction_status=3  and MONTHNAME(STR_TO_DATE(transaction_date, '%Y-%m-%d'))=:month " + 
+				"and o.destination_currency='USD' and   transaction_status=3  and MONTHNAME(STR_TO_DATE(transaction_date, '%m-%d-%Y'))=:month " + 
 				"and  Year(STR_TO_DATE(transaction_date, '%m-%d-%Y'))=:year \r\n" + 
 				"" + 
 				"").setParameter("month", month.trim()).setParameter("year", year.trim()).getSingleResult();
@@ -351,7 +351,7 @@ public class TransactionDaoImpl implements TransactionDao {
 		
 		Double interm_service_fee=(Double)entityManager.createNativeQuery("select round(sum(t.service_fee*o.exchange_value),2) from transaction t , \r\n" + 
 				"exchange_rates o where t.source_currency=o.source_currency \r\n" + 
-				"and o.destination_currency='USD' and   transaction_status=3 and MONTHNAME(STR_TO_DATE(transaction_date, '%Y-%m-%d'))=:month " + 
+				"and o.destination_currency='USD' and   transaction_status=3 and MONTHNAME(STR_TO_DATE(transaction_date, '%m-%d-%Y'))=:month " + 
 				"and  Year(STR_TO_DATE(transaction_date, '%m-%d-%Y'))=:year \r\n" + 
 				"" + 
 				"").setParameter("month", month.trim()).setParameter("year", year.trim()).getSingleResult();
