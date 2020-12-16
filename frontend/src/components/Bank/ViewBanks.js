@@ -69,14 +69,14 @@ class ViewBanks extends Component {
       </tr>
     ));
     return (
-      <Container className="m-5 d-flex justify-content-center">
-        <h1>Banks</h1>
+      <Container className="mt-5 justify-content-center">
+        <h1 className="text-center">Banks</h1>
         {this.state.banks && this.state.banks.length == 0 && (
             <Alert className="mt-5" variant="danger">
               No banks to show
             </Alert>
         )}
-        <Table striped bordered hover size="sm">
+        {this.state.banks && this.state.banks.length > 0 && <Table striped bordered hover size="sm" className="mt-5">
           <thead>
             <tr>
               <th>Bank Name</th>
@@ -90,7 +90,7 @@ class ViewBanks extends Component {
             </tr>
           </thead>
           <tbody>{banks}</tbody>
-        </Table>
+        </Table>}
       </Container>
     );
   }

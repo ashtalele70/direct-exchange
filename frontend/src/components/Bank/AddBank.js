@@ -104,8 +104,9 @@ class AddBank extends Component {
         onClose={() => this.setState({ show: false })} dismissible>
           Bank Added Successfully
         </Alert>}
-        <Container className="m-5 d-flex justify-content-center">
-          <Form>
+        <h1 className="text-center mt-5">Add Bank</h1>
+        <Container className="d-flex justify-content-center">          
+          <Form className="mt-5">
             <Form.Row>
               <Form.Group as={Col} controlId="bankName">
                 <Form.Label>Bank Name</Form.Label>

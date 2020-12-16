@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import axios from "axios";
-import {Badge, Modal, ModalBody} from "react-bootstrap";
+import {Badge, Modal, ModalBody, Alert} from "react-bootstrap";
 import {
   TRANSACTION_STATUS,
   TRANSACTION_STATUS_COLOR,
@@ -17,7 +17,8 @@ class ViewTransactions extends Component {
       showMessageModel: false,
       currentMessenger: "",
       nickname: "",
-      message: ""
+      message: "",
+      showError: true
     };
   }
 
@@ -37,6 +38,7 @@ class ViewTransactions extends Component {
           if (res.data) {
             console.log(res.data);
             this.setState({ transactions: res.data });
+            if(res.data.length > 0) this.setState({ showError: false });
           }
         }
       })
@@ -103,9 +105,9 @@ class ViewTransactions extends Component {
       </tr>
     ));
     return (
-      <Container className="m-5 d-flex justify-content-center">
-          <h1>Your Transactions</h1>
-        <Table striped bordered hover size="sm">
+      <Container className="mt-5 justify-content-center">
+        <h1 className="text-center">Your Transactions</h1>
+        {transactions.length > 0 && <Table striped bordered hover size="sm" className="mt-5">
           <thead>
             <tr>
               <th>Offer ID</th>
@@ -117,7 +119,7 @@ class ViewTransactions extends Component {
             </tr>
           </thead>
           <tbody>{transactions}</tbody>
-        </Table>
+        </Table>}
         <Modal show={this.state.showMessageModel} onHide={this.handleCloseShowMessageModal}>
           <Modal.Header closeButton>
             <Modal.Title>Send Message to {this.state.nickname}</Modal.Title>
@@ -134,6 +136,11 @@ class ViewTransactions extends Component {
                 </Form>
             </Modal.Body>
         </Modal>
+        {transactions.length == 0 && <Alert
+            variant="danger"
+          >
+            No transactions available.
+          </Alert>}
       </Container>
     );
   }

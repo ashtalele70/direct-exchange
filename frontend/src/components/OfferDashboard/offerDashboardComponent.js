@@ -217,8 +217,7 @@ export function OfferDashboardComponent() {
 
     return (
         <Container>
-
-            <h1>Offer Dashboard</h1>
+            <h1 className="text-center mt-3">Offer Dashboard</h1>
             {offers && offers.length == 0 && (
                 <Alert className="mt-5" variant="danger">
                     No offers to show

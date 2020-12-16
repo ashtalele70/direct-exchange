@@ -89,9 +89,9 @@ class FinancialReport extends Component {
     }
 
     return (
-      <Container className="m-5 d-flex justify-content-center">
-        <h1>Financial Report</h1>
-        <Form>
+      <Container className="mt-5 justify-content-center">
+        <h1 className="text-center">Financial Report</h1>
+        <Form className="mt-5">
           <Form.Group controlId="formBasicEmail">
             <Form.Label>Enter the month & Year of report </Form.Label>
             <Form.Control

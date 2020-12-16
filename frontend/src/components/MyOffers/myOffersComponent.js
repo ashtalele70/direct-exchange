@@ -145,7 +145,7 @@ export function MyOffersComponent({ history }) {
 
   return (
     <Container>
-      <h1>My offers</h1>
+      <h1 className="mt-3 text-center">My Offers</h1>
       {offerList && offerList.length == 0 && (
           <Alert className="mt-5" variant="danger">
             You have not created any offers

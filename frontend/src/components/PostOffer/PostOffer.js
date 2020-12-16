@@ -300,8 +300,8 @@ class PostOffer extends Component {
             {this.state.destination_bank_message}
           </Alert>
         )}
-
-        <Container className="m-5 d-flex justify-content-center">
+        <h1 className="text-center">Post Exchange Offer</h1>
+        <Container className="mt-5 d-flex justify-content-center">
           <Form onSubmit={this.submitHandler}>
             <Form.Row>
               <Form.Group as={Col} controlId="fromCurrency">

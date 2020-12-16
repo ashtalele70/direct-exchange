@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import Container from "react-bootstrap/Container";
-import Table from "react-bootstrap/Table";
+import {Table, Alert} from "react-bootstrap";
 import axios from "axios";
 class TransactionHistory extends Component {
   constructor(props) {
     super(props);
-    this.state = { transactions: [], totals: [] };
+    this.state = { transactions: [], totals: [], showError: true };
   }
 
   componentDidMount() {
@@ -49,6 +49,7 @@ class TransactionHistory extends Component {
             console.log(res.data);
             console.log(new Date());
             this.setState({ transactions: res.data });
+            if(res.data.length > 0) this.setState({ showError: false });
           }
         }
       })
@@ -83,9 +84,9 @@ class TransactionHistory extends Component {
     ));
 
     return (
-      <Container className="m-5 d-flex justify-content-center">
-        <h1>Transaction History</h1>
-        <Table striped bordered hover size="sm">
+      <Container className="mt-5 justify-content-center">
+        <h1 className="text-center">Transaction History</h1>
+        {transactions.length > 0 && <Table striped bordered hover size="sm" className="mt-5">
           <thead>
             <tr>
               <th></th>
@@ -117,7 +118,12 @@ class TransactionHistory extends Component {
               <b>{this.state.totals[2]}$</b>
             </td>
           </tr>
-        </Table>
+        </Table>}
+        {transactions.length == 0 && <Alert
+            variant="danger"
+          >
+            No transaction history available.
+          </Alert>}
       </Container>
     );
   }
