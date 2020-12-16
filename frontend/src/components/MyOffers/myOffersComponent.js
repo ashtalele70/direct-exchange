@@ -63,13 +63,10 @@ export function MyOffersComponent({ history }) {
             <Card.Text className="float-right">
               <span className="font-weight-bold">
                 Rating:{" "}
-                <ReactStars
+                {offers[key].rating == "0" ? "N/A" : <ReactStars
                   count={5}
                   value={
-                    offers[key].ratings && offers[key].ratings.length > 0
-                      ? offers[key].ratings[0].avgRating
-                      : 0
-                  }
+                    offers[key].rating }
                   size={24}
                   isHalf={true}
                   emptyIcon={<FontAwesomeIcon icon={faStar} />}
@@ -77,7 +74,7 @@ export function MyOffersComponent({ history }) {
                   fullIcon={<FontAwesomeIcon icon={faStar} />}
                   edit={false}
                   activeColor="#ffd700"
-                />
+                />}
               </span>
             </Card.Text>
             <Card.Text id="srcCountry">
