@@ -1,7 +1,22 @@
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getAllOffers, getFilteredOffers } from './offerDashboardService';
-import { Card, CardDeck, Container, Row, Col, Modal, Button, Dropdown, FormControl, Pagination, Form, Table, Badge } from 'react-bootstrap';
+import {
+    Card,
+    CardDeck,
+    Container,
+    Row,
+    Col,
+    Modal,
+    Button,
+    Dropdown,
+    FormControl,
+    Pagination,
+    Form,
+    Table,
+    Badge,
+    Alert
+} from 'react-bootstrap';
 import ReactStars from "react-rating-stars-component";
 import { faStar, faStarHalf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -213,6 +228,13 @@ export function OfferDashboardComponent() {
 
     return (
         <Container>
+
+            <h1>Offer Dashboard</h1>
+            {offers && offers.length == 0 && (
+                <Alert className="mt-5" variant="danger">
+                    No offers to show
+                </Alert>
+            )}
             <Button variant="primary" onClick={handleShow} className="mt-5 float-right">
                 Filter Results
             </Button>

@@ -326,7 +326,7 @@ public class TransactionDaoImpl implements TransactionDao {
 		System.out.println(year.trim());
 		int completedTransactions= ((Number) entityManager.createNativeQuery("select count(a.match_uuid) from (\r\n" + 
 				"select match_uuid, max(transaction_status) from transaction            \r\n" + 
-				"where MONTHNAME(STR_TO_DATE(transaction_date, '%Y-%m-%d'))=:month " + 
+				"where MONTHNAME(STR_TO_DATE(transaction_date, '%m-%d-%Y'))=:month " +
 				"and  Year(STR_TO_DATE(transaction_date, '%m-%d-%Y'))=:year and transaction_status=3\r\n" + 
 				"group by match_uuid)a\r\n" + 
 				"").setParameter("month", month.trim()).setParameter("year", year.trim()).getSingleResult()).intValue();

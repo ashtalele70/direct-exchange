@@ -84,6 +84,7 @@ class TransactionHistory extends Component {
 
     return (
       <Container className="m-5 d-flex justify-content-center">
+        <h1>Transaction History</h1>
         <Table striped bordered hover size="sm">
           <thead>
             <tr>

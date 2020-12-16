@@ -94,6 +94,12 @@ export function AcceptedOfferComponent() {
 
   return (
     <Container>
+      <h1>Accepted offers</h1>
+      {transactions && transactions.length == 0 && (
+          <Alert className="mt-5" variant="danger">
+            No accepted offer to show
+          </Alert>
+      )}
       {success == true && <Alert
           variant="success"
           onLoad={setTimeout(() =>  setSuccess(false) , 3000)}

@@ -3,6 +3,7 @@ import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import axios from "axios";
 import { BANK_TYPE } from "../../constants/offerStatus";
+import {Alert} from "react-bootstrap";
 
 class ViewBanks extends Component {
   constructor(props) {
@@ -69,6 +70,12 @@ class ViewBanks extends Component {
     ));
     return (
       <Container className="m-5 d-flex justify-content-center">
+        <h1>Banks</h1>
+        {this.state.banks && this.state.banks.length == 0 && (
+            <Alert className="mt-5" variant="danger">
+              No banks to show
+            </Alert>
+        )}
         <Table striped bordered hover size="sm">
           <thead>
             <tr>

@@ -43,6 +43,7 @@ class Rates extends Component {
     ));
     return (
       <Container className="m-5 d-flex justify-content-center">
+          <h1>Exchange Rates</h1>
         <Table striped bordered hover size="sm">
           <thead>
             <tr>

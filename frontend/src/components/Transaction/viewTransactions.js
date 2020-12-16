@@ -104,6 +104,7 @@ class ViewTransactions extends Component {
     ));
     return (
       <Container className="m-5 d-flex justify-content-center">
+          <h1>Your Transactions</h1>
         <Table striped bordered hover size="sm">
           <thead>
             <tr>

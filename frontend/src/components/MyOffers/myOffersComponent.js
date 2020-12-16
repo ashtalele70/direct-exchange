@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getMyOffers } from "./myOffersService";
 import {
   Card,
@@ -7,7 +7,7 @@ import {
   Row,
   Col,
   Button,
-  Badge,
+  Badge, Alert,
 } from "react-bootstrap";
 import ReactStars from "react-rating-stars-component";
 import { faStar, faStarHalf } from "@fortawesome/free-solid-svg-icons";
@@ -148,6 +148,12 @@ export function MyOffersComponent({ history }) {
 
   return (
     <Container>
+      <h1>My offers</h1>
+      {offerList && offerList.length == 0 && (
+          <Alert className="mt-5" variant="danger">
+            You have not created any offers
+          </Alert>
+      )}
       <CardDeck>
         <Row className="mt-3 mb-5">{offerList}</Row>
       </CardDeck>
