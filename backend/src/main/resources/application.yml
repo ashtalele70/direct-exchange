@@ -1,11 +1,11 @@
 spring:
   datasource:
-    url: jdbc:mysql://35.230.33.50:3306/direct_exchange
-    username: root
-    password: SJSU@1234CMPE275
+    url: <DB_URL>
+    username: <USERNAME>
+    password: <PASSWORD>
 server:
   error:
     include-message: always
     include-binding-errors: always
 frontend:
-  url: http://localhost:3000
+  url: <FRONTEND_URL>
