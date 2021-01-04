@@ -40,15 +40,15 @@ public class EmailUtil {
     "Successful";
   static String transactionSubject = "Your transfer offer is accepted";
 
-  static String senderEmailId = "directexchange275@gmail.com";
+  static String senderEmailId = <SENDER_EMAIL_ID>;
 
   static String emailAuth = "true";
 
-  static String password = "cmpe275@123";
+  static String password = <SENDER_EMAIL_PASSWORD>;
 
   static String port = "587";
 
-  static String cc = "ashtalele70@gmail.com";
+  static String cc = <EMAIL_ID_IN_CC>;
 
   public static void sendEmail(User user) {
       Properties properties = new Properties();
